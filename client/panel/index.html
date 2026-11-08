@@ -3,10 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#faf6e9" />
     <title>UMATE trainer panel</title>
-    <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+    <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/brand.css" />
     <link rel="stylesheet" href="panel.css" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23fff'/%3E%3Ctext x='8' y='11.5' font-size='10' text-anchor='middle' fill='%23ee1d23' font-family='Arial' font-weight='700'%3EM%3C/text%3E%3C/svg%3E" />
     <script type="importmap">
       {
         "imports": {
@@ -17,37 +18,68 @@
     </script>
   </head>
   <body>
-    <header class="board">
+    <!-- icon sprite (Lucide, ISC licence) -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" /></symbol>
+      <symbol id="i-card" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2" /><path d="M2 10h20" /><path d="m15 15 4 4" /><path d="m19 15-4 4" /></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></symbol>
+      <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></symbol>
+      <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" /><path d="M9 18h6" /><path d="M10 22h4" /></symbol>
+      <symbol id="i-wind" viewBox="0 0 24 24"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2" /><path d="M9.6 4.6A2 2 0 1 1 11 8H2" /><path d="M12.6 19.4A2 2 0 1 0 14 16H2" /></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></symbol>
+      <symbol id="i-crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M22 12h-4" /><path d="M6 12H2" /><path d="M12 6V2" /><path d="M12 22v-4" /></symbol>
+      <symbol id="i-restart" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></symbol>
+      <symbol id="i-reload" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18" /><path d="m19 9-5 5-4-4-3 3" /></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14" /><path d="M12 5v14" /></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M16 13H8" /><path d="M16 17H8" /></symbol>
+      <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3" /><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" /><circle cx="18" cy="5" r="3" /></symbol>
+    </svg>
+
+    <header class="top">
       <div class="brand">
-        <span class="roundel" aria-hidden="true">M</span>
-        <span class="name">UMATE</span>
+        <img src="/assets/brand/umate-logo.svg" alt="UMATE" width="150" height="34" />
         <span class="team">by Team Artemis</span>
       </div>
       <div class="learner">
         <label for="learner-select">Learner</label>
         <select id="learner-select"></select>
-        <button id="learner-add" class="quiet" aria-expanded="false" aria-controls="learner-form">Add learner</button>
+        <button id="learner-add" class="icon-btn" aria-expanded="false" aria-controls="learner-form" aria-label="Add learner" title="Add learner"><svg class="i"><use href="#i-plus" /></svg></button>
         <form id="learner-form" hidden>
           <input id="learner-name" maxlength="40" placeholder="Nickname" aria-label="Nickname of the new learner" />
-          <button type="submit">Save</button>
+          <button type="submit" class="primary">Save</button>
         </form>
       </div>
       <div class="status" aria-live="polite">
-        <button id="progress-open">Progress and report</button>
         <span class="pill" id="phone-pill"><i class="dot"></i><span id="phone-text">No phone</span></span>
         <span class="pill" id="ai-pill"><i class="dot"></i><span id="ai-text">Buddy offline</span></span>
-        <button id="qr-open" class="qr-thumb" aria-label="Show the QR code for the phone"><img id="qr" alt="" /></button>
+        <span class="pill" id="guide-pill" hidden><i class="dot"></i><span id="guide-text">Guide</span></span>
+        <button id="progress-open" class="primary"><svg class="i"><use href="#i-chart" /></svg>Progress and report</button>
+        <button id="qr-open" class="qr-thumb" aria-label="Show the QR code for the phone" title="Open on the phone"><img id="qr" alt="" /></button>
       </div>
     </header>
 
     <main>
-      <section id="view" aria-label="Live view of what the learner sees">
-        <canvas id="spectator"></canvas>
-        <div class="live"><i class="rec"></i>Live: what the learner sees</div>
-        <div class="looking" id="hover"></div>
-        <div class="waiting" id="waiting">
-          <p>Waiting for a phone</p>
-          <p class="sub">Scan the QR code at the top right with the phone</p>
+      <section id="view" class="stage on-ink" aria-label="Live view of what the learner sees">
+        <div class="screen">
+          <canvas id="spectator"></canvas>
+          <div class="live"><i class="rec"></i>Live: what the learner sees</div>
+          <div class="waiting" id="waiting">
+            <img id="qr-stage" alt="QR code with the link for the phone" />
+            <div>
+              <p class="big">Waiting for a phone</p>
+              <p class="sub">Scan this code with the phone, then tap Start.</p>
+            </div>
+          </div>
+        </div>
+        <div class="caption">
+          <p class="kicker off" id="now-step">Not started</p>
+          <p class="now" id="now"><b>Waiting for the trip</b><span>Press Start on the phone to begin</span></p>
+          <p class="looking idle" id="hover"><svg class="i"><use href="#i-eye" /></svg><span></span><i class="dwell" aria-hidden="true"><i></i></i></p>
         </div>
       </section>
 
@@ -55,7 +87,7 @@
         <section class="trip" aria-labelledby="trip-title">
           <div class="trip-head">
             <h2 id="trip-title">Koroğlu to 28 May</h2>
-            <span class="balance" id="balance">Balance 0.00 AZN</span>
+            <p class="balance">Balance <b id="balance">0.00 AZN</b></p>
           </div>
           <ol class="line" id="steps">
             <li data-step="topup"><span class="stop"></span><b>Top up</b><small></small></li>
@@ -63,26 +95,28 @@
             <li data-step="platform"><span class="stop"></span><b>Platform</b><small></small></li>
             <li data-step="ride"><span class="stop"></span><b>Ride</b><small></small></li>
           </ol>
-          <p class="now" id="now"><b>Waiting for the trip</b><span>Press Start on the phone to begin</span></p>
         </section>
 
         <section class="controls" aria-labelledby="challenges-title">
           <h2 id="challenges-title">Challenges for the judge</h2>
           <div class="grid2">
-            <button data-fault="insufficient_balance" aria-pressed="false">Not enough balance</button>
-            <button data-fault="card_unreadable" aria-pressed="false">Card not read</button>
-            <button data-fault="train_delay" aria-pressed="false">Train delayed</button>
-            <button data-fault="crowd_noise" aria-pressed="false">Crowd and noise</button>
+            <button class="challenge" data-fault="insufficient_balance" aria-pressed="false"><svg class="i"><use href="#i-wallet" /></svg><span>Not enough balance</span><em>On</em></button>
+            <button class="challenge" data-fault="card_unreadable" aria-pressed="false"><svg class="i"><use href="#i-card" /></svg><span>Card not read</span><em>On</em></button>
+            <button class="challenge" data-fault="train_delay" aria-pressed="false"><svg class="i"><use href="#i-clock" /></svg><span>Train delayed</span><em>On</em></button>
+            <button class="challenge" data-fault="crowd_noise" aria-pressed="false"><svg class="i"><use href="#i-users" /></svg><span>Crowd and noise</span><em>On</em></button>
           </div>
-          <h2>Trainer</h2>
+          <h3>Buddy</h3>
           <div class="row">
-            <button data-cmd="hint">Give a hint</button>
-            <button data-cmd="say" data-voice="calm" data-text="The learner may be stressed. Calmly guide one slow breath together, then ask if they are ready to continue.">Calm the learner</button>
-            <button data-cmd="say" data-voice="hello" data-text="Say hello to the learner and ask how they feel, in one short sentence.">Buddy says hello</button>
-            <button data-cmd="recenter" class="quiet">Recenter view</button>
-            <button data-cmd="reset" class="quiet">Restart trip</button>
-            <button data-cmd="reload" class="quiet">Reload phone</button>
-            <button id="short-ride" aria-pressed="false" title="For a stage demo: 4 stations in about 25 seconds">Short ride</button>
+            <button data-cmd="hint" title="The buddy gives the next hint for this step"><svg class="i"><use href="#i-bulb" /></svg>Give a hint</button>
+            <button data-cmd="say" data-voice="calm" data-text="The learner may be stressed. Calmly guide one slow breath together, then ask if they are ready to continue." title="The buddy guides one slow breath"><svg class="i"><use href="#i-wind" /></svg>Breathe</button>
+            <button data-cmd="say" data-voice="hello" data-text="Say hello to the learner and ask how they feel, in one short sentence." title="The buddy says hello and asks how the learner feels"><svg class="i"><use href="#i-chat" /></svg>Say hello</button>
+          </div>
+          <div class="phone-row">
+            <h3>Phone</h3>
+            <button data-cmd="recenter" class="icon-btn quiet" aria-label="Recenter view" title="Recenter view: the learner faces forward"><svg class="i"><use href="#i-crosshair" /></svg></button>
+            <button data-cmd="reset" class="icon-btn quiet" aria-label="Restart trip" title="Restart trip from the first step"><svg class="i"><use href="#i-restart" /></svg></button>
+            <button data-cmd="reload" class="icon-btn quiet" aria-label="Reload phone" title="Reload the app on the phone"><svg class="i"><use href="#i-reload" /></svg></button>
+            <button id="short-ride" class="switch" aria-pressed="false" title="For a stage demo: 4 stations in about 25 seconds"><span class="track" aria-hidden="true"></span>Short ride</button>
           </div>
         </section>
 
@@ -92,7 +126,7 @@
             <button role="tab" id="tab-events" aria-controls="pane-events" aria-selected="false" tabindex="-1">Events</button>
           </div>
           <div role="tabpanel" id="pane-talk" aria-labelledby="tab-talk" class="pane">
-            <div id="transcript" class="list"><p class="empty">The conversation between the learner and the buddy appears here.</p></div>
+            <div id="transcript" class="list"><p class="empty">What the learner and the buddy say appears here.</p></div>
           </div>
           <div role="tabpanel" id="pane-events" aria-labelledby="tab-events" class="pane" hidden>
             <div id="events" class="list events"></div>
@@ -102,25 +136,38 @@
     </main>
 
     <dialog id="progress-dialog" class="wide" aria-labelledby="progress-title">
-      <div class="progress-head">
+      <div class="dialog-head">
         <h2 id="progress-title">Progress of</h2>
         <select id="progress-select" aria-labelledby="progress-title"></select>
-        <form method="dialog" class="close"><button class="quiet">Close</button></form>
+        <form method="dialog" class="close"><button class="icon-btn" aria-label="Close"><svg class="i"><use href="#i-x" /></svg></button></form>
       </div>
       <p class="explain">Steps done alone: how many of the 4 steps the learner finished without a hint and without a mistake, session by session.</p>
       <div id="chart" class="chart"></div>
       <div id="verdict" class="verdict"></div>
       <div class="report">
-        <button id="report-btn">Write trainer report</button>
+        <button id="report-btn" class="primary"><svg class="i"><use href="#i-file" /></svg><span>Write trainer report</span></button>
         <p id="report" class="report-text"></p>
       </div>
     </dialog>
 
     <dialog id="qr-dialog" aria-labelledby="qr-title">
-      <h2 id="qr-title">Open UMATE on the phone</h2>
+      <div class="dialog-head">
+        <h2 id="qr-title">Open UMATE on the phone</h2>
+        <form method="dialog" class="close"><button class="icon-btn" aria-label="Close"><svg class="i"><use href="#i-x" /></svg></button></form>
+      </div>
       <img id="qr-big" alt="QR code with the link for the phone" />
       <div id="urls" class="urls"></div>
-      <form method="dialog"><button>Close</button></form>
+    </dialog>
+
+    <dialog id="key-dialog" aria-labelledby="key-title">
+      <form id="key-form" method="dialog">
+        <h2 id="key-title">Enter the access key</h2>
+        <p class="explain">The key protects the AI buddy and the saved sessions. This computer remembers it.</p>
+        <label for="key-input">Access key</label>
+        <input id="key-input" type="password" autocomplete="off" spellcheck="false" required />
+        <p class="form-error" id="key-error" hidden><svg class="i"><use href="#i-alert" /></svg>That key was not accepted. Check it and try again.</p>
+        <div class="actions"><button type="submit" class="primary">Save key</button></div>
+      </form>
     </dialog>
 
     <script type="module" src="panel.js"></script>
