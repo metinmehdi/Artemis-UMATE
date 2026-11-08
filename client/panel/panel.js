@@ -2,19 +2,22 @@
 // The spectator renders the SAME shared scene locally, driven by the phone's head pose,
 // so no video is streamed and it stays smooth on any laptop.
 import * as THREE from 'three';
-import { buildStation } from '/shared/scene.js';
+import { buildWorld, EYE } from '/shared/world.js';
+import { loadFonts } from '/shared/ui3d.js';
 import { Net } from '../vr/net.js';
 
 const $ = (s) => document.querySelector(s);
 
 // ---------- spectator ----------
+await loadFonts();
 const canvas = $('#spectator');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-const camera = new THREE.PerspectiveCamera(70, 1, 0.05, 60);
-camera.position.set(0, 1.55, 10.5);
-const world = buildStation();
+const camera = new THREE.PerspectiveCamera(72, 1, 0.05, 60);
+camera.position.set(0, EYE, 0);
+const world = buildWorld();
 world.scene.add(camera);
+world.applyState({ node: 'hall', balance: 0, kiosk: 'idle', task: {} });
 
 function resize() {
   const r = canvas.parentElement.getBoundingClientRect();
@@ -25,7 +28,7 @@ function resize() {
 new ResizeObserver(resize).observe(canvas.parentElement);
 resize();
 
-const targetPos = new THREE.Vector3(0, 1.55, 10.5);
+const targetPos = new THREE.Vector3(0, EYE, 0);
 const targetQuat = new THREE.Quaternion();
 let lastPose = 0;
 let hoverInfo = null;

@@ -42,6 +42,12 @@ Server işə düşəndə terminalda linkləri göstərir. Real Wi-Fi ünvanı, y
 - **Visual A/B:** low-poly 3D görünüşlə AI-ın yaratdığı 360° fon arasında keçid edir.
 - **Reload phone:** telefondakı səhifəni yeniləyir.
 
+## Vizual və istinadlar
+
+- 360° panoramalar real Bakı metrosu fotolarına əsaslanaraq Codex-in şəkil generatoru ilə yaradılıb. İstinad fotoları Wikimedia Commons-dan götürülüb: Bakmil stansiyasının turniketləri və BakıKART terminalı, Koroğlu platforması. Fotoların özü repoya əlavə edilmir.
+- Lövhələr Bakı metrosunun üslubundadır: göy lövhə, ağ dairədə qırmızı "M" və xətlərin rəsmi rəngləri. Qırmızı xətt `#EE1D23`, yaşıl `#00AB5B`, bənövşəyi `#8E177C`-dir. Stansiya adları real metroda olduğu kimi Azərbaycan dilində yazılır.
+- Şrift: [Atkinson Hyperlegible Next](https://www.brailleinstitute.org/freefont/). Braille Institute tərəfindən hazırlanıb, lisenziyası SIL OFL 1.1-dir. İnternetsiz işləməsi üçün layihənin içində saxlanır.
+
 ## Struktur
 
 ```

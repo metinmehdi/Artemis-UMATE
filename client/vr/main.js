@@ -1,8 +1,9 @@
-// Phone VR app (Phase 0 spike): stereo view + gyro + gaze select + teleport + AI buddy + link to panel.
-// The mini flow at the bottom is temporary; Phase 1 replaces it with the scenario engine.
+// Phone VR app: photoreal Baku Metro panoramas + gaze input + AI buddy + live link to the panel.
+// The trip logic below is a temporary hand-written flow; Phase 1 moves it into the scenario engine.
 import * as THREE from 'three';
 import { StereoEffect } from 'three/addons/effects/StereoEffect.js';
-import { buildStation } from '/shared/scene.js';
+import { buildWorld, EYE, yawOfU } from '/shared/world.js';
+import { loadFonts } from '/shared/ui3d.js';
 import { Gyro, DragLook } from './gyro.js';
 import { Gaze } from './gaze.js';
 import { Net } from './net.js';
@@ -13,15 +14,17 @@ const canvas = $('#c');
 const fadeEl = $('#fade');
 const logEl = $('#log');
 
+await loadFonts();
+
 // ---------- renderer / camera / rig ----------
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
 const camera = new THREE.PerspectiveCamera(80, innerWidth / innerHeight, 0.05, 60);
-camera.position.y = 1.55; // eye height
+camera.position.y = EYE;
 const rig = new THREE.Group();
 rig.add(camera);
 
-const world = buildStation();
+const world = buildWorld();
 world.scene.add(rig);
 
 const stereo = new StereoEffect(renderer);
@@ -32,7 +35,7 @@ function resize() {
   renderer.setSize(innerWidth, innerHeight);
   stereo.setSize(innerWidth, innerHeight);
   camera.aspect = innerWidth / innerHeight;
-  camera.fov = vrMode ? 85 : 70;
+  camera.fov = vrMode ? 85 : 72;
   camera.updateProjectionMatrix();
   document.body.classList.toggle('portrait', vrMode && innerHeight > innerWidth);
 }
@@ -45,7 +48,6 @@ const drag = new DragLook(canvas);
 const gaze = new Gaze(camera, { dwell: 1.5 });
 gaze.targets = world.interactives;
 
-// tap on screen (also the VR box's capacitive button), keyboard / BT remote keys, gamepad buttons
 canvas.addEventListener('pointerup', () => {
   if (started && drag.moved < 8) gaze.fire();
 });
@@ -85,29 +87,24 @@ const net = new Net({
     if (m.cmd === 'recenter') recenter();
     if (m.cmd === 'say' && m.text) companion.say(m.text);
     if (m.cmd === 'reset') resetFlow();
-    if (m.cmd === 'style') {
-      state.style = state.style === 'ai' ? 'lowpoly' : 'ai';
-      event('style', { style: state.style });
-      pushState();
-    }
     if (m.cmd === 'reload') location.reload();
   },
 });
 
 function event(name, data = {}) {
-  net.send({ type: 'event', sessionId, name, step: state.node, data });
+  net.send({ type: 'event', sessionId, name, step: state.step, node: state.node, data });
 }
 
 // ---------- AI buddy ----------
 const companion = new Companion({
   onMode: (m) => {
     state.buddyMode = m;
-    world.applyState(state);
+    pushState();
     setStatus('ai', m);
     net.send({ type: 'status', ai: m });
   },
   onTranscript: (who, text) => {
-    net.send({ type: 'transcript', sessionId, who, text, step: state.node });
+    net.send({ type: 'transcript', sessionId, who, text, step: state.step });
     log(`${who}: ${text}`);
   },
   onLog: (lvl, text) => {
@@ -116,14 +113,14 @@ const companion = new Companion({
   },
 });
 
-// ---------- teleport / recenter ----------
+// ---------- view helpers ----------
 const tmpE = new THREE.Euler();
 function faceYaw(targetYaw) {
   tmpE.setFromQuaternion(camera.quaternion, 'YXZ');
   rig.rotation.y = targetYaw - tmpE.y;
 }
 function recenter() {
-  faceYaw(world.nodes[state.node].yaw);
+  faceYaw(world.forwardYaw(state.node));
   event('recenter');
 }
 let teleporting = false;
@@ -132,34 +129,43 @@ function teleport(nodeId) {
   teleporting = true;
   fadeEl.classList.add('on');
   setTimeout(() => {
-    const n = world.nodes[nodeId];
-    rig.position.set(n.pos.x, 0, n.pos.z);
-    faceYaw(n.yaw);
     state.node = nodeId;
+    faceYaw(world.forwardYaw(nodeId));
     onArrive(nodeId);
     fadeEl.classList.remove('on');
     teleporting = false;
-  }, 280);
+  }, 260);
 }
 
-// ---------- TEMP mini flow (replaced by the scenario engine in Phase 1) ----------
-const FARE = 0.6;
+// ---------- TEMP trip flow (moves into the scenario engine in Phase 1) ----------
+const FARE = 0.6; // ASSUMPTION: to be verified and moved to data/city/baku/rules.json
+const TASKS = [
+  { title: 'Top up your BakıKart', sub: 'Look at the top-up machine on your left' },
+  { title: 'Tap your card at the turnstile', sub: 'Look at the turnstile in front of you' },
+  { title: 'Find the train to 28 May', sub: 'Your trip: Koroğlu → 28 May' },
+  { title: 'Well done!', sub: 'Next: ride the train (coming soon)' },
+];
 const state = {};
+function setTask(step, extra = {}) {
+  state.step = step;
+  state.task = { step, total: 4, ...TASKS[Math.min(step, 3)], ...extra };
+}
 function resetFlow() {
   Object.assign(state, {
-    node: 'entrance',
+    node: 'hall',
     balance: 0,
-    gateOpen: false,
-    readerText: 'Tap card',
-    readerBg: '#203040',
-    footprints: ['terminal'],
+    kiosk: 'idle',
+    kioskOpen: false,
+    amount: null,
+    progress: 0,
+    gate: null,
+    targets: [],
+    sign: null,
     feedback: null,
     buddyMode: companion.mode,
-    style: state.style || 'lowpoly',
   });
-  const n = world.nodes.entrance;
-  rig.position.set(n.pos.x, 0, n.pos.z);
-  faceYaw(n.yaw);
+  setTask(0);
+  faceYaw(world.forwardYaw('hall'));
   pushState();
 }
 function pushState() {
@@ -168,59 +174,99 @@ function pushState() {
 }
 function onArrive(nodeId) {
   event('arrive', { node: nodeId });
-  const ctx = {
-    terminal: 'Learner is at the BakuKart top-up machine. Balance 0 AZN. Task: top up the card.',
-    gate: `Learner is at the turnstiles. Balance ${state.balance.toFixed(2)} AZN, fare ${FARE} AZN. Task: tap the card on the reader.`,
-    platform: 'Learner is on the platform. Trip: Koroglu to 28 May. 28 May is in the direction of Icherisheher (left sign). Task: choose the correct direction sign.',
-  }[nodeId];
-  if (ctx) companion.context(ctx);
+  if (nodeId === 'platform') {
+    setTask(2);
+    companion.context(
+      'Learner is on the Koroglu platform (Red line). Trip: Koroglu to 28 May, 4 stops. 28 May is towards Icherisheher: the LEFT sign. The right sign goes towards Hazi Aslanov (wrong way). Task: choose the correct direction sign.',
+    );
+  }
   pushState();
+}
+
+function payAnimation(amount) {
+  state.kiosk = 'paying';
+  state.amount = amount;
+  state.progress = 0;
+  const t0 = performance.now();
+  const tick = () => {
+    state.progress = Math.min(1, (performance.now() - t0) / 1600);
+    pushState();
+    if (state.progress < 1) return requestAnimationFrame(tick);
+    const before = state.balance;
+    state.balance = +(state.balance + amount).toFixed(2);
+    state.kiosk = 'done';
+    event('wallet', { tx: 'topup', amount, balanceBefore: before, balanceAfter: state.balance, ok: true });
+    setTask(1);
+    companion.context(`Top-up done. Balance now ${state.balance.toFixed(2)} AZN. Next task: tap the card at the turnstile straight ahead.`);
+    beep(880, 120);
+    pushState();
+    setTimeout(() => {
+      state.kioskOpen = false;
+      pushState();
+    }, 2200);
+  };
+  requestAnimationFrame(tick);
 }
 
 gaze.onSelect = (obj) => {
   const id = obj.userData.id;
   beep(660);
   event('select', { target: id });
-  if (id.startsWith('go:')) {
-    state.footprints = [];
-    state.feedback = null;
-    return teleport(id.slice(3));
-  }
-  if (id === 'topup' && state.node === 'terminal') {
-    const before = state.balance;
-    state.balance = +(state.balance + 1).toFixed(2);
-    event('wallet', { tx: 'topup', amount: 1, balanceBefore: before, balanceAfter: state.balance, ok: true });
-    state.footprints = ['gate'];
-    companion.context(`Top-up done. Balance now ${state.balance.toFixed(2)} AZN.`);
-  }
-  if (id === 'reader' && state.node === 'gate') {
+  if (id === 'kiosk' && state.kiosk !== 'done') {
+    state.kioskOpen = true;
+    companion.context('Learner opened the BakuKart top-up machine screen. Balance 0 AZN. They should hold the card to the reader, then choose an amount (1 AZN is enough).');
+  } else if (id === 'kiosk:card' && state.kiosk === 'idle') {
+    state.kiosk = 'amount';
+  } else if (id.startsWith('kiosk:amount:') && state.kiosk === 'amount') {
+    return payAnimation(Number(id.split(':')[2]));
+  } else if (id === 'gate' && state.gate !== 'ok') {
     if (state.balance >= FARE) {
       const before = state.balance;
       state.balance = +(state.balance - FARE).toFixed(2);
       event('wallet', { tx: 'fare', amount: FARE, balanceBefore: before, balanceAfter: state.balance, ok: true });
-      Object.assign(state, { gateOpen: true, readerText: 'OK ✓', readerBg: '#1f9d55', footprints: ['platform'] });
+      Object.assign(state, { gate: 'ok', targets: ['platform'] });
+      setTask(1, { title: 'Walk through the turnstile', sub: 'Look at the circle on the floor ahead' });
+      beep(990, 160);
     } else {
       event('wallet', { tx: 'fare', amount: FARE, balanceBefore: state.balance, balanceAfter: state.balance, ok: false });
-      Object.assign(state, { readerText: 'Not enough\nbalance', readerBg: '#b3261e' });
-      companion.say('The card was rejected: not enough balance. Calmly tell the learner this is OK and they can go back to the top-up machine.');
+      event('error', { reason: 'insufficient_balance' });
+      state.gate = 'bad';
+      setTask(state.step, { tone: 'warn', title: 'Not enough balance', sub: 'Top up your card at the machine first' });
+      companion.say('The turnstile rejected the card: not enough balance. Calmly say this is okay and that they can top up at the machine on the left.');
+      beep(220, 260);
+      setTimeout(() => {
+        if (state.gate === 'bad') {
+          state.gate = null;
+          setTask(state.step);
+          pushState();
+        }
+      }, 3500);
     }
-  }
-  if (id.startsWith('sign:') && state.node === 'platform') {
+  } else if (id === 'go:platform') {
+    state.targets = [];
+    return teleport('platform');
+  } else if (id.startsWith('sign:') && state.node === 'platform' && state.step < 3) {
     const ok = id === 'sign:left';
+    state.sign = id.slice(5);
     event(ok ? 'choice_correct' : 'error', { choice: id });
-    state.feedback = ok
-      ? { ok: true, text: 'Correct! Trains to Icherisheher\nstop at 28 May' }
-      : { ok: false, text: 'Not this way.\n28 May is towards Icherisheher' };
-    companion.say(
-      ok
-        ? 'The learner chose the correct direction. Praise them in one short sentence.'
-        : 'The learner chose the wrong direction. Gently say it is okay and that 28 May is towards Icherisheher, the left sign.',
-    );
+    if (ok) {
+      state.feedback = { ok: true, text: 'Right way: towards İçərişəhər' };
+      setTask(3, { tone: 'good' });
+      companion.say('The learner chose the correct direction. Praise them warmly in one short sentence.');
+      beep(990, 160);
+    } else {
+      state.feedback = { ok: false, text: '28 May is the other way' };
+      setTask(2, { tone: 'warn', sub: 'Look at the stations listed on each sign' });
+      companion.say('The learner chose the wrong direction. Gently say it is okay. Tell them to read the station list on the signs and find 28 May.');
+      beep(220, 260);
+    }
   }
   pushState();
 };
-
-gaze.onHoverChange = (obj) => net.send({ type: 'event', sessionId, name: 'hover', data: { target: obj?.userData.id || null } });
+gaze.onHoverChange = (obj) => {
+  world.setHover(obj?.userData.id || null);
+  net.send({ type: 'event', sessionId, name: 'hover', data: { target: obj?.userData.id || null } });
+};
 
 // ---------- sounds ----------
 let actx = null;
@@ -228,11 +274,14 @@ function beep(freq = 660, ms = 90) {
   if (!actx) return;
   const o = actx.createOscillator();
   const g = actx.createGain();
+  o.type = 'sine';
   o.frequency.value = freq;
-  g.gain.value = 0.08;
+  g.gain.setValueAtTime(0.0001, actx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.08, actx.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + ms / 1000);
   o.connect(g).connect(actx.destination);
   o.start();
-  o.stop(actx.currentTime + ms / 1000);
+  o.stop(actx.currentTime + ms / 1000 + 0.02);
 }
 
 // ---------- start overlay ----------
@@ -246,11 +295,11 @@ function start(withBox) {
     () => setStatus('gyro', 'ok'),
     (e) => setStatus('gyro', 'denied: ' + e.message),
   );
-  if ($('#ai').checked) companion.start();
   try {
     actx = new (window.AudioContext || window.webkitAudioContext)();
     actx.resume();
   } catch {}
+  if ($('#ai').checked) companion.start(actx);
   navigator.wakeLock?.request('screen').catch(() => {});
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') navigator.wakeLock?.request('screen').catch(() => {});
@@ -294,7 +343,19 @@ const camQuat = new THREE.Quaternion();
 let poseT = 0;
 resetFlow();
 // dev/test hook (used by the automated smoke test)
-window.__app = { state, world, gaze, teleport, select: (id) => gaze.onSelect(world.interactives.find((o) => o.userData.id === id)), start };
+window.__app = {
+  state,
+  world,
+  gaze,
+  teleport,
+  start,
+  select: (id) => gaze.onSelect(world.interactives.find((o) => o.userData.id === id)),
+  // point the (drag-look) camera at a panorama image coordinate
+  lookAtU: (u, pitchDeg = 0) => {
+    drag.lon = yawOfU(u) - rig.rotation.y;
+    drag.lat = THREE.MathUtils.degToRad(pitchDeg);
+  },
+};
 renderer.setAnimationLoop((ts) => {
   timer.update(ts);
   const dt = Math.min(timer.getDelta(), 0.1);
@@ -306,6 +367,8 @@ renderer.setAnimationLoop((ts) => {
   camera.getWorldQuaternion(camQuat);
   if (started && !teleporting) gaze.update(dt);
   companion.setGaze(started && gaze.hover === world.buddy);
+  world.buddy.userData.level = companion.outputLevel();
+  world.buddy.userData.mic = companion.micLevel();
   world.update(dt, t, camPos, camQuat);
 
   poseT += dt;
