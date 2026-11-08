@@ -4,18 +4,20 @@
 import * as THREE from 'three';
 import { buildWorld, EYE } from '/shared/world.js';
 import { loadFonts } from '/shared/ui3d.js';
+import { loadTripData } from '/shared/data.js';
+import { createTrip } from '/shared/engine.js';
 import { Net } from '../vr/net.js';
 
 const $ = (s) => document.querySelector(s);
 
 // ---------- spectator ----------
-await loadFonts();
+const [, tripData] = await Promise.all([loadFonts(), loadTripData()]);
 const canvas = $('#spectator');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 const camera = new THREE.PerspectiveCamera(72, 1, 0.05, 60);
 camera.position.set(0, EYE, 0);
-const world = buildWorld();
+const world = buildWorld({ trip: createTrip(tripData) });
 world.scene.add(camera);
 world.applyState({ node: 'hall', balance: 0, kiosk: 'idle', task: {} });
 
@@ -68,6 +70,7 @@ const net = new Net({
         break;
       case 'state':
         world.applyState(m.state);
+        renderFaults(m.state.faults);
         break;
       case 'status':
         if (m.ai) $('#ai-mode').textContent = m.ai;
@@ -99,6 +102,19 @@ function renderRoster(clients) {
 document.querySelectorAll('[data-cmd]').forEach((b) =>
   b.addEventListener('click', () => net.send({ type: 'cmd', cmd: b.dataset.cmd, text: b.dataset.text })),
 );
+
+// Fault buttons: the first click injects the fault, a second click (while it is active) clears it.
+let activeFaults = {};
+document.querySelectorAll('[data-fault]').forEach((b) =>
+  b.addEventListener('click', () => {
+    const f = b.dataset.fault;
+    net.send({ type: 'cmd', cmd: activeFaults[f] ? 'fault_clear' : 'fault', fault: f });
+  }),
+);
+function renderFaults(faults = {}) {
+  activeFaults = faults;
+  document.querySelectorAll('[data-fault]').forEach((b) => b.setAttribute('aria-pressed', String(!!faults[b.dataset.fault])));
+}
 
 // ---------- helpers ----------
 function addLine(sel, html) {

@@ -30,6 +30,8 @@ aside { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
 button { background: #2a3342; color: var(--text); border: 1px solid #3a4558; border-radius: 8px; padding: 8px 10px; font-size: 14px; cursor: pointer; }
 button:hover { background: #33405a; }
 button.ghost { background: transparent; }
+button[aria-pressed="true"] { background: #b45309; border-color: #f59e0b; color: #fff; }
+button[aria-pressed="true"]::after { content: " (on, click to stop)"; font-size: 12px; opacity: 0.85; }
 .list { overflow-y: auto; overflow-x: hidden; flex: 1; font-size: 15px; line-height: 1.45; overflow-wrap: anywhere; }
 .list div { padding: 3px 0; border-bottom: 1px solid #222936; }
 .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; }
