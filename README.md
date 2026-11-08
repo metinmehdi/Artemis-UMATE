@@ -7,7 +7,7 @@ intellectual disability or autism). They rehearse a real Baku Metro trip with Ba
 in photoreal 360° scenes, with a voice AI buddy at their side. A trainer follows every step live on
 a laptop and can add real-life problems (card not read, train delayed...) at the right moment.
 
-[Concept paper (English, PDF)](docs/UMATE-concept-EN.pdf) · [Konsepsiya (Azərbaycanca, PDF)](docs/UMATE-concept-AZ.pdf)
+[Concept paper (English, PDF)](docs/UMATE-concept-EN.pdf) · [Konsepsiya (Azərbaycanca, PDF)](docs/UMATE-concept-AZ.pdf) · [3-minute pitch and demo script](docs/pitch/PITCH-3MIN.md)
 
 ---
 
@@ -321,7 +321,7 @@ npm start            # prints the links for the phone and the panel
 **Trainer panel:** pick the learner in the header (or add one; real nicknames are stored only in
 `data/learners.local.json` on the laptop). The right column shows the trip as a metro line, one stop per
 step, with time and help used. "Challenges for the judge" starts or stops each of the 4 faults.
-"Progress and report" opens the chart and the trainer report.
+"Progress and report" opens the chart and the trainer report. "Short ride" shortens the train ride to about 25 seconds for a stage demo.
 
 ## 8. Tests
 

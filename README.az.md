@@ -8,7 +8,7 @@ edir. Yanında səsli AI yoldaş olur. Müəllim hər addımı laptopda canlı i
 həyatdakı çətinliklərdən birini əlavə edir.
 
 Ətraflı izah [README.md](README.md)-dədir (ingiliscə): məqsəd, hekayə, arxitektura, data mənbələri,
-data modeli, testlər. Tam konsepsiya: [docs/UMATE-concept-AZ.pdf](docs/UMATE-concept-AZ.pdf).
+data modeli, testlər. Tam konsepsiya: [docs/UMATE-concept-AZ.pdf](docs/UMATE-concept-AZ.pdf). 3 dəqiqəlik pitch ssenarisi: [docs/pitch/PITCH-3MIN.md](docs/pitch/PITCH-3MIN.md).
 
 ## Necə işləyir (qısaca)
 
@@ -89,6 +89,7 @@ səslərlə danışır (`npm run voice:gen` ilə yaradılır). Canlı söhbət �
   - **Recenter view:** görüntünü yenidən mərkəzə gətirir.
   - **Restart trip:** səfəri əvvəldən başladır.
   - **Reload phone:** telefondakı səhifəni yeniləyir.
+  - **Short ride:** səhnə demosu üçün qatar gedişini təxminən 25 saniyəyə qısaldır.
 - **Progress and report:** gəncin hər seansda neçə addımı köməksiz etdiyini göstərir və onu NÜMUNƏ
   ortalaması ilə müqayisə edir (qırıq xətt, "invented sample" yazısı ilə). Altında hazırlıq qaydası,
   növbəti məşq ediləcək addım və **Write trainer report** düyməsi var. Hesabatı Gemini yazır; internet
