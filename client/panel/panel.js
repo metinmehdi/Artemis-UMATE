@@ -7,7 +7,7 @@ import { buildWorld, EYE } from '/shared/world.js';
 import { loadFonts } from '/shared/ui3d.js';
 import { loadTripData } from '/shared/data.js';
 import { createTrip } from '/shared/engine.js';
-import { Net } from '../vr/net.js';
+import { loadRuntime, makeNet, useKey, setKey, apiFetch, panelRoom } from '/shared/runtime.js';
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -15,7 +15,39 @@ const STEPS = ['topup', 'gate', 'platform', 'ride'];
 const STEP_NAMES = { topup: 'Top up', gate: 'Turnstile', platform: 'Platform', ride: 'Ride' };
 
 // ---------- live view ----------
-const [, tripData] = await Promise.all([loadFonts(), loadTripData()]);
+const [, tripData, runtime] = await Promise.all([loadFonts(), loadTripData(), loadRuntime()]);
+// Cloud (Vercel + Supabase): this panel owns a room code; the phone joins it through the QR code.
+// The access key protects the API; it is asked once per computer (or given as ?k= in the link).
+const CLOUD = runtime.mode === 'cloud';
+if (CLOUD) {
+  runtime.room = panelRoom();
+  if (!runtime.key) {
+    const k = prompt('Enter the UMATE access key (only once on this computer):');
+    if (k) setKey((runtime.key = k.trim()));
+  }
+}
+useKey(runtime.key);
+const keep = (k, v) => {
+  try {
+    if (v === undefined) return localStorage.getItem(k);
+    localStorage.setItem(k, v);
+  } catch {}
+  return null;
+};
+// API call that asks for the key again if the cloud refuses it
+async function api(path, opts) {
+  let r = await apiFetch(path, opts);
+  if (r.status === 401 && CLOUD) {
+    const k = prompt('The access key was not accepted. Enter it again:');
+    if (k) {
+      setKey((runtime.key = k.trim()));
+      useKey(runtime.key);
+      refreshInfo();
+      r = await apiFetch(path, opts);
+    }
+  }
+  return r;
+}
 const trip = createTrip(tripData);
 $('#trip-title').textContent = `${trip.from.name_az} to ${trip.to.name_az}`;
 const canvas = $('#spectator');
@@ -123,7 +155,7 @@ function onEvent(m) {
 }
 
 // ---------- network ----------
-const net = new Net({
+const net = await makeNet(runtime, {
   role: 'panel',
   id: 'panel-' + Math.random().toString(36).slice(2, 6),
   device: 'panel',
@@ -164,6 +196,7 @@ const net = new Net({
 function renderRoster(clients) {
   const phones = clients.filter((c) => c.role === 'phone');
   $('#phone-pill').classList.toggle('on', phones.length > 0);
+  if (CLOUD && phones.length) announceLearner(); // a phone joined: tell it who is training
   $('#phone-text').textContent = phones.length ? `${phones[0].device} connected${phones.length > 1 ? ` (+${phones.length - 1})` : ''}` : 'No phone';
 }
 function setAi(mode) {
@@ -250,15 +283,26 @@ tabs.forEach((t, i) => {
 // ---------- learners ----------
 let currentLearner = null;
 async function loadLearners() {
-  const r = await (await fetch('/api/learners', { cache: 'no-store' })).json();
-  currentLearner = r.current;
-  $('#learner-select').innerHTML = r.learners.map((l) => `<option value="${esc(l.id)}"${l.id === r.current.id ? ' selected' : ''}>${esc(l.nickname)}</option>`).join('');
+  const r = await (await api('/api/learners')).json();
+  if (!r.learners) return;
+  // laptop: the server knows who is training; cloud: this panel remembers it and tells the phone
+  const saved = CLOUD ? r.learners.find((l) => l.id === keep('umate-learner')) : null;
+  currentLearner = saved || r.current || r.learners[0] || null;
+  $('#learner-select').innerHTML = r.learners
+    .map((l) => `<option value="${esc(l.id)}"${l.id === currentLearner?.id ? ' selected' : ''}>${esc(l.nickname)}</option>`)
+    .join('');
+  if (CLOUD) announceLearner();
 }
-$('#learner-select').addEventListener('change', async (e) => {
-  await fetch('/api/learner', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: e.target.value }) });
-  progressFor = e.target.value;
-  loadLearners();
-});
+function announceLearner() {
+  if (currentLearner) net.send({ type: 'learner', learner: { id: currentLearner.id, nickname: currentLearner.nickname } });
+}
+async function selectLearner(id) {
+  if (CLOUD) keep('umate-learner', id);
+  else await api('/api/learner', { method: 'POST', json: { id } });
+  progressFor = id;
+  await loadLearners();
+}
+$('#learner-select').addEventListener('change', (e) => selectLearner(e.target.value));
 $('#learner-add').addEventListener('click', () => {
   const f = $('#learner-form');
   f.hidden = !f.hidden;
@@ -269,12 +313,11 @@ $('#learner-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const nickname = $('#learner-name').value.trim();
   if (!nickname) return;
-  const r = await (await fetch('/api/learners', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nickname }) })).json();
+  const r = await (await api('/api/learners', { method: 'POST', json: { nickname } })).json();
   $('#learner-name').value = '';
   $('#learner-form').hidden = true;
   $('#learner-add').setAttribute('aria-expanded', 'false');
-  progressFor = r.learner?.id || progressFor;
-  loadLearners();
+  if (r.learner) await selectLearner(r.learner.id);
 });
 loadLearners();
 
@@ -282,7 +325,8 @@ loadLearners();
 let progressFor = null;
 async function loadProgress() {
   const id = progressFor || currentLearner?.id || 'demo';
-  const p = await (await fetch(`/api/progress?learner=${encodeURIComponent(id)}`, { cache: 'no-store' })).json();
+  const p = await (await api(`/api/progress?learner=${encodeURIComponent(id)}`)).json();
+  if (!p.progress) return;
   const real = p.learners.filter((l) => !l.is_sample);
   const sample = p.learners.filter((l) => l.is_sample);
   if (!p.learners.some((l) => l.id === id)) real.unshift({ id, nickname: p.learner.nickname || currentLearner?.nickname || id, sessions: 0 });
@@ -381,7 +425,7 @@ $('#report-btn').addEventListener('click', async () => {
   btn.textContent = 'Writing the report…';
   try {
     const id = progressFor || currentLearner?.id;
-    const r = await (await fetch('/api/report', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ learner: id }) })).json();
+    const r = await (await api('/api/report', { method: 'POST', json: { learner: id } })).json();
     out.innerHTML = `${esc(r.text)}<span class="by">${r.model ? `Written by Gemini (${esc(r.model)}) from the numbers above. The trainer decides.` : 'Template report: Gemini is not available right now.'}</span>`;
   } catch {
     out.textContent = 'The report could not be written. Check that the laptop server is running.';
@@ -398,6 +442,19 @@ $('#report-btn').addEventListener('click', async () => {
 let qrFor = null;
 async function refreshInfo() {
   try {
+    if (CLOUD) {
+      const url = `${location.origin}/vr/?room=${runtime.room}&k=${encodeURIComponent(runtime.key)}`;
+      $('#urls').innerHTML = [
+        `<b>Room ${runtime.room}</b>: scan the QR code with the phone (any network).`,
+        `Link: ${esc(url)}`,
+        `AI keys: OpenAI ${runtime.ai?.openai ? 'ready' : 'missing'}, Gemini ${runtime.ai?.gemini ? 'ready' : 'missing'}`,
+      ].join('<br>');
+      if (url !== qrFor) {
+        qrFor = url;
+        $('#qr').src = $('#qr-big').src = '/api/qr?text=' + encodeURIComponent(url);
+      }
+      return;
+    }
     const info = await (await fetch('/api/info', { cache: 'no-store' })).json();
     const url = info.public?.vr || info.vr[0];
     $('#urls').innerHTML = [

@@ -8,3 +8,6 @@ tools/bin/
 data/sample/
 data/gold/
 data/learners.local.json
+public/
+.vercel/
+.env.vercel
