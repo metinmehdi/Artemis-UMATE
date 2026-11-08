@@ -82,6 +82,7 @@ resetSteps();
 function onState(st) {
   world.applyState(st);
   renderFaults(st.faults);
+  $('#short-ride').setAttribute('aria-pressed', String(!!st.shortRide));
   $('#balance').textContent = `Balance ${(st.balance ?? 0).toFixed(2)} AZN`;
   const idx = st.step ?? 0;
   STEPS.forEach((k, i) => {
@@ -183,6 +184,7 @@ document.querySelectorAll('[data-fault]').forEach((b) =>
     net.send({ type: 'cmd', cmd: activeFaults[f] ? 'fault_clear' : 'fault', fault: f });
   }),
 );
+$('#short-ride').addEventListener('click', () => net.send({ type: 'cmd', cmd: 'pace', short: $('#short-ride').getAttribute('aria-pressed') !== 'true' }));
 function renderFaults(faults = {}) {
   activeFaults = faults;
   document.querySelectorAll('[data-fault]').forEach((b) => b.setAttribute('aria-pressed', String(!!faults[b.dataset.fault])));

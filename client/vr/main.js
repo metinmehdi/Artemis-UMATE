@@ -100,6 +100,11 @@ const net = new Net({
     if (m.cmd === 'fault' && m.fault) act({ type: 'fault', fault: m.fault, by: 'trainer' });
     if (m.cmd === 'fault_clear' && m.fault) act({ type: 'fault_clear', fault: m.fault });
     if (m.cmd === 'hint') act({ type: 'trainer_hint' });
+    if (m.cmd === 'pace') {
+      Object.assign(RIDE, m.short ? RIDE_SHORT : RIDE_NORMAL);
+      state.shortRide = !!m.short;
+      pushState();
+    }
   },
 });
 
@@ -259,7 +264,10 @@ const STEP_CONTEXT = {
 // ---------- train ride: doors close -> moving -> arrival announcement -> doors open ----------
 // Timings are short on purpose (a real stop-to-stop ride is ~2 min). At the destination the doors
 // stay open longer so the graduated hints have time to help.
-const RIDE = { boardDelay: 2500, firstDeparture: 3500, move: 7000, doors: 6000, destDoors: 30000 };
+// "Short ride" (panel) is for a stage demo with little time: about 25 s for 4 stations instead of 55 s.
+const RIDE_NORMAL = { boardDelay: 2500, firstDeparture: 3500, move: 7000, doors: 6000, destDoors: 30000 };
+const RIDE_SHORT = { boardDelay: 1500, firstDeparture: 1500, move: 3000, doors: 3000, destDoors: 25000 };
+const RIDE = { ...RIDE_NORMAL };
 
 function stopRide() {
   clearTimeout(rideTimer);
