@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "start": "node server/index.js",
-    "check": "node tools/check-syntax.js"
+    "check": "node tools/check-syntax.js",
+    "test": "node --test tests/",
+    "data:ingest": "node tools/ingest-osm.js",
+    "data:build": "node tools/build-city.js"
   },
   "dependencies": {
     "qrcode": "^1.5.4",
