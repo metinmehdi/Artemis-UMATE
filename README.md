@@ -111,7 +111,10 @@ flowchart LR
     SCEN["metro-trip.json<br/>steps, hints, faults"] --> ENG
     SILVER --> ENG["Scenario engine"]
     ENG -->|events| SES[("raw<br/>data/sessions/*.jsonl")]
-    SES -.->|"Plan (Phase 5)"| GOLD[("gold<br/>star schema<br/>learning analytics")]
+    GEN["gen-sample.js<br/>NÜMUNƏ cohort<br/>(invented)"] -->|same format| SAMPLE[("raw<br/>data/sample/sessions.jsonl")]
+    SES -->|build-gold.js| GOLD[("gold<br/>data/gold/<br/>star schema")]
+    SAMPLE -->|build-gold.js| GOLD
+    GOLD --> PANEL["Trainer panel<br/>progress chart<br/>+ Gemini report"]
 ```
 
 | Layer | Where | What it holds | Status |
@@ -120,8 +123,13 @@ flowchart LR
 | silver | `data/city/baku/network.json` | 4 lines, 26 stations, every route variant; Azerbaijani + English names, coordinates | Done |
 | quality report | `data/city/baku/quality.json` | Problems found in the source data (see below) | Done |
 | config | `rules.json`, `data/scenario/metro-trip.json` | Fare, top-up amounts, steps, hint texts, faults | Done |
-| raw (sessions) | `data/sessions/<session>.jsonl` | One line per event, written by the server | Done |
-| gold | `data/gold/` | Star schema for progress charts and the trainer report | Plan |
+| raw (sessions) | `data/sessions/<session>.jsonl` | One line per event, written by the server, with the learner profile | Done |
+| raw (sample) | `data/sample/sessions.jsonl` | NÜMUNƏ cohort: 10 invented learners, about 80 sessions, same format, every line `"sample": true` | Done |
+| gold | `data/gold/*.json` + `*.csv` | Star schema below; every key checked; CSV for Excel or Power BI | Done |
+
+`data/sessions/`, `data/sample/` and `data/gold/` are generated and never committed. The panel computes
+the gold tables on the fly (a few thousand lines take milliseconds); `npm run data:gold` writes them to
+disk.
 
 ### 5.1 Data quality
 
@@ -156,7 +164,7 @@ Every engine event is logged with the session id, the step and a timestamp.
 
 **Rule:** a refused payment never changes the balance (tested).
 
-### 5.3 Gold layer: star schema (Plan, Phase 5)
+### 5.3 Gold layer: star schema
 
 ```mermaid
 erDiagram
@@ -168,6 +176,7 @@ erDiagram
     dim_step {
         string step_key PK "topup, gate, platform, ride"
         int order
+        string name
     }
     dim_fault {
         string fault_key PK
@@ -177,6 +186,7 @@ erDiagram
         int date_key PK "yyyymmdd"
         date date
         int week
+        string weekday
     }
     fact_session {
         string session_key PK
@@ -184,11 +194,15 @@ erDiagram
         int date_key FK
         bool completed
         int total_ms
+        int steps_completed
+        int independent_steps "no hint, no mistake"
         string device
+        bool is_sample
     }
     fact_step_attempt {
         string session_key PK, FK
         string step_key PK, FK
+        bool completed
         int ms
         int errors
         int max_hint_level
@@ -210,9 +224,30 @@ erDiagram
     dim_step ||--o{ fact_fault : "step_key"
 ```
 
-The progress chart answers questions such as "does Aysel need fewer hints on the platform step
-week by week?" The roadmap model (readiness prediction) learns from `fact_step_attempt` together with
-the trainer's record of the real trip.
+| Table | Grain (one row is...) | Primary key |
+|---|---|---|
+| `fact_session` | one trip attempt | `session_key` |
+| `fact_step_attempt` | one step entered in a session (an unfinished step is kept with `completed = false`) | `session_key, step_key` |
+| `fact_fault` | one trainer challenge in a session | `session_key, fault_key` |
+
+Parquet-free tables do not enforce keys, so `checkKeys()` and the tests check that every foreign key
+points to a dimension row and that no primary key repeats.
+
+### 5.4 Progress, readiness rule and trainer report
+
+- **Steps done alone** (`independent_steps`): steps finished without a hint and without a mistake, 0–4.
+  The panel's "Progress and report" view draws it session by session for a learner, next to the
+  NÜMUNƏ average (dashed, labelled "invented sample").
+- **Readiness rule** (simple and explainable, not a model): the last 3 completed sessions each had at
+  least 3 of 4 steps done alone. The panel shows it as "Readiness rule met: trainer may plan a first
+  real trip" or "Not ready yet". The trainer decides.
+- **Practise next:** the step that needed the most hints and mistakes in the last 5 sessions.
+- **Trainer report:** Gemini (`gemini-3.5-flash`, then `gemini-2.5-flash`) writes 4–6 plain sentences
+  from these computed facts only, never from raw logs or audio. Without a key, internet or a free model,
+  a template report is built from the same facts. Reports about sample learners end with a NÜMUNƏ note.
+
+The roadmap model (readiness prediction) will learn from `fact_step_attempt` together with the
+trainer's record of the real trip, and replace the rule.
 
 ## 6. Scenario engine
 
@@ -255,6 +290,7 @@ npm start            # prints the links for the phone and the panel
 | Full | Yes (Wi-Fi or a phone hotspot) | Everything, including the AI buddy's voice |
 | Offline | No | VR, panel, engine, hints (written on the task card), faults, logging. The buddy shows as offline |
 | Rebuild the data | Yes for `data:ingest`, no for `data:build` | `npm run data:ingest` refreshes the OSM snapshot; `npm run data:build` rebuilds `network.json` |
+| Analytics | No (Gemini report needs internet; the template report does not) | `npm run data:sample` creates the NÜMUNƏ cohort; `npm run data:gold` writes the star schema (add `-- --real` for real sessions only) |
 
 - **Panel (projector):** `https://localhost:8443/panel/`
 - **Phone (recommended): the public link.** `npm start` also opens a free tunnel and prints a
@@ -282,10 +318,15 @@ npm start            # prints the links for the phone and the panel
 | Walk | Look at the green circle on the floor |
 | Talk to the buddy | Look at the glowing orb; talk when its ring lights up |
 
+**Trainer panel:** pick the learner in the header (or add one; real nicknames are stored only in
+`data/learners.local.json` on the laptop). The right column shows the trip as a metro line, one stop per
+step, with time and help used. "Challenges for the judge" starts or stops each of the 4 faults.
+"Progress and report" opens the chart and the trainer report.
+
 ## 8. Tests
 
 ```bash
-npm test         # 23 unit tests (node:test)
+npm test         # 34 unit tests (node:test)
 npm run check    # syntax check of every JavaScript file
 ```
 
@@ -295,17 +336,21 @@ npm run check    # syntax check of every JavaScript file
 - determinism: the same actions give the same states and events;
 - the rules file drives behaviour: a higher fare makes 1 AZN not enough;
 - data: the rebuild of `network.json` is exact, the Red line order is the real one, every station has
-  both names and coordinates inside Baku, and broken input is reported.
+  both names and coordinates inside Baku, and broken input is reported;
+- analytics: logs produced by the real engine become the right star rows (mistakes, hints and help per
+  step, unfinished steps, challenges), keys are valid, the readiness rule, the NÜMUNƏ sample is
+  deterministic and labelled on every line, and real and sample sessions stay separable.
 
 ## 9. Repository layout
 
 ```
 client/   vr/ (phone app), panel/ (trainer panel), setup.html (certificate), assets/ (panoramas, fonts)
-shared/   engine.js (scenario engine), world.js (3D scene), ui3d.js, buddy.js, data.js
-server/   HTTPS + WebSocket server, OpenAI token, JSONL event log, local certificates
-data/     raw/osm/, city/baku/ (network, rules, names), scenario/, sessions/ (not committed)
-tools/    ingest-osm.js, build-city.js, check-syntax.js
-tests/    engine.test.js, network.test.js
+shared/   engine.js (scenario engine), analytics.js (gold layer), world.js (3D scene), ui3d.js, buddy.js, data.js
+server/   HTTPS + WebSocket server, tunnel, OpenAI token, Gemini report, JSONL event log, local certificates
+data/     raw/osm/, city/baku/ (network, rules, names), scenario/, learners.json;
+          generated, not committed: sessions/, sample/, gold/
+tools/    ingest-osm.js, build-city.js, gen-sample.js, build-gold.js, check-syntax.js
+tests/    engine.test.js, network.test.js, analytics.test.js
 docs/     concept paper (AZ + EN)
 ```
 
@@ -315,9 +360,9 @@ docs/     concept paper (AZ + EN)
 - [x] Photoreal Baku Metro scenes, Baku-style signage
 - [x] Phase 1: OSM data pipeline, scenario engine, faults, hints, tests
 - [x] Phase 2: train ride scene (81-765 car), station announcements, doors, arrival summary; public link
-- [ ] Phase 3: trainer panel redesign (step timeline, wallet)
+- [x] Phase 3: trainer panel for the projector (trip as a metro line, challenges, learner profiles)
+- [x] Phase 5: gold star schema, progress chart with the **NÜMUNƏ** sample cohort, Gemini trainer report
 - [ ] Phase 4: offline voice lines for the buddy
-- [ ] Phase 5: gold star schema, progress chart with **NÜMUNƏ** sample cohort, Gemini trainer report
 - [ ] Roadmap: real-trip guide mode; readiness prediction model trained on VR sessions + real-trip outcomes
 
 ## 11. Credits and licences
