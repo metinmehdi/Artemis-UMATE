@@ -44,6 +44,8 @@ const MIME = {
   '.wav': 'audio/wav',
   '.glb': 'model/gltf-binary',
   '.gltf': 'model/gltf+json',
+  '.woff2': 'font/woff2',
+  '.txt': 'text/plain; charset=utf-8',
 };
 
 // URL prefix -> directory. First match wins.
@@ -92,7 +94,8 @@ function serveFile(res, file, req) {
     return false;
   }
   const ext = path.extname(file).toLowerCase();
-  const cacheable = /[\\/](assets|three)[\\/]/.test(file) && !/[\\/]client[\\/](vr|panel)[\\/]/.test(file);
+  // stylesheets (brand tokens) are not cached either, so a design change shows up on the next reload
+  const cacheable = /[\\/](assets|three)[\\/]/.test(file) && !/[\\/]client[\\/](vr|panel|guide)[\\/]/.test(file) && ext !== '.css';
   const headers = {
     'Content-Type': MIME[ext] || 'application/octet-stream',
     'Cache-Control': cacheable ? 'public, max-age=86400' : 'no-store',

@@ -1,0 +1,62 @@
+/* UMATE brand tokens (brand sheet v1.0). Shared by the trainer panel, the VR app and the real-trip guide.
+   Colours follow the 60-30-10 rule: ivory background, night purple text and logo, mint accent.
+   Mint is never text or a thin line on ivory (1.5:1); on ivory it only fills shapes outlined in ink.
+   Contrast on ivory: ink 16.4:1, ink-2 7.0:1, brick 6.3:1. Ink on mint 10.8:1, ink on amber 9.5:1. */
+@import url('/assets/fonts/fonts.css');
+
+:root {
+  --ivory: #faf6e9;
+  --paper: #fffdf6;
+  --ivory-2: #f3edda;
+  --line: #e3d9c3;
+  --ink: #230d37;
+  --ink-2: #5e4d6e;
+  --ink-hover: #3a1f55;
+  --ink-soft: rgba(250, 246, 233, 0.72); /* secondary text on ink */
+  --mint: #7ee0c3;
+  --mint-deep: #57c9a8;
+  --amber: #f2b33d;
+  --brick: #a3341f;
+  --sample: #8b7a9a;
+
+  --font-ui: 'Lexend', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces Soft', Georgia, 'Times New Roman', serif;
+
+  --r-s: 10px;
+  --r-m: 14px;
+  --r-l: 20px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Visible keyboard focus everywhere: ink ring on light, mint ring on dark. */
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+.on-ink :focus-visible,
+.on-ink:focus-visible {
+  outline-color: var(--mint);
+}
+
+/* Small inline icons from the page's SVG sprite. */
+.i {
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -0.25em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

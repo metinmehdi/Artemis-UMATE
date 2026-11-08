@@ -1,4 +1,25 @@
-/* Atkinson Hyperlegible Next (Braille Institute, SIL OFL 1.1) — self-hosted so it works offline. */
+/* UMATE brand fonts, self-hosted so everything works offline (both SIL OFL 1.1, see OFL-*.txt).
+   Built by tools/brand/make-brand.py: Latin + Latin Extended, so all Azerbaijani letters are included. */
+
+/* Lexend: all interface text. Variable weight 300-700. */
+@font-face {
+  font-family: 'Lexend';
+  src: url('/assets/fonts/lexend.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fraunces, Soft, Bold: logo, headings and big numbers only. Optical size follows the font size. */
+@font-face {
+  font-family: 'Fraunces Soft';
+  src: url('/assets/fonts/fraunces-soft.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Atkinson Hyperlegible Next: kept until every screen has moved to Lexend. */
 @font-face {
   font-family: 'Atkinson Next';
   src: url('/assets/fonts/atkinson-next-latin-ext.woff2') format('woff2');
