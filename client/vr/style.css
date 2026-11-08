@@ -1,0 +1,54 @@
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #1b1e26;
+  color: #fff;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+#c { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+
+#fade {
+  position: fixed; inset: 0; background: #000; opacity: 0;
+  pointer-events: none; transition: opacity 0.25s ease;
+}
+#fade.on { opacity: 1; }
+
+#divider {
+  display: none; position: fixed; top: 0; bottom: 0; left: 50%;
+  width: 2px; margin-left: -1px; background: #000; pointer-events: none;
+}
+body.vr #divider { display: block; }
+
+#rotate {
+  display: none; position: fixed; inset: 0; z-index: 20;
+  align-items: center; justify-content: center; text-align: center;
+  background: #1b1e26; font-size: 22px; padding: 24px;
+}
+body.vr.portrait #rotate { display: flex; }
+
+#start {
+  position: fixed; inset: 0; z-index: 10; overflow: auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 24px 16px; background: #1b1e26;
+}
+#start[hidden] { display: none; }
+#start h1 { margin: 0; font-size: 34px; }
+#start .sub { margin: 0 0 8px; opacity: 0.75; }
+#start button {
+  width: min(360px, 100%); padding: 16px; font-size: 18px; font-weight: 700;
+  border-radius: 14px; border: 1px solid #3a4150; background: #262b36; color: #fff;
+}
+#start button.primary { background: #1f9d55; border-color: #1f9d55; }
+#start .ai { font-size: 15px; opacity: 0.9; }
+#start .help { max-width: 360px; font-size: 14px; opacity: 0.7; line-height: 1.5; padding-left: 20px; }
+
+#hud {
+  position: fixed; left: 8px; bottom: 6px; right: 8px; z-index: 5;
+  font-size: 11px; opacity: 0.55; pointer-events: none; text-shadow: 0 1px 2px #000;
+}
+body.vr #hud { display: none; }

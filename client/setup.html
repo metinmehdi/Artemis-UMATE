@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="az">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>UMATE: telefon quraşdırma</title>
+    <style>
+      body { margin: 0; padding: 20px 16px 40px; background: #1b1e26; color: #eef; font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      h1 { font-size: 24px; margin: 0 0 4px; }
+      h2 { font-size: 18px; margin: 24px 0 6px; }
+      .btn { display: block; text-align: center; margin: 12px 0; padding: 14px; border-radius: 12px; background: #1f9d55; color: #fff; text-decoration: none; font-weight: 700; font-size: 18px; }
+      .btn.alt { background: #2a3342; }
+      ol { padding-left: 22px; margin: 6px 0; }
+      .note { opacity: .7; font-size: 14px; }
+      code { background: #2a3342; padding: 1px 6px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <h1>UMATE: telefonu qoşmaq</h1>
+    <p class="note">Bunu hər telefonda yalnız bir dəfə edin. Telefon və laptop eyni Wi-Fi şəbəkəsinə və ya hotspot-a qoşulmalıdır.</p>
+
+    <h2>1. Sertifikatı yükləyin</h2>
+    <a class="btn" href="/ca.crt">Sertifikatı yüklə</a>
+
+    <h2>iPhone</h2>
+    <ol>
+      <li>Linki mütləq <b>Safari</b>-də açın və "Allow" (İcazə ver) düyməsinə basın.</li>
+      <li><b>Settings → Profile Downloaded → Install</b>.</li>
+      <li><b>Settings → General → About → Certificate Trust Settings</b> bölməsində "UMATE Local CA" seçimini <b>açın</b>.</li>
+    </ol>
+
+    <h2>Android</h2>
+    <ol>
+      <li>Faylı yükləyin.</li>
+      <li><b>Settings → Security → Encryption &amp; credentials → Install a certificate → CA certificate</b> yolu ilə yüklənmiş faylı seçin.</li>
+      <li>Bu menyu tapılmasa, Settings-in axtarışına <code>certificate</code> yazın.</li>
+    </ol>
+
+    <h2>2. VR-ı açın</h2>
+    <a class="btn alt" id="vr" href="#">VR-ı aç</a>
+    <p class="note">iPhone-da tam ekran üçün: Safari-də <b>Paylaş → Ana ekrana əlavə et</b>, sonra tətbiqi ana ekrandakı ikonla açın.</p>
+    <p class="note">Sertifikatı quraşdırmaq alınmasa, xəbərdarlıq ekranında "Advanced → Proceed" (Android) və ya "Show details → visit this website" (iPhone) seçin.</p>
+
+    <script>
+      const vr = 'https://' + location.hostname + ':8443/vr/';
+      document.getElementById('vr').href = vr;
+      document.getElementById('vr').textContent = 'VR-ı aç: ' + vr;
+    </script>
+  </body>
+</html>
