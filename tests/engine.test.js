@@ -146,6 +146,36 @@ test('hints rise with idle time (8 s, 15 s, 25 s), never above level 3, and rese
   assert.equal(after.of('step_complete')[0].maxHintLevel, 1);
 });
 
+test('on the train, idle hints start only when the doors open at the destination', () => {
+  const ride = [...THROUGH_GATE, { type: 'choose_direction', side: 'left' }];
+  // three stations of quiet riding, long gaps: no hints while the train is between stations
+  const moving = run([
+    ...ride,
+    { type: 'train_next', t: 100_000 }, { type: 'doors_close', t: 107_000 },
+    { type: 'tick', t: 130_000 },
+    { type: 'train_next', t: 140_000 }, { type: 'doors_close', t: 147_000 },
+    { type: 'tick', t: 170_000 },
+  ]);
+  assert.equal(moving.of('hint_shown').filter((h) => h.step === 3).length, 0);
+  assert.equal(taskOf(moving.trip, moving.state).sub, '2 stops left');
+
+  const atDest = run([
+    ...ride,
+    ...RIDE_4.slice(0, 3),
+    { type: 'train_next', t: 200_000 }, // doors open at 28 May
+    { type: 'tick', t: 208_000 },
+    { type: 'tick', t: 215_000 },
+  ]);
+  assert.deepEqual(atDest.of('hint_shown').filter((h) => h.step === 3).map((h) => h.level), [1, 2]);
+  assert.equal(atDest.of('hint_shown').at(-1).target, 'exit');
+  assert.equal(taskOf(atDest.trip, atDest.state).sub, 'This is 28 May. Get off here');
+});
+
+test('one stop before the destination the task card says to get ready', () => {
+  const r = run([...THROUGH_GATE, { type: 'choose_direction', side: 'left' }, ...RIDE_4.slice(0, 3)]);
+  assert.equal(taskOf(r.trip, r.state).sub, 'Next station: 28 May. Get ready!');
+});
+
 test('asking the buddy for help raises the hint and is recorded as asked, not as an error', () => {
   const r = run([{ type: 'ask_help' }, ...TOP_UP]);
   const done = r.of('step_complete')[0];

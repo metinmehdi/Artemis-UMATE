@@ -88,7 +88,9 @@ export function textVars(trip, state, lang = 'az') {
   const stopsLeft = ride ? Math.abs(trip.toIdx - ride.idx) : trip.stops;
   const nextIdx = ride ? ride.idx + ride.dir : trip.fromIdx + trip.dir;
   const nextId = trip.line.stations[nextIdx];
+  const hereId = ride ? trip.line.stations[ride.idx] : trip.from.id;
   return {
+    here: n(trip.station(hereId)),
     from: n(trip.from),
     to: n(trip.to),
     terminus: n(trip.terminus),
@@ -103,7 +105,12 @@ export function taskOf(trip, state) {
   if (state.done) return { step: 4, total: 4, title: 'Well done!', sub: `You arrived at ${trip.to.name_az}` };
   const def = trip.steps[state.step];
   const vars = textVars(trip, state, 'az');
-  return { step: state.step, total: STEPS.length, id: def.id, title: fill(def.title, vars), sub: fill(def.sub, vars), target: fill(def.target, vars) };
+  let sub = def.sub;
+  if (state.ride && !state.ride.passed) {
+    if (vars.stops_left === 0 && def.sub_here) sub = def.sub_here;
+    else if (vars.stops_left === 1 && def.sub_next) sub = def.sub_next;
+  }
+  return { step: state.step, total: STEPS.length, id: def.id, title: fill(def.title, vars), sub: fill(sub, vars), target: fill(def.target, vars) };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -175,6 +182,9 @@ export function reduce(trip, state, action) {
     // ---- passing time: graduated hints ----
     case 'tick': {
       if (s.done) break;
+      // On the train the only decision is where to get off, so idle hints only start once the
+      // doors open at the destination (the arrival there resets the idle time).
+      if (stepId() === 'ride' && !(s.ride && s.ride.doorsOpen && s.ride.idx === trip.toIdx)) break;
       const idle = t - s.lastProgressT;
       const due = trip.hintDelays.filter((d) => idle >= d).length;
       if (due > s.hint.level) setHint(due, 'idle');
@@ -275,6 +285,7 @@ export function reduce(trip, state, action) {
       r.doorsOpen = true;
       const id = trip.line.stations[r.idx];
       const atDest = r.idx === trip.toIdx;
+      progress();
       if (!atDest && (r.idx - trip.toIdx) * r.dir > 0 && !r.passed) {
         r.passed = true;
         error('missed_stop', { station: id });
