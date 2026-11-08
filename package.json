@@ -12,11 +12,16 @@
     "data:build": "node tools/build-city.js",
     "data:sample": "node tools/gen-sample.js",
     "data:gold": "node tools/build-gold.js",
-    "voice:gen": "node tools/gen-voice.js"
+    "voice:gen": "node tools/gen-voice.js",
+    "build:web": "node tools/build-web.js",
+    "dev:cloud": "node tools/dev-cloud.js"
   },
   "dependencies": {
     "qrcode": "^1.5.4",
     "three": "0.187.0",
     "ws": "^8.22.1"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

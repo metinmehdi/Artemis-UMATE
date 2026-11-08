@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const roots = ['server', 'shared', 'client', 'tools'];
+const roots = ['server', 'shared', 'client', 'tools', 'api'];
 const files = [];
 const walk = (dir) => {
   if (!fs.existsSync(dir)) return;

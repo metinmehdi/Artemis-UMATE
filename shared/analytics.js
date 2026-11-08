@@ -177,6 +177,26 @@ export function checkKeys(star) {
 }
 
 /**
+ * Everything the panel's "Progress and report" view needs, for the laptop server and the cloud API:
+ * the learner's progress, the NÜMUNƏ cohort average per session, and the list of learners.
+ */
+export function progressReport(star, learnerId) {
+  const dim = star.dims.dim_learner.find((l) => l.learner_key === learnerId);
+  const progress = { ...learnerProgress(star, learnerId), is_sample: !!dim?.is_sample };
+  const sampleRows = star.dims.dim_learner.filter((l) => l.is_sample).map((l) => learnerProgress(star, l.learner_key).sessions);
+  const cohort = [];
+  for (let n = 1; n <= 10; n++) {
+    const vals = sampleRows.map((rows) => rows[n - 1]?.independent_steps).filter((v) => v !== undefined);
+    if (vals.length >= 3) cohort.push({ n, avg_independent_steps: +(vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2), learners: vals.length });
+  }
+  const learners = star.dims.dim_learner.map((l) => {
+    const p = learnerProgress(star, l.learner_key);
+    return { id: l.learner_key, nickname: l.nickname, is_sample: l.is_sample, sessions: p.sessions.length, ready: p.ready, last: p.sessions.at(-1)?.date ?? null };
+  });
+  return { learner: dim ? { id: dim.learner_key, nickname: dim.nickname } : { id: learnerId }, progress, cohort, learners };
+}
+
+/**
  * Progress of one learner, session by session: what the trainer chart shows.
  * Readiness is a simple, explainable RULE (not a model): the last 3 completed sessions each had at
  * least 3 of 4 steps done alone (no hint, no mistake). The roadmap model replaces this rule.

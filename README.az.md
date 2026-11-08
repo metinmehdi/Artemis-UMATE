@@ -24,7 +24,16 @@ data modeli, testlər. Tam konsepsiya: [docs/UMATE-concept-AZ.pdf](docs/UMATE-co
 (**0.60 AZN**, 1 oktyabr 2025-ci ildən) Rəqəmsal İnkişaf və Nəqliyyat Nazirliyinin elanından
 yoxlanılıb. **NÜMUNƏ** etiketli data uydurmadır və sübut kimi təqdim edilmir.
 
-## İşə salmaq (laptop)
+## Bulud versiyası (Vercel + Supabase)
+
+Əsas demo üçün tövsiyə olunan yol budur. Tətbiq və panel daimi linkdə işləyir, laptopda server lazım deyil.
+
+- Panel: `https://<layihə>.vercel.app/panel/`. İlk dəfə `?k=<UMATE_ACCESS_KEY>` ilə açın; açar həmin kompüterdə yadda qalır.
+- Telefon: paneldəki QR kodu skan edin. QR otaq kodunu və açarı daşıyır, telefon istənilən şəbəkədən qoşulur.
+- Telefonla panel Supabase Realtime ilə birləşir, seanslar Supabase bazasında saxlanır.
+- Vercel-də lazım olan dəyişənlər `.env.example`-də yazılıb. Hər `main` push-u avtomatik yenidən yayımlanır.
+
+## İşə salmaq (laptop, ehtiyat variant)
 
 ```powershell
 cd C:\Users\metin\Desktop\YUNEX

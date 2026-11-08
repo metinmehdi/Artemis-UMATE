@@ -2,6 +2,7 @@
 // The mic track is only enabled while the learner looks at the buddy (gaze-to-talk),
 // so a noisy hall does not trigger it. If anything fails, the buddy goes "offline" and
 // the app keeps working (pre-recorded lines can be added later).
+import { apiFetch } from '/shared/runtime.js';
 
 export class Companion {
   constructor({ onTranscript, onMode, onLog } = {}) {
@@ -79,7 +80,7 @@ export class Companion {
     this.mic.enabled = false;
     this.micAnalyser = this._analyse(stream);
 
-    const tokRes = await fetch('/api/realtime-token', { method: 'POST' });
+    const tokRes = await apiFetch('/api/realtime-token', { method: 'POST' });
     const tok = await tokRes.json();
     if (!tokRes.ok || !tok.value) throw new Error(tok.error || `token HTTP ${tokRes.status}`);
     this.onLog('info', `AI model: ${tok.model}`);

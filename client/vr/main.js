@@ -9,7 +9,7 @@ import { loadTripData } from '/shared/data.js';
 import { Engine } from '/shared/engine.js';
 import { Gyro, DragLook } from './gyro.js';
 import { Gaze } from './gaze.js';
-import { Net } from './net.js';
+import { loadRuntime, makeNet, useKey } from '/shared/runtime.js';
 import { Companion } from './companion.js';
 import { OfflineVoice } from './voice.js';
 
@@ -19,7 +19,12 @@ const fadeEl = $('#fade');
 const logEl = $('#log');
 const now = () => Math.round(performance.now());
 
-const [, tripData] = await Promise.all([loadFonts(), loadTripData()]);
+const [, tripData, runtime] = await Promise.all([loadFonts(), loadTripData(), loadRuntime()]);
+useKey(runtime.key);
+// In the cloud the phone must come from the panel's QR code (it carries the room and the key).
+if (runtime.mode === 'cloud' && (!runtime.room || !runtime.key)) {
+  document.querySelector('#start .sub')?.insertAdjacentHTML('afterend', '<p class="warn">Open UMATE by scanning the QR code on the trainer panel.</p>');
+}
 
 // ---------- scenario engine ----------
 const engine = new Engine(tripData, (e) => onEngineEvent(e));
@@ -86,12 +91,13 @@ const deviceId = (() => {
 const deviceName = /iPhone|iPad/.test(navigator.userAgent) ? 'iPhone' : /Android/.test(navigator.userAgent) ? 'Android' : 'Desktop';
 let sessionId = null;
 
-const net = new Net({
+const net = await makeNet(runtime, {
   role: 'phone',
   id: deviceId,
   device: deviceName,
   onStatus: (ok) => setStatus('server', ok ? 'ok' : 'down'),
   onMessage: (m) => {
+    if (m.type === 'learner') net.learner = m.learner; // cloud: the panel says who is training
     if (m.type !== 'cmd') return;
     if (m.cmd === 'recenter') recenter();
     if (m.cmd === 'say' && (m.text || m.voice)) speak(m.voice, m.text);

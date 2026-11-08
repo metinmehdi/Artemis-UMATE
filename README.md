@@ -90,6 +90,46 @@ flowchart LR
   (stations, balance, step), so it cannot invent a wrong station or price.
 - **The API key never reaches the phone.** The laptop asks OpenAI for a short-lived client secret.
 
+### 3.1 Two ways to run: cloud (Vercel + Supabase) or laptop
+
+The same browser code runs in both; it asks `/api/config` where it is running.
+
+```mermaid
+flowchart LR
+    subgraph CLOUD["Cloud: Vercel + Supabase"]
+        WEB["Vercel<br/>static app + panel<br/>functions in api/"]
+        RT["Supabase Realtime<br/>room channel: pose, state,<br/>events, commands"]
+        DB[("Supabase Postgres<br/>events, learners")]
+        WEB -->|"service key"| DB
+    end
+    PH["Phone (QR: room + access key)"] <--> RT
+    PA["Panel in any browser<br/>(owns the room code)"] <--> RT
+    PH -->|"/api/events, /api/realtime-token"| WEB
+    PA -->|"/api/progress, /api/report, /api/learners"| WEB
+```
+
+| | Cloud (Vercel + Supabase) | Laptop server (`npm start`) |
+|---|---|---|
+| Link | permanent, for example `https://<project>.vercel.app` | Wi-Fi link or a free tunnel link that changes |
+| Phone ↔ panel | Supabase Realtime broadcast on a room channel (pose 10/s) | WebSocket hub on the laptop |
+| Session log | Supabase table `events` | `data/sessions/*.jsonl` |
+| Needs internet | yes | no (only the live AI voice does) |
+| Use it for | the demo and the pilot | backup on stage without internet |
+
+- **Pairing:** each panel creates a room code; its QR code carries `room` and the access key to the
+  phone (`/vr/?room=…&k=…`). The key is removed from the address bar after loading.
+- **Security:** the Supabase tables have row level security with no policies, so browsers cannot read
+  or write them; only the functions can, with the secret key. Every function except `config` and `qr`
+  needs the access key (`UMATE_ACCESS_KEY`), so nobody else can spend the OpenAI or Gemini credit.
+- **Schema:** `supabase/schema.sql`.
+
+**Deploy:** import the GitHub repository in Vercel (framework: Other; `vercel.json` sets the build
+`npm run build:web` and the output `public/`), then add the environment variables `OPENAI_API_KEY`,
+`GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY` (publishable key), `SUPABASE_SERVICE_ROLE_KEY`
+(secret key) and `UMATE_ACCESS_KEY`. Every push to `main` deploys again. Open
+`https://<project>.vercel.app/panel/?k=<UMATE_ACCESS_KEY>` once on the trainer's computer.
+`npm run dev:cloud` runs the cloud version locally on port 3000 for testing.
+
 ## 4. Data sources
 
 | Source | What we take | How | Licence |
@@ -326,7 +366,7 @@ step, with time and help used. "Challenges for the judge" starts or stops each o
 ## 8. Tests
 
 ```bash
-npm test         # 34 unit tests (node:test)
+npm test         # 41 unit tests (node:test)
 npm run check    # syntax check of every JavaScript file
 ```
 
@@ -346,11 +386,13 @@ npm run check    # syntax check of every JavaScript file
 ```
 client/   vr/ (phone app), panel/ (trainer panel), setup.html (certificate), assets/ (panoramas, fonts)
 shared/   engine.js (scenario engine), analytics.js (gold layer), world.js (3D scene), ui3d.js, buddy.js, data.js
-server/   HTTPS + WebSocket server, tunnel, OpenAI token, Gemini report, JSONL event log, local certificates
+server/   laptop server: HTTPS + WebSocket, tunnel, OpenAI token, Gemini report, JSONL event log, certificates
+api/      cloud functions for Vercel (config, events, learners, progress, report, realtime-token, qr)
+supabase/ schema.sql for the cloud database
 data/     raw/osm/, city/baku/ (network, rules, names), scenario/, learners.json;
           generated, not committed: sessions/, sample/, gold/
-tools/    ingest-osm.js, build-city.js, gen-sample.js, build-gold.js, check-syntax.js
-tests/    engine.test.js, network.test.js, analytics.test.js
+tools/    ingest-osm.js, build-city.js, gen-sample.js, build-gold.js, gen-voice.js, build-web.js, dev-cloud.js, check-syntax.js
+tests/    engine, network, analytics, voice and cloud API tests
 docs/     concept paper (AZ + EN)
 ```
 
