@@ -288,7 +288,7 @@ npm start            # prints the links for the phone and the panel
 | Mode | Needs internet | What works |
 |---|---|---|
 | Full | Yes (Wi-Fi or a phone hotspot) | Everything, including the AI buddy's voice |
-| Offline | No | VR, panel, engine, hints (written on the task card), faults, logging. The buddy shows as offline |
+| Offline | No | VR, panel, engine, hints, faults, logging. The buddy speaks recorded lines (`client/assets/voice`, made with `npm run voice:gen`); a line without a recording is spoken by the phone's own speech engine |
 | Rebuild the data | Yes for `data:ingest`, no for `data:build` | `npm run data:ingest` refreshes the OSM snapshot; `npm run data:build` rebuilds `network.json` |
 | Analytics | No (Gemini report needs internet; the template report does not) | `npm run data:sample` creates the NÜMUNƏ cohort; `npm run data:gold` writes the star schema (add `-- --real` for real sessions only) |
 
@@ -362,7 +362,7 @@ docs/     concept paper (AZ + EN)
 - [x] Phase 2: train ride scene (81-765 car), station announcements, doors, arrival summary; public link
 - [x] Phase 3: trainer panel for the projector (trip as a metro line, challenges, learner profiles)
 - [x] Phase 5: gold star schema, progress chart with the **NÜMUNƏ** sample cohort, Gemini trainer report
-- [ ] Phase 4: offline voice lines for the buddy
+- [x] Phase 4: recorded buddy voice (Gemini text-to-speech) when the live AI voice is not available
 - [ ] Roadmap: real-trip guide mode; readiness prediction model trained on VR sessions + real-trip outcomes
 
 ## 11. Credits and licences

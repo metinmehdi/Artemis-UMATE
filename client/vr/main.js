@@ -11,6 +11,7 @@ import { Gyro, DragLook } from './gyro.js';
 import { Gaze } from './gaze.js';
 import { Net } from './net.js';
 import { Companion } from './companion.js';
+import { OfflineVoice } from './voice.js';
 
 const $ = (s) => document.querySelector(s);
 const canvas = $('#c');
@@ -93,7 +94,7 @@ const net = new Net({
   onMessage: (m) => {
     if (m.type !== 'cmd') return;
     if (m.cmd === 'recenter') recenter();
-    if (m.cmd === 'say' && m.text) companion.say(m.text);
+    if (m.cmd === 'say' && (m.text || m.voice)) speak(m.voice, m.text);
     if (m.cmd === 'reset') resetFlow();
     if (m.cmd === 'reload') location.reload();
     if (m.cmd === 'fault' && m.fault) act({ type: 'fault', fault: m.fault, by: 'trainer' });
@@ -114,6 +115,12 @@ const companion = new Companion({
     pushState();
     setStatus('ai', m);
     net.send({ type: 'status', ai: m });
+    // the live voice could not start (no internet, no credit): greet with the recorded voice
+    if (m === 'offline' && started && !greeted) {
+      greeted = true;
+      voice.play('greet');
+    }
+    if (m === 'idle') greeted = true; // the live buddy greets by itself
   },
   onTranscript: (who, text) => {
     net.send({ type: 'transcript', sessionId, who, text, step: state.step });
@@ -124,6 +131,21 @@ const companion = new Companion({
     event('ai_log', { lvl, text });
   },
 });
+
+// Recorded lines for when the live voice is not available (client/assets/voice, made by
+// tools/gen-voice.js). Every buddy line has a key; the live AI gets a richer instruction instead.
+const voice = new OfflineVoice({
+  onLine: (key, text) => {
+    net.send({ type: 'transcript', sessionId, who: 'buddy', text: `${text} (recorded voice)`, step: state.step });
+    log(`buddy (recorded): ${text}`);
+  },
+});
+const voiceReady = voice.load(); // not awaited: the module must finish setting up first
+let greeted = false;
+function speak(key, instruction) {
+  if (companion.ready && instruction) companion.say(instruction);
+  else if (key) voice.play(key);
+}
 
 // ---------- view helpers ----------
 const tmpE = new THREE.Euler();
@@ -215,6 +237,7 @@ function resetFlow() {
   hintInfo = null;
   stopCrowd();
   stopRide();
+  voice.stop();
   inTrain = false;
   stats = { hints: 0, errors: 0, askedHelp: false };
   Object.assign(state, { kioskOpen: false, kiosk: 'idle', amount: null, progress: 0, sign: null, feedback: null, trainFeedback: null, summary: null, buddyMode: companion.mode });
@@ -267,7 +290,7 @@ function depart() {
   const next = trip.station(trip.line.stations[nextIdx]);
   setTimeout(() => announce(`Next station: ${next.name_en}.`), 1200);
   if (nextIdx === trip.toIdx) {
-    companion.say(`The next station is ${en(trip.to)}, where the learner gets off. Tell them kindly, in one short sentence, to get ready.`);
+    speak('ride:get_ready', `The next station is ${en(trip.to)}, where the learner gets off. Tell them kindly, in one short sentence, to get ready.`);
   }
   syncView();
   rideTimer = setTimeout(arrive, RIDE.move);
@@ -316,7 +339,7 @@ function onEngineEvent(e) {
     }
     case 'return_trip':
       state.trainFeedback = { ok: true, text: `Train back to ${az(trip.to)}` };
-      companion.say(`The learner got off after missing the stop. Calmly say: we cross to the other side and take the train back to ${en(trip.to)}. Well done for staying calm.`);
+      speak('ride:return', `The learner got off after missing the stop. Calmly say: we cross to the other side and take the train back to ${en(trip.to)}. Well done for staying calm.`);
       teleport(() => {
         ridePhase = 'doors';
         clearTimeout(rideTimer);
@@ -343,7 +366,7 @@ function onEngineEvent(e) {
     case 'hint_shown':
       hintInfo = e;
       log(`hint ${e.level}: ${e.text}`);
-      if (e.level === 1 || e.level === 3 || e.trigger === 'ask') companion.say(`Give the learner this hint kindly, in one short sentence: "${e.text}"`);
+      if (e.level === 1 || e.level === 3 || e.trigger === 'ask') speak(`hint:${trip.steps[e.step]?.id}:${e.level}`, `Give the learner this hint kindly, in one short sentence: "${e.text}"`);
       break;
     case 'wallet':
       if (e.tx === 'topup') beep(880, 120);
@@ -353,27 +376,27 @@ function onEngineEvent(e) {
       beep(220, 260);
       if (e.reason === 'insufficient_balance') {
         flash({ tone: 'warn', title: 'Not enough balance', sub: 'Top up your card at the machine first' }, 3500, () => act({ type: 'gate_reset' }));
-        companion.say(`The turnstile rejected the card: not enough balance (${e.balance.toFixed(2)} AZN, the fare is ${e.fare.toFixed(2)} AZN). Calmly say this is okay and that they can top up at the machine on the left.`);
+        speak('err:insufficient_balance', `The turnstile rejected the card: not enough balance (${e.balance.toFixed(2)} AZN, the fare is ${e.fare.toFixed(2)} AZN). Calmly say this is okay and that they can top up at the machine on the left.`);
       } else if (e.reason === 'card_not_read') {
         flash({ tone: 'warn', title: 'Card not read', sub: 'Hold the card still on the reader and try again' }, 3500, () => act({ type: 'gate_reset' }));
-        companion.say('The card was not read. Calmly say this happens, and to hold the card still on the reader and try again.');
+        speak('err:card_not_read', 'The card was not read. Calmly say this happens, and to hold the card still on the reader and try again.');
       } else if (e.reason === 'exit_too_early') {
         state.trainFeedback = { ok: false, text: `Not yet: ${e.stopsLeft} ${e.stopsLeft === 1 ? 'stop' : 'stops'} left` };
-        companion.say(`The learner tried to get off too early. Gently say: not yet, ${e.stopsLeft} more ${e.stopsLeft === 1 ? 'stop' : 'stops'} to ${en(trip.to)}. Listen to the announcements.`);
+        speak('err:exit_too_early', `The learner tried to get off too early. Gently say: not yet, ${e.stopsLeft} more ${e.stopsLeft === 1 ? 'stop' : 'stops'} to ${en(trip.to)}. Listen to the announcements.`);
       } else if (e.reason === 'missed_stop') {
         state.trainFeedback = { ok: false, text: `We passed ${az(trip.to)}. Get off here` };
-        companion.say(`The learner missed the stop ${en(trip.to)}. Calmly say it is okay and happens to everyone: get off at this station and take the train back one stop.`);
+        speak('err:missed_stop', `The learner missed the stop ${en(trip.to)}. Calmly say it is okay and happens to everyone: get off at this station and take the train back one stop.`);
       } else if (e.reason === 'wrong_direction') {
         state.feedback = { ok: false, text: `${az(trip.to)} is the other way` };
         flash({ tone: 'warn', sub: 'Look at the stations listed on each sign' });
-        companion.say(`The learner chose the wrong direction. Gently say it is okay. Tell them to read the station list on the signs and find ${en(trip.to)}.`);
+        speak('err:wrong_direction', `The learner chose the wrong direction. Gently say it is okay. Tell them to read the station list on the signs and find ${en(trip.to)}.`);
       }
       break;
     case 'choice':
       if (e.ok) {
         state.feedback = { ok: true, text: `Right way: towards ${az(trip.terminus)}` };
         flash({ tone: 'good', title: 'Right way!' }, 3000);
-        companion.say('The learner chose the correct direction. Praise them warmly in one short sentence.');
+        speak('praise:direction', 'The learner chose the correct direction. Praise them warmly in one short sentence.');
         beep(990, 160);
       }
       break;
@@ -383,7 +406,7 @@ function onEngineEvent(e) {
         if (inTrain) state.trainFeedback = msg;
         else state.feedback = msg;
         announce(`Attention please. The train is delayed by about ${e.minutes} minutes.`);
-        companion.say(`An announcement says the train is delayed by about ${e.minutes} minutes. Calmly explain that delays happen, that the learner can wait on the platform, and offer one slow breath together.`);
+        speak('fault:delay', `An announcement says the train is delayed by about ${e.minutes} minutes. Calmly explain that delays happen, that the learner can wait on the platform, and offer one slow breath together.`);
         // demo default: once the learner is waiting for the train (direction chosen) or sits in a
         // held train, the delay ends by itself after 12 s. The trainer can clear it earlier.
         const waiting = (engine.state.location === 'platform' && engine.state.direction) || engine.state.location === 'train';
@@ -396,7 +419,7 @@ function onEngineEvent(e) {
       log(`fault: ${e.fault}`);
       if (e.fault === 'crowd_noise') {
         startCrowd();
-        companion.say('The station suddenly became crowded and noisy. Calmly offer a short breathing exercise: breathe in for 4, out for 4. Then say they are doing well.');
+        speak('fault:crowd', 'The station suddenly became crowded and noisy. Calmly offer a short breathing exercise: breathe in for 4, out for 4. Then say they are doing well.');
       }
       break;
     case 'fault_resolved':
@@ -408,7 +431,7 @@ function onEngineEvent(e) {
       break;
     case 'session_end':
       beep(1180, 220);
-      companion.say(`The learner arrived at ${en(trip.to)}. Congratulate them warmly in one sentence.`);
+      speak('praise:arrived', `The learner arrived at ${en(trip.to)}. Congratulate them warmly in one sentence.`);
       break;
   }
 }
@@ -556,7 +579,12 @@ function start(withBox) {
     actx = new (window.AudioContext || window.webkitAudioContext)();
     actx.resume();
   } catch {}
+  voiceReady.then(() => voice.start(actx));
   if ($('#ai').checked) companion.start(actx);
+  else {
+    greeted = true;
+    setTimeout(() => voice.play('greet'), 1200);
+  }
   try {
     speechSynthesis.speak(new SpeechSynthesisUtterance('')); // unlock announcements on iOS
   } catch {}
@@ -638,7 +666,9 @@ renderer.setAnimationLoop((ts) => {
     lastAsk = performance.now();
     act({ type: 'ask_help' });
   }
-  world.buddy.userData.level = companion.outputLevel();
+  world.buddy.userData.level = Math.max(companion.outputLevel(), voice.level());
+  if (voice.playing) world.buddy.userData.mode = 'speaking';
+  else if (world.buddy.userData.mode === 'speaking' && companion.mode !== 'speaking') world.buddy.userData.mode = companion.mode;
   world.buddy.userData.mic = companion.micLevel();
   world.update(dt, t, camPos, camQuat);
 
