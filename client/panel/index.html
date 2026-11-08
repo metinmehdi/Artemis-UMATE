@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>UMATE Panel</title>
+    <title>UMATE trainer panel</title>
     <link rel="stylesheet" href="/assets/fonts/fonts.css" />
     <link rel="stylesheet" href="panel.css" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%237fdcff'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23fff'/%3E%3Ctext x='8' y='11.5' font-size='10' text-anchor='middle' fill='%23ee1d23' font-family='Arial' font-weight='700'%3EM%3C/text%3E%3C/svg%3E" />
     <script type="importmap">
       {
         "imports": {
@@ -17,62 +17,111 @@
     </script>
   </head>
   <body>
+    <header class="board">
+      <div class="brand">
+        <span class="roundel" aria-hidden="true">M</span>
+        <span class="name">UMATE</span>
+        <span class="team">by Team Artemis</span>
+      </div>
+      <div class="learner">
+        <label for="learner-select">Learner</label>
+        <select id="learner-select"></select>
+        <button id="learner-add" class="quiet" aria-expanded="false" aria-controls="learner-form">Add learner</button>
+        <form id="learner-form" hidden>
+          <input id="learner-name" maxlength="40" placeholder="Nickname" aria-label="Nickname of the new learner" />
+          <button type="submit">Save</button>
+        </form>
+      </div>
+      <div class="status" aria-live="polite">
+        <button id="progress-open">Progress and report</button>
+        <span class="pill" id="phone-pill"><i class="dot"></i><span id="phone-text">No phone</span></span>
+        <span class="pill" id="ai-pill"><i class="dot"></i><span id="ai-text">Buddy offline</span></span>
+        <button id="qr-open" class="qr-thumb" aria-label="Show the QR code for the phone"><img id="qr" alt="" /></button>
+      </div>
+    </header>
+
     <main>
-      <section id="view">
+      <section id="view" aria-label="Live view of what the learner sees">
         <canvas id="spectator"></canvas>
-        <div class="badge" id="live">● LIVE: what the learner sees</div>
-        <div class="overlay" id="hover"></div>
-        <div class="waiting" id="waiting">Waiting for a phone…</div>
+        <div class="live"><i class="rec"></i>Live: what the learner sees</div>
+        <div class="looking" id="hover"></div>
+        <div class="waiting" id="waiting">
+          <p>Waiting for a phone</p>
+          <p class="sub">Scan the QR code at the top right with the phone</p>
+        </div>
       </section>
 
       <aside>
-        <div class="card">
-          <h2>Devices</h2>
-          <div id="roster" class="roster">No phone connected</div>
-          <div class="row" id="ai-row">AI buddy: <b id="ai-mode">–</b></div>
-        </div>
+        <section class="trip" aria-labelledby="trip-title">
+          <div class="trip-head">
+            <h2 id="trip-title">Koroğlu to 28 May</h2>
+            <span class="balance" id="balance">Balance 0.00 AZN</span>
+          </div>
+          <ol class="line" id="steps">
+            <li data-step="topup"><span class="stop"></span><b>Top up</b><small></small></li>
+            <li data-step="gate"><span class="stop"></span><b>Turnstile</b><small></small></li>
+            <li data-step="platform"><span class="stop"></span><b>Platform</b><small></small></li>
+            <li data-step="ride"><span class="stop"></span><b>Ride</b><small></small></li>
+          </ol>
+          <p class="now" id="now"><b>Waiting for the trip</b><span>Press Start on the phone to begin</span></p>
+        </section>
 
-        <div class="card">
-          <h2>Challenges (judge)</h2>
-          <div class="btns">
+        <section class="controls" aria-labelledby="challenges-title">
+          <h2 id="challenges-title">Challenges for the judge</h2>
+          <div class="grid2">
             <button data-fault="insufficient_balance" aria-pressed="false">Not enough balance</button>
             <button data-fault="card_unreadable" aria-pressed="false">Card not read</button>
             <button data-fault="train_delay" aria-pressed="false">Train delayed</button>
             <button data-fault="crowd_noise" aria-pressed="false">Crowd and noise</button>
           </div>
-        </div>
-
-        <div class="card">
-          <h2>Trainer controls</h2>
-          <div class="btns">
+          <h2>Trainer</h2>
+          <div class="row">
             <button data-cmd="hint">Give a hint</button>
-            <button data-cmd="recenter">Recenter view</button>
-            <button data-cmd="say" data-text="Say hello to the learner and ask how they feel, in one short sentence.">Buddy: say hello</button>
-            <button data-cmd="say" data-text="The learner may be stressed. Calmly guide one slow breath together, then ask if they are ready to continue.">Buddy: calm down</button>
-            <button data-cmd="reset">Restart trip</button>
-            <button data-cmd="reload" class="ghost">Reload phone</button>
+            <button data-cmd="say" data-text="The learner may be stressed. Calmly guide one slow breath together, then ask if they are ready to continue.">Calm the learner</button>
+            <button data-cmd="say" data-text="Say hello to the learner and ask how they feel, in one short sentence.">Buddy says hello</button>
+            <button data-cmd="recenter" class="quiet">Recenter view</button>
+            <button data-cmd="reset" class="quiet">Restart trip</button>
+            <button data-cmd="reload" class="quiet">Reload phone</button>
           </div>
-        </div>
+        </section>
 
-        <div class="card grow">
-          <h2>Conversation</h2>
-          <div id="transcript" class="list"></div>
-        </div>
-
-        <div class="card grow">
-          <h2>Events</h2>
-          <div id="events" class="list mono"></div>
-        </div>
-
-        <div class="card connect">
-          <div>
-            <h2>Connect a phone</h2>
-            <div id="urls" class="mono small"></div>
+        <section class="tabs">
+          <div role="tablist" aria-label="Details">
+            <button role="tab" id="tab-talk" aria-controls="pane-talk" aria-selected="true">Conversation</button>
+            <button role="tab" id="tab-events" aria-controls="pane-events" aria-selected="false" tabindex="-1">Events</button>
           </div>
-          <img id="qr" alt="QR code for the phone URL" />
-        </div>
+          <div role="tabpanel" id="pane-talk" aria-labelledby="tab-talk" class="pane">
+            <div id="transcript" class="list"><p class="empty">The conversation between the learner and the buddy appears here.</p></div>
+          </div>
+          <div role="tabpanel" id="pane-events" aria-labelledby="tab-events" class="pane" hidden>
+            <div id="events" class="list events"></div>
+          </div>
+        </section>
       </aside>
     </main>
+
+    <dialog id="progress-dialog" class="wide" aria-labelledby="progress-title">
+      <div class="progress-head">
+        <h2 id="progress-title">Progress of</h2>
+        <select id="progress-select" aria-labelledby="progress-title"></select>
+        <form method="dialog" class="close"><button class="quiet">Close</button></form>
+      </div>
+      <p class="explain">Steps done alone: how many of the 4 steps the learner finished without a hint and without a mistake, session by session.</p>
+      <div id="chart" class="chart"></div>
+      <div id="verdict" class="verdict"></div>
+      <div class="report">
+        <button id="report-btn">Write trainer report</button>
+        <p id="report" class="report-text"></p>
+      </div>
+    </dialog>
+
+    <dialog id="qr-dialog" aria-labelledby="qr-title">
+      <h2 id="qr-title">Open UMATE on the phone</h2>
+      <img id="qr-big" alt="QR code with the link for the phone" />
+      <div id="urls" class="urls"></div>
+      <form method="dialog"><button>Close</button></form>
+    </dialog>
+
     <script type="module" src="panel.js"></script>
   </body>
 </html>

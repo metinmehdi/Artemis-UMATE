@@ -72,23 +72,37 @@ işləyir. Yalnız AI-ın səsi işləmir.
 | AI ilə danışmaq | Parlayan kürəyə baxın. Halqa işıqlananda danışın. 1.5 saniyə baxmaq həm də kömək istəmək sayılır |
 | Görüntünü mərkəzə gətirmək | Paneldə **Recenter view** düyməsi və ya klaviaturada `R` |
 
-## Paneldəki düymələr
+## Panel
 
-- **Challenges (judge):** 4 çətinlik. Birinci klik çətinliyi açır, ikinci klik bağlayır. Aktiv
+- **Yuxarıda:**
+  - **Learner** sahəsində məşq edən gənc seçilir. **Add learner** düyməsi ilə yeni profil əlavə olunur;
+    real adlar yalnız laptopda saxlanır və GitHub-a getmir.
+  - **Progress and report** proqres qrafikini və müəllim hesabatını açır.
+  - QR koda klik edəndə o böyüyür.
+- **Sağ sütunda səfər metro xətti kimi göstərilir:** hər addım bir stansiyadır. Bitən addım yaşıl
+  olur, yanında vaxt və alınan kömək yazılır; indiki addım yanıb-sönür.
+- **Challenges for the judge:** 4 çətinlik. Birinci klik çətinliyi açır, ikinci klik bağlayır. Aktiv
   çətinlik narıncı rənglə görünür.
-- **Give a hint:** gəncə növbəti pillə ipucunu verir.
-- **Recenter view:** görüntünü yenidən düz qarşıya gətirir.
-- **Buddy: say hello / calm down:** AI yoldaşı danışdırır.
-- **Restart trip:** səfəri əvvəldən başladır.
-- **Reload phone:** telefondakı səhifəni yeniləyir.
+- **Trainer:**
+  - **Give a hint:** növbəti pillə ipucunu verir.
+  - **Calm the learner** və **Buddy says hello:** AI yoldaşı danışdırır.
+  - **Recenter view:** görüntünü yenidən mərkəzə gətirir.
+  - **Restart trip:** səfəri əvvəldən başladır.
+  - **Reload phone:** telefondakı səhifəni yeniləyir.
+- **Progress and report:** gəncin hər seansda neçə addımı köməksiz etdiyini göstərir və onu NÜMUNƏ
+  ortalaması ilə müqayisə edir (qırıq xətt, "invented sample" yazısı ilə). Altında hazırlıq qaydası,
+  növbəti məşq ediləcək addım və **Write trainer report** düyməsi var. Hesabatı Gemini yazır; internet
+  olmasa, şablon hesabat çıxır.
 
 ## Testlər və data
 
 ```powershell
-npm test               # 23 test: bütün stansiya cütləri, 4 çətinlik, balans qaydası, data
+npm test               # 34 test: stansiya cütləri, 4 çətinlik, balans qaydası, data, analitika
 npm run check          # bütün JavaScript fayllarının sintaksis yoxlaması
 npm run data:ingest    # OpenStreetMap-dən təzə data (internet lazımdır)
 npm run data:build     # network.json-u yenidən qurur (internet lazım deyil)
+npm run data:sample    # NÜMUNƏ kohortunu yaradır (uydurma data, hər sətirdə "sample": true)
+npm run data:gold      # star schema cədvəllərini data/gold/ qovluğuna yazır (JSON + CSV)
 ```
 
 ## Telefonda yoxlanılacaq siyahı

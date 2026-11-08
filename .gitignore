@@ -5,3 +5,6 @@ data/sessions/
 *.log
 .claude/
 tools/bin/
+data/sample/
+data/gold/
+data/learners.local.json
