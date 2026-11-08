@@ -1,0 +1,10 @@
+{
+  "name": "UMATE",
+  "short_name": "UMATE",
+  "start_url": "/vr/",
+  "scope": "/vr/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#1b1e26",
+  "theme_color": "#1b1e26"
+}

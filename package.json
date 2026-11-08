@@ -1,0 +1,16 @@
+{
+  "name": "umate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Phone + VR box metro & payment trainer with an AI travel buddy (YUNEX 2026)",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "check": "node tools/check-syntax.js"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "three": "0.187.0",
+    "ws": "^8.22.1"
+  }
+}
