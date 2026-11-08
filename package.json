@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server/index.js",
     "check": "node tools/check-syntax.js",
-    "test": "node --test tests/",
+    "test": "node --test \"tests/*.test.js\"",
     "data:ingest": "node tools/ingest-osm.js",
     "data:build": "node tools/build-city.js"
   },
