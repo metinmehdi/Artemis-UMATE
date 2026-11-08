@@ -411,6 +411,7 @@ docs/     concept paper (AZ + EN)
 
 - Code: [MIT](LICENSE).
 - Map data © OpenStreetMap contributors, ODbL 1.0.
-- Font: [Atkinson Hyperlegible Next](https://www.brailleinstitute.org/freefont/) by the Braille Institute, SIL OFL 1.1.
+- Fonts: [Lexend](https://fonts.google.com/specimen/Lexend) and [Fraunces](https://fonts.google.com/specimen/Fraunces), SIL OFL 1.1 (self-hosted, see `client/assets/fonts/`).
+- Logo and brand: Team Artemis (brand sheet v1.0); built into SVG by `tools/brand/make-brand.py`.
 - 360° panoramas: generated with an image model from public reference photos of Baku Metro stations
   (Wikimedia Commons); the photos themselves are not in the repository.

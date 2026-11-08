@@ -48,8 +48,8 @@ function glowTexture() {
   const g = c.getContext('2d');
   const grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
   grd.addColorStop(0, 'rgba(255,255,255,0.9)');
-  grd.addColorStop(0.35, 'rgba(160,200,255,0.35)');
-  grd.addColorStop(1, 'rgba(120,120,255,0)');
+  grd.addColorStop(0.35, 'rgba(126,224,195,0.35)');
+  grd.addColorStop(1, 'rgba(122,79,176,0)');
   g.fillStyle = grd;
   g.fillRect(0, 0, 128, 128);
   const t = new THREE.CanvasTexture(c);
@@ -63,9 +63,9 @@ export function makeBuddy() {
     uTime: { value: 0 },
     uLevel: { value: 0 },
     uDim: { value: 0 },
-    uA: { value: new THREE.Color('#2ee6c5') },
-    uB: { value: new THREE.Color('#7b61ff') },
-    uC: { value: new THREE.Color('#5ec8ff') },
+    uA: { value: new THREE.Color('#7ee0c3') }, // brand mint
+    uB: { value: new THREE.Color('#7a4fb0') }, // lifted night purple
+    uC: { value: new THREE.Color('#faf6e9') }, // ivory
   };
   const orb = new THREE.Mesh(
     new THREE.SphereGeometry(0.075, 48, 32),
@@ -80,7 +80,7 @@ export function makeBuddy() {
   // listening ring (reacts to the learner's voice)
   const ring = new THREE.Mesh(
     new THREE.TorusGeometry(0.11, 0.004, 8, 96),
-    new THREE.MeshBasicMaterial({ color: '#6fe3ff', transparent: true, opacity: 0, depthWrite: false }),
+    new THREE.MeshBasicMaterial({ color: '#7ee0c3', transparent: true, opacity: 0, depthWrite: false }),
   );
   ring.renderOrder = 26;
   // generous invisible hit area so it is easy to look at

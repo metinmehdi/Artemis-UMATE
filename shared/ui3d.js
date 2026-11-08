@@ -1,31 +1,40 @@
 // World-space UI kit for the VR scene (canvas-texture panels).
-// Design tokens follow real Baku Metro wayfinding: metro-blue boards, red "M" roundel,
-// official line colours. Type: Atkinson Hyperlegible Next (built for low-vision legibility).
+// Two layers, two palettes:
+// - the WORLD is the real Baku Metro: metro-blue boards, red "M" roundel, official line colours,
+//   the kiosk's own green. Learners practise reading the real signs, so these stay as they are.
+// - the GUIDE layer is UMATE: task card, hotspot rings, chips, feedback, summary, floor target.
+//   Night-purple glass with ivory text; anything you can select glows mint (the brand's "go" signal).
+// Type: Lexend for all text, Fraunces Soft for the one big heading (the arrival summary).
 import * as THREE from 'three';
+import { BRAND, FONT_UI, FONT_DISPLAY, loadBrandFonts } from './brand.js';
 
 export const TOKENS = {
+  // world (real Baku Metro)
   metroBlue: '#1f3c96',
   metroBlueDeep: '#172e74',
   signalRed: '#ee1d23',
   lineRed: '#ee1d23',
   lineGreen: '#00ab5b',
   linePurple: '#8e177c',
-  go: '#16a34a',
-  stop: '#dc2626',
-  paper: '#f7f8fa',
-  ink: '#0f141c',
-  glass: 'rgba(15,20,28,0.86)',
-  glassEdge: 'rgba(255,255,255,0.18)',
-  muted: 'rgba(247,248,250,0.72)',
-  focus: '#6fe3ff',
+  kioskGo: '#16a34a',
+  // guide layer (UMATE brand)
+  go: BRAND.mint,
+  stop: BRAND.amber,
+  paper: BRAND.ivory,
+  ink: BRAND.ink,
+  glass: BRAND.glass,
+  glassEdge: BRAND.glassEdge,
+  muted: BRAND.ivorySoft,
+  focus: BRAND.mint,
+  focusGlow: BRAND.mintGlow,
 };
 
-export const FONT = '"Atkinson Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+export const FONT = FONT_UI;
+export { FONT_DISPLAY };
 
 export async function loadFonts() {
-  if (!document.fonts) return;
   try {
-    await Promise.all([document.fonts.load(`700 64px ${FONT}`, 'Əə Ğğ İı Şş Çç Öö Üü'), document.fonts.load(`400 64px ${FONT}`, 'Aa')]);
+    await loadBrandFonts();
   } catch {}
 }
 
@@ -68,8 +77,8 @@ export function rr(ctx, x, y, w, h, r) {
   ctx.roundRect(x, y, w, h, r);
 }
 
-export function text(ctx, str, x, y, { size = 60, weight = 700, color = TOKENS.paper, align = 'left', baseline = 'alphabetic', maxWidth } = {}) {
-  ctx.font = `${weight} ${size}px ${FONT}`;
+export function text(ctx, str, x, y, { size = 60, weight = 700, color = TOKENS.paper, align = 'left', baseline = 'alphabetic', maxWidth, font = FONT } = {}) {
+  ctx.font = `${weight} ${size}px ${font}`;
   ctx.fillStyle = color;
   ctx.textAlign = align;
   ctx.textBaseline = baseline;
@@ -77,7 +86,7 @@ export function text(ctx, str, x, y, { size = 60, weight = 700, color = TOKENS.p
     let s = size;
     while (ctx.measureText(str).width > maxWidth && s > 12) {
       s -= 2;
-      ctx.font = `${weight} ${s}px ${FONT}`;
+      ctx.font = `${weight} ${s}px ${font}`;
     }
   }
   ctx.fillText(str, x, y);
@@ -229,15 +238,15 @@ export function makeTaskCard() {
       rr(ctx, 0, 0, w, h, 40);
       ctx.fillStyle = TOKENS.glass;
       ctx.fill();
-      ctx.strokeStyle = s.tone === 'good' ? TOKENS.go : s.tone === 'warn' ? '#f59e0b' : TOKENS.glassEdge;
-      ctx.lineWidth = 5;
-      rr(ctx, 2.5, 2.5, w - 5, h - 5, 38);
+      ctx.strokeStyle = s.tone === 'good' ? TOKENS.go : s.tone === 'warn' ? TOKENS.stop : TOKENS.glassEdge;
+      ctx.lineWidth = s.tone ? 8 : 5;
+      rr(ctx, 4, 4, w - 8, h - 8, 37);
       ctx.stroke();
       const total = s.total || 4;
       const pad = h * 0.24;
       const dotY = h * 0.25;
       for (let i = 0; i < total; i++) {
-        ctx.fillStyle = i < s.step ? TOKENS.go : i === s.step ? TOKENS.paper : 'rgba(255,255,255,0.25)';
+        ctx.fillStyle = i < s.step ? TOKENS.go : i === s.step ? TOKENS.paper : BRAND.ivoryFaint;
         ctx.beginPath();
         ctx.arc(pad + i * h * 0.15, dotY, h * 0.045, 0, Math.PI * 2);
         ctx.fill();
@@ -254,19 +263,20 @@ export function makeTaskCard() {
   );
 }
 
-// Gaze button (used on the kiosk screen).
+// Gaze button (used on the kiosk screen). The kiosk keeps its own colours; looking at a button
+// gives it the guide layer's mint ring, like every other thing you can select.
 export function makeButton(id, label, { width = 0.36, height = 0.13, primary = false, sub } = {}) {
   return makePanel(
     width,
     height,
     (ctx, w, h, s) => {
       rr(ctx, 0, 0, w, h, h * 0.22);
-      ctx.fillStyle = s.hover ? (primary ? '#1fbf5f' : '#2b5fd9') : primary ? TOKENS.go : '#24479f';
+      ctx.fillStyle = s.hover ? (primary ? '#1fbf5f' : '#2b5fd9') : primary ? TOKENS.kioskGo : '#24479f';
       ctx.fill();
       if (s.hover) {
         ctx.strokeStyle = TOKENS.focus;
-        ctx.lineWidth = 8;
-        rr(ctx, 4, 4, w - 8, h - 8, h * 0.2);
+        ctx.lineWidth = 10;
+        rr(ctx, 5, 5, w - 10, h - 10, h * 0.2);
         ctx.stroke();
       }
       text(ctx, label, w / 2, sub ? h * 0.5 : h * 0.62, { size: h * 0.36, align: 'center', maxWidth: w - 40 });
@@ -284,18 +294,18 @@ export function makeHotspot(id, label, { chipAbove = false, glyph = 'card' } = {
     0.34,
     (ctx, w, h, s) => {
       const c = w / 2;
-      const color = s.state === 'ok' ? TOKENS.go : s.state === 'bad' ? TOKENS.stop : s.off ? 'rgba(247,248,250,0.35)' : TOKENS.paper;
-      ctx.fillStyle = s.state ? color : s.hover ? 'rgba(111,227,255,0.35)' : 'rgba(15,20,28,0.45)';
+      const color = s.state === 'ok' ? TOKENS.go : s.state === 'bad' ? TOKENS.stop : s.off ? BRAND.ivoryFaint : TOKENS.paper;
+      ctx.fillStyle = s.state ? color : s.hover ? TOKENS.focusGlow : 'rgba(35,13,55,0.55)';
       ctx.beginPath();
       ctx.arc(c, c, c * 0.62, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = s.hover ? TOKENS.focus : color;
-      ctx.lineWidth = c * 0.09;
+      ctx.lineWidth = s.hover ? c * 0.12 : c * 0.09;
       ctx.beginPath();
       ctx.arc(c, c, c * 0.8, 0, Math.PI * 2);
       ctx.stroke();
-      if (s.state === 'ok') icon.check(ctx, c, c, c * 0.8);
-      else if (s.state === 'bad') icon.cross(ctx, c, c, c * 0.8);
+      if (s.state === 'ok') icon.check(ctx, c, c, c * 0.8, TOKENS.ink);
+      else if (s.state === 'bad') icon.cross(ctx, c, c, c * 0.8, TOKENS.ink);
       else if (!s.off) icon[glyph](ctx, c, c, c * 0.62, TOKENS.paper);
     },
     { interactive: id, renderOrder: 20, depthTest: false },
@@ -329,16 +339,16 @@ export function makeFloorTarget(id) {
     0.9,
     (ctx, w, h, s) => {
       const c = w / 2;
-      ctx.fillStyle = s.hover ? 'rgba(111,227,255,0.28)' : 'rgba(255,255,255,0.16)';
+      ctx.fillStyle = s.hover ? TOKENS.focusGlow : 'rgba(35,13,55,0.35)';
       ctx.beginPath();
       ctx.arc(c, c, c * 0.92, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = s.hover ? TOKENS.focus : '#ffffff';
+      ctx.strokeStyle = s.hover ? TOKENS.focus : TOKENS.paper;
       ctx.lineWidth = c * 0.07;
       ctx.beginPath();
       ctx.arc(c, c, c * 0.86, 0, Math.PI * 2);
       ctx.stroke();
-      icon.walk(ctx, c, c, c * 0.9);
+      icon.walk(ctx, c, c, c * 0.9, TOKENS.paper);
     },
     { interactive: id, renderOrder: 15, depthTest: false },
   );
