@@ -10,8 +10,8 @@
    ```
 
 4. Open a pull request. Say what changed, why, and how you tested it. The template asks for this.
-5. `main` is protected. A pull request needs **3 approvals** from the team before it can be merged.
-   Nobody pushes to `main` directly, and that rule applies to admins too.
+5. `main` is protected against force pushes and deletion. Every change goes in through a pull request,
+   so the history shows what changed and why.
 
 ## Never commit
 
