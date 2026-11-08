@@ -7,7 +7,8 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="theme-color" content="#1b1e26" />
-    <link rel="manifest" href="manifest.webmanifest" />
+    <!-- use-credentials: through the public link the manifest also needs the access cookie -->
+    <link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%237fdcff'/%3E%3C/svg%3E" />
     <title>UMATE</title>
     <link rel="stylesheet" href="/assets/fonts/fonts.css" />

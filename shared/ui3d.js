@@ -277,14 +277,14 @@ export function makeButton(id, label, { width = 0.36, height = 0.13, primary = f
 }
 
 // Hotspot marker placed on a real object in the panorama (kiosk, turnstile...).
-export function makeHotspot(id, label, { chipAbove = false } = {}) {
+export function makeHotspot(id, label, { chipAbove = false, glyph = 'card' } = {}) {
   const g = new THREE.Group();
   const ring = makePanel(
     0.34,
     0.34,
     (ctx, w, h, s) => {
       const c = w / 2;
-      const color = s.state === 'ok' ? TOKENS.go : s.state === 'bad' ? TOKENS.stop : TOKENS.paper;
+      const color = s.state === 'ok' ? TOKENS.go : s.state === 'bad' ? TOKENS.stop : s.off ? 'rgba(247,248,250,0.35)' : TOKENS.paper;
       ctx.fillStyle = s.state ? color : s.hover ? 'rgba(111,227,255,0.35)' : 'rgba(15,20,28,0.45)';
       ctx.beginPath();
       ctx.arc(c, c, c * 0.62, 0, Math.PI * 2);
@@ -296,7 +296,7 @@ export function makeHotspot(id, label, { chipAbove = false } = {}) {
       ctx.stroke();
       if (s.state === 'ok') icon.check(ctx, c, c, c * 0.8);
       else if (s.state === 'bad') icon.cross(ctx, c, c, c * 0.8);
-      else icon.card(ctx, c, c, c * 0.62, TOKENS.paper);
+      else if (!s.off) icon[glyph](ctx, c, c, c * 0.62, TOKENS.paper);
     },
     { interactive: id, renderOrder: 20, depthTest: false },
   );

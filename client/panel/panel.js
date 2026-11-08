@@ -136,15 +136,28 @@ function time() {
 }
 
 // ---------- connect info + QR ----------
-fetch('/api/info')
-  .then((r) => r.json())
-  .then((info) => {
-    const url = info.vr[0];
+// The public link (Cloudflare tunnel) works from any network without installing a certificate,
+// so the QR code uses it as soon as it exists; until then it shows the Wi-Fi link.
+let qrFor = null;
+async function refreshInfo() {
+  try {
+    const info = await (await fetch('/api/info', { cache: 'no-store' })).json();
+    const url = info.public?.vr || info.vr[0];
     $('#urls').innerHTML = [
-      ...info.setup.map((u) => `Setup (once): ${esc(u)}`),
-      ...info.vr.map((u) => `VR: ${esc(u)}`),
-      `AI keys: OpenAI ${info.ai.openai ? '✓' : '✗'} · Gemini ${info.ai.gemini ? '✓' : '✗'}`,
+      info.public ? `<b>Public (any network):</b> ${esc(info.public.vr)}` : 'Public link: starting… (Wi-Fi links below)',
+      ...info.setup.map((u) => `Wi-Fi setup (once): ${esc(u)}`),
+      ...info.vr.map((u) => `Wi-Fi VR: ${esc(u)}`),
+      `AI keys: OpenAI ${info.ai.openai ? 'OK' : 'missing'} · Gemini ${info.ai.gemini ? 'OK' : 'missing'}`,
     ].join('<br>');
-    if (url) $('#qr').src = '/api/qr?text=' + encodeURIComponent(url);
-  })
-  .catch(() => {});
+    if (url && url !== qrFor) {
+      qrFor = url;
+      $('#qr').src = '/api/qr?text=' + encodeURIComponent(url);
+    }
+    return !!info.public;
+  } catch {
+    return false;
+  }
+}
+// keep checking: a free tunnel link can end and be replaced by a new one
+refreshInfo();
+setInterval(refreshInfo, 10_000);

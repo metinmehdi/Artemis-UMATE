@@ -1,6 +1,6 @@
 # UMATE: metronu əvvəlcə VR-da məşq et, sonra özün get
 
-**YUNEX 2026, Digital Inclusion treki** · [English](README.md)
+**Team Artemis** · YUNEX 2026, Digital Inclusion treki · [English](README.md)
 
 UMATE koqnitiv fərqliliyi olan gənclər üçün telefon və ucuz VR box ilə işləyən məşq tətbiqidir.
 Gənc real Bakı metrosu səfərini, BakıKart ödənişi ilə birlikdə, real görünən 360° səhnələrdə məşq
@@ -37,7 +37,16 @@ Server işə düşəndə terminalda linkləri göstərir. Real Wi-Fi ünvanı, y
 ünvan, siyahıda birinci olur.
 
 - **Panel (proyektor):** `https://localhost:8443/panel/`
-- **Telefon:** paneldəki QR kodu skan edin və ya `https://<laptop-ip>:8443/vr/` ünvanını açın.
+- **Telefon (tövsiyə olunur): ictimai link.** `npm start` pulsuz tunel açır və terminalda
+  `https://…/k/<açar>` linkini yazır. Paneldəki QR kod avtomatik bu linkə keçir. Bu link
+  istənilən şəbəkədən, hətta mobil internetdən işləyir, telefona heç nə quraşdırmaq lazım deyil.
+  `<açar>` hər başlanğıcda yenidən yaranır; açarsız ünvan açılmır.
+  - `tools/bin/cloudflared.exe` varsa, Cloudflare istifadə olunur: ən sürətli variantdır, vaxt limiti yoxdur.
+  - Yoxdursa, Pinggy istifadə olunur. Telefonda bir dəfə **Enter site** basmaq lazımdır. Link
+    60 dəqiqə işləyir, sonra yeni link və yeni QR çıxır. Ona görə serveri demodan bir az əvvəl başladın.
+- **Eyni Wi-Fi-da (ehtiyat, internetsiz işləyir):** `https://<laptop-ip>:8443/vr/`. Bu halda
+  sertifikat lazımdır, aşağıya baxın. Bəzi tədbir Wi-Fi-ları telefonla laptopun əlaqəsini bloklayır;
+  o zaman hər iki cihazı bir telefonun hotspot-una qoşun.
 
 > Windows server üçün firewall icazəsi istəsə **Allow** basın. Hotspot şəbəkəsi çox vaxt "Public"
 > kimi tanınır, ona görə həm **Private**, həm də **Public** şəbəkələrini seçin.

@@ -44,11 +44,13 @@
       "id": "ride",
       "title": "Get off at {to}",
       "sub": "{stops_left} stops left",
+      "sub_next": "Next station: {to}. Get ready!",
+      "sub_here": "This is {to}. Get off here",
       "target": "exit",
       "hints": [
-        "Listen to the station name and count the stops.",
-        "The next station is {next}. We get off at {to}.",
-        "This is {to}. Look at the doors to get off."
+        "This is {to}. This is our station!",
+        "Look at the glowing doors to get off.",
+        "The doors are open. Look at the doors and hold your look for a moment to get off here."
       ]
     }
   ],

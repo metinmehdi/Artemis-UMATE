@@ -14,7 +14,7 @@ const UP = new THREE.Vector3(0, 1, 0);
 // panorama files, plus a distance in metres, so they sit on the real object in the photo.
 export const NODES = {
   hall: {
-    pano: '/assets/pano/koroglu-gates.png',
+    pano: '/assets/pano/koroglu-gates.jpg',
     forwardU: 0.5, // the turnstile row
     kiosk: { u: 0.2, v: 0.53, d: 3.0 }, // grey BakıKART kiosk (left wall)
     kioskPanel: { u: 0.235, v: 0.47, d: 1.5 },
@@ -22,7 +22,7 @@ export const NODES = {
     toPlatform: { u: 0.54, ground: 4.6 }, // floor beyond the turnstiles
   },
   platform: {
-    pano: '/assets/pano/koroglu-platform.png',
+    pano: '/assets/pano/koroglu-platform.jpg',
     forwardU: 0.5, // looking along the island platform; tracks at u≈0.25 (left) and u≈0.75 (right)
     // hanging signs perpendicular to the platform (like the real ones), one over each track side
     signLeft: { x: -1.45, y: 2.55, z: -3.9 },
@@ -31,6 +31,14 @@ export const NODES = {
       { u: 0.25, v: 0.45, d: 5.2 },
       { u: 0.75, v: 0.45, d: 5.2 },
     ],
+  },
+  train: {
+    pano: '/assets/pano/train-interior.jpg',
+    forwardU: 0.172, // facing the exit doors (left doors in the panorama); aisle at u=0.5
+    display: { u: 0.172, v: 0.32, d: 1.4 }, // route display above the doors
+    doors: { u: 0.172, v: 0.5, d: 1.5 }, // eye level on the door windows, clear of the task card
+    feedback: { u: 0.172, v: 0.4, d: 1.3 },
+    summary: { u: 0.172, v: 0.47, d: 1.25 },
   },
 };
 
@@ -145,6 +153,133 @@ function makeKiosk() {
   return g;
 }
 
+// ---------- short feedback banner (green = good, amber = gentle warning) ----------
+function makeFeedbackPanel() {
+  return makePanel(
+    1.3,
+    0.24,
+    (ctx, w, h, s) => {
+      if (!s.text) return;
+      rr(ctx, 0, 0, w, h, 28);
+      ctx.fillStyle = s.ok ? 'rgba(22,163,74,0.95)' : 'rgba(180,83,9,0.95)';
+      ctx.fill();
+      (s.ok ? icon.check : icon.cross)(ctx, 80, h / 2, 80);
+      text(ctx, s.text, 150, h / 2 + 22, { size: 58, maxWidth: w - 180 });
+    },
+    { renderOrder: 28, depthTest: false },
+  );
+}
+
+// ---------- in-car route display (like the LCD strip above the doors of an 81-765 car) ----------
+// Shows the next / current station in Azerbaijani (as on the real display) with English below,
+// and the learner's trip as a red line with stops: passed (grey), here (white), destination (ring).
+function makeRouteDisplay(trip) {
+  const st = (i) => trip.station(trip.line.stations[i]);
+  const lo = Math.min(trip.fromIdx, trip.toIdx);
+  const hi = Math.max(trip.fromIdx, trip.toIdx);
+  // the trip plus one station beyond the destination, in travel order
+  const span = [];
+  for (let i = trip.fromIdx; trip.dir > 0 ? i <= Math.min(hi + 1, trip.line.stations.length - 1) : i >= Math.max(lo - 1, 0); i += trip.dir) span.push(i);
+  return makePanel(
+    1.3,
+    0.42,
+    (ctx, w, h, s) => {
+      rr(ctx, 0, 0, w, h, 26);
+      ctx.fillStyle = '#0a0f18';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+      ctx.lineWidth = 4;
+      rr(ctx, 2, 2, w - 4, h - 4, 24);
+      ctx.stroke();
+      const idx = s.idx ?? trip.fromIdx;
+      const delayed = s.phase === 'delay';
+      const atStation = s.phase === 'doors';
+      const showIdx = atStation ? idx : s.nextIdx ?? idx;
+      // header
+      if (delayed) {
+        ctx.fillStyle = '#b45309';
+        rr(ctx, 24, 22, w - 48, 120, 18);
+        ctx.fill();
+        text(ctx, 'Qatar gecikir', 50, 82, { size: 46 });
+        text(ctx, 'Train delayed. Please wait', 50, 124, { size: 32, weight: 400, color: TOKENS.muted });
+      } else {
+        text(ctx, atStation ? 'Stansiya' : 'Növbəti stansiya', 40, 62, { size: 30, weight: 400, color: TOKENS.muted });
+        text(ctx, atStation ? 'This station' : 'Next station', 40, 98, { size: 26, weight: 400, color: TOKENS.muted });
+        const name = st(showIdx);
+        text(ctx, name.name_az, w - 40, 98, { size: 76, align: 'right', maxWidth: w - 420 });
+        text(ctx, name.name_en, w - 40, 136, { size: 28, weight: 400, align: 'right', color: TOKENS.muted });
+      }
+      // trip strip
+      const y = 236;
+      const x0 = 90;
+      const x1 = w - 90;
+      const step = span.length > 1 ? (x1 - x0) / (span.length - 1) : 0;
+      ctx.strokeStyle = trip.line.colour || TOKENS.lineRed;
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.moveTo(x0, y);
+      ctx.lineTo(x1, y);
+      ctx.stroke();
+      span.forEach((i, k) => {
+        const x = x0 + k * step;
+        const passed = (i - idx) * trip.dir < 0;
+        const here = i === idx;
+        const dest = i === trip.toIdx;
+        ctx.beginPath();
+        ctx.arc(x, y, here ? 26 : 18, 0, Math.PI * 2);
+        ctx.fillStyle = passed ? '#5b6472' : here ? '#ffffff' : '#0a0f18';
+        ctx.fill();
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = passed ? '#5b6472' : trip.line.colour || TOKENS.lineRed;
+        ctx.stroke();
+        if (dest) {
+          ctx.lineWidth = 6;
+          ctx.strokeStyle = TOKENS.go;
+          ctx.beginPath();
+          ctx.arc(x, y, 40, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        text(ctx, st(i).name_az, x, y + 78, { size: 28, weight: here || dest ? 700 : 400, align: 'center', color: passed ? '#8a93a3' : TOKENS.paper, maxWidth: step * 0.95 || 300 });
+        if (dest) text(ctx, 'Your stop', x, y + 114, { size: 24, align: 'center', color: '#4ade80' });
+      });
+    },
+    { renderOrder: 16 },
+  );
+}
+
+// ---------- arrival summary (shown in the car after getting off at the destination) ----------
+function makeSummary(trip) {
+  return makePanel(
+    1.2,
+    0.62,
+    (ctx, w, h, s) => {
+      if (!s.steps) return;
+      rr(ctx, 0, 0, w, h, 34);
+      ctx.fillStyle = 'rgba(10,15,24,0.94)';
+      ctx.fill();
+      ctx.fillStyle = TOKENS.go;
+      ctx.beginPath();
+      ctx.arc(110, 120, 62, 0, Math.PI * 2);
+      ctx.fill();
+      icon.check(ctx, 110, 120, 90);
+      text(ctx, `You arrived at ${trip.to.name_az}!`, 200, 112, { size: 58, maxWidth: w - 230 });
+      text(ctx, `${trip.from.name_az} → ${trip.to.name_az} · ${trip.stops} stops`, 200, 160, { size: 32, weight: 400, color: TOKENS.muted });
+      const rows = [
+        ['Steps done', `${s.steps} of 4`],
+        ['Hints used', String(s.hints)],
+        ['Asked the buddy', s.askedHelp ? 'Yes, well done' : 'No'],
+        ['Mistakes (it is okay!)', String(s.errors)],
+      ];
+      rows.forEach(([k, v], i) => {
+        const y = 260 + i * 68;
+        text(ctx, k, 70, y, { size: 36, weight: 400, color: TOKENS.muted });
+        text(ctx, v, w - 70, y, { size: 38, align: 'right' });
+      });
+    },
+    { renderOrder: 26, depthTest: false },
+  );
+}
+
 // ---------- build ----------
 // `trip` comes from the scenario engine (createTrip): signs and station names are built from the
 // OpenStreetMap network data, not typed by hand.
@@ -220,14 +355,7 @@ export function buildWorld({ trip }) {
       faceCamera(b);
       return b;
     });
-    const feedback = makePanel(1.3, 0.24, (ctx, w, h, s) => {
-      if (!s.text) return;
-      rr(ctx, 0, 0, w, h, 28);
-      ctx.fillStyle = s.ok ? 'rgba(22,163,74,0.95)' : 'rgba(180,83,9,0.95)';
-      ctx.fill();
-      (s.ok ? icon.check : icon.cross)(ctx, 80, h / 2, 80);
-      text(ctx, s.text, 150, h / 2 + 22, { size: 58, maxWidth: w - 180 });
-    }, { renderOrder: 28, depthTest: false });
+    const feedback = makeFeedbackPanel();
     feedback.position.set(0, 1.85, -3.2);
     faceCamera(feedback);
     const overlay = new THREE.Group();
@@ -235,6 +363,31 @@ export function buildWorld({ trip }) {
     group.add(sphere, overlay);
     interactives.push(signLeft, signRight);
     nodes.platform = { group, sphere, overlay, signLeft, signRight, feedback, forwardYaw: yawOfU(cfg.forwardU) };
+  }
+
+  // TRAIN (Baku Metro 81-765 car, Red line)
+  {
+    const cfg = NODES.train;
+    const group = new THREE.Group();
+    const sphere = makePanoSphere(cfg.pano);
+    const display = makeRouteDisplay(trip);
+    display.position.copy(pointAt(cfg.display.u, cfg.display.v, cfg.display.d));
+    faceCamera(display);
+    const doors = makeHotspot('exit', 'Doors closed', { glyph: 'walk' });
+    doors.position.copy(pointAt(cfg.doors.u, cfg.doors.v, cfg.doors.d));
+    faceCamera(doors);
+    const feedback = makeFeedbackPanel();
+    feedback.position.copy(pointAt(cfg.feedback.u, cfg.feedback.v, cfg.feedback.d));
+    faceCamera(feedback);
+    const summary = makeSummary(trip);
+    summary.position.copy(pointAt(cfg.summary.u, cfg.summary.v, cfg.summary.d));
+    faceCamera(summary);
+    summary.visible = false;
+    const overlay = new THREE.Group();
+    overlay.add(display, doors, feedback, summary);
+    group.add(sphere, overlay);
+    interactives.push(doors);
+    nodes.train = { group, sphere, overlay, display, doors, feedback, summary, forwardYaw: yawOfU(cfg.forwardU) };
   }
 
   for (const n of Object.values(nodes)) {
@@ -287,6 +440,17 @@ export function buildWorld({ trip }) {
     plat.signLeft.redraw({ highlight: hinted('sign:left') || s.sign === 'left' });
     plat.signRight.redraw({ highlight: hinted('sign:right') || s.sign === 'right' });
     plat.feedback.redraw(s.feedback || {});
+    const train = nodes.train;
+    const ride = s.ride || {};
+    train.display.redraw(ride);
+    train.doors.visible = !s.summary;
+    train.doors.userData.ring.redraw({ hover: ride.doorsOpen && hinted('exit'), off: !ride.doorsOpen });
+    train.doors.userData.dwell = !!ride.doorsOpen; // closed doors cannot be selected
+    train.doors.userData.chip.redraw({ label: ride.doorsOpen ? (ride.atDest ? 'Get off here' : 'Doors open') : 'Doors closed' });
+    train.feedback.redraw(s.trainFeedback || {});
+    train.feedback.visible = !s.summary;
+    train.summary.visible = !!s.summary;
+    if (s.summary) train.summary.redraw(s.summary);
     taskCard.redraw(s.task || {});
     buddy.userData.mode = s.buddyMode || buddy.userData.mode;
   }

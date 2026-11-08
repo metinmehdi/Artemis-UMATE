@@ -137,7 +137,7 @@ function recenter() {
 }
 let teleporting = false;
 function teleport(after) {
-  if (teleporting) return;
+  if (teleporting) return void setTimeout(() => teleport(after), 300); // queue, never drop
   teleporting = true;
   fadeEl.classList.add('on');
   setTimeout(() => {
@@ -155,6 +155,10 @@ const state = {};
 let taskOverride = null; // short-lived warning or praise on the task card
 let overrideTimer = 0;
 let hintInfo = null; // last hint_shown event of the current step
+let inTrain = false; // boarded and the fade into the car has happened
+let ridePhase = null; // 'moving' | 'doors' while riding
+let rideTimer = 0;
+let stats = { hints: 0, errors: 0, askedHelp: false }; // for the arrival summary
 const en = (s) => s.name_en;
 const az = (s) => s.name_az;
 
@@ -171,7 +175,17 @@ function flash(task, ms = 3500, then) {
 function syncView() {
   const e = engine.state;
   state.step = e.step;
-  state.node = e.location === 'hall' ? 'hall' : 'platform'; // the train scene arrives in Phase 2
+  const onBoard = e.location === 'train' || e.location === 'arrived';
+  state.node = e.location === 'hall' ? 'hall' : onBoard && inTrain ? 'train' : 'platform';
+  state.ride = e.ride
+    ? {
+        idx: e.ride.idx,
+        nextIdx: e.ride.idx + e.ride.dir,
+        phase: e.faults.train_delay && onBoard ? 'delay' : ridePhase === 'moving' ? 'moving' : 'doors',
+        doorsOpen: e.ride.doorsOpen && !e.done,
+        atDest: e.ride.idx === trip.toIdx,
+      }
+    : null;
   state.balance = e.balance / 100;
   if (state.kiosk !== 'paying') state.kiosk = e.kiosk;
   state.gate = { open: 'ok', rejected: 'bad', unread: 'unread' }[e.gate] || null;
@@ -180,7 +194,6 @@ function syncView() {
   state.faults = e.faults;
   const task = { ...engine.task };
   if (hintInfo && !e.done) task.sub = hintInfo.text;
-  if (e.location === 'train' && !e.done) task.sub = `Train towards ${az(trip.terminus)}. The ride scene comes in the next update.`;
   state.task = taskOverride ? { ...task, ...taskOverride } : task;
   pushState();
 }
@@ -201,7 +214,10 @@ function resetFlow() {
   taskOverride = null;
   hintInfo = null;
   stopCrowd();
-  Object.assign(state, { kioskOpen: false, kiosk: 'idle', amount: null, progress: 0, sign: null, feedback: null, buddyMode: companion.mode });
+  stopRide();
+  inTrain = false;
+  stats = { hints: 0, errors: 0, askedHelp: false };
+  Object.assign(state, { kioskOpen: false, kiosk: 'idle', amount: null, progress: 0, sign: null, feedback: null, trainFeedback: null, summary: null, buddyMode: companion.mode });
   engine.reset(now());
   faceYaw(world.forwardYaw('hall'));
   syncView();
@@ -217,8 +233,108 @@ const STEP_CONTEXT = {
   ride: () => `Learner is on the train towards ${en(trip.terminus)}. They get off at ${en(trip.to)} after ${trip.stops} stops.`,
 };
 
+// ---------- train ride: doors close -> moving -> arrival announcement -> doors open ----------
+// Timings are short on purpose (a real stop-to-stop ride is ~2 min). At the destination the doors
+// stay open longer so the graduated hints have time to help.
+const RIDE = { boardDelay: 2500, firstDeparture: 3500, move: 7000, doors: 6000, destDoors: 30000 };
+
+function stopRide() {
+  clearTimeout(rideTimer);
+  ridePhase = null;
+  rumble?.stop();
+  rumble = null;
+}
+function startRide() {
+  ridePhase = 'doors';
+  syncView();
+  rideTimer = setTimeout(depart, RIDE.firstDeparture);
+}
+function depart() {
+  const e = engine.state;
+  if (e.done || e.location !== 'train') return;
+  if (e.faults.train_delay) {
+    // held at the station with the doors open until the delay ends
+    syncView();
+    rideTimer = setTimeout(depart, 1000);
+    return;
+  }
+  if (e.ride.doorsOpen) act({ type: 'doors_close' });
+  chime();
+  ridePhase = 'moving';
+  state.trainFeedback = null;
+  rumble = rumble || noise({ freq: 260, gain: 0.22, fadeIn: 1.2 });
+  const nextIdx = e.ride.idx + e.ride.dir;
+  const next = trip.station(trip.line.stations[nextIdx]);
+  setTimeout(() => announce(`Next station: ${next.name_en}.`), 1200);
+  if (nextIdx === trip.toIdx) {
+    companion.say(`The next station is ${en(trip.to)}, where the learner gets off. Tell them kindly, in one short sentence, to get ready.`);
+  }
+  syncView();
+  rideTimer = setTimeout(arrive, RIDE.move);
+}
+function arrive() {
+  const e = engine.state;
+  if (e.done || e.location !== 'train') return;
+  if (e.faults.train_delay) {
+    // stopped in the tunnel until the delay ends
+    rumble?.stop();
+    rumble = null;
+    syncView();
+    rideTimer = setTimeout(arrive, 1000);
+    return;
+  }
+  rumble?.stop();
+  rumble = null;
+  ridePhase = 'doors';
+  act({ type: 'train_next' });
+  const r = engine.state.ride;
+  rideTimer = setTimeout(depart, r.idx === trip.toIdx ? RIDE.destDoors : RIDE.doors);
+}
+
 function onEngineEvent(e) {
   event(e.type, e);
+  if (e.type === 'hint_shown') stats.hints += 1;
+  if (e.type === 'error') stats.errors += 1;
+  if (e.type === 'help_asked') stats.askedHelp = true;
+  switch (e.type) {
+    case 'boarded':
+      // the train pulls in, then we fade into the car
+      noise({ freq: 220, gain: 0.25, fadeIn: 0.8, duration: RIDE.boardDelay / 1000 + 0.6 });
+      setTimeout(() => {
+        if (engine.state.location !== 'train') return;
+        teleport(() => {
+          inTrain = true;
+          startRide();
+        });
+      }, RIDE.boardDelay);
+      break;
+    case 'arrive_station': {
+      const st = trip.station(e.station);
+      announce(`This is ${st.name_en}.`);
+      if (e.atDestination) state.trainFeedback = { ok: true, text: `${st.name_az}: your stop!` };
+      break;
+    }
+    case 'return_trip':
+      state.trainFeedback = { ok: true, text: `Train back to ${az(trip.to)}` };
+      companion.say(`The learner got off after missing the stop. Calmly say: we cross to the other side and take the train back to ${en(trip.to)}. Well done for staying calm.`);
+      teleport(() => {
+        ridePhase = 'doors';
+        clearTimeout(rideTimer);
+        rideTimer = setTimeout(depart, RIDE.firstDeparture);
+        syncView();
+      });
+      break;
+    case 'step_complete':
+      if (e.id === 'ride') {
+        stopRide();
+        teleport(() => {
+          state.summary = { steps: 4, hints: stats.hints, errors: stats.errors, askedHelp: stats.askedHelp };
+          state.trainFeedback = null;
+          syncView();
+        });
+      }
+      break;
+  }
   switch (e.type) {
     case 'step_enter':
       hintInfo = null;
@@ -241,6 +357,12 @@ function onEngineEvent(e) {
       } else if (e.reason === 'card_not_read') {
         flash({ tone: 'warn', title: 'Card not read', sub: 'Hold the card still on the reader and try again' }, 3500, () => act({ type: 'gate_reset' }));
         companion.say('The card was not read. Calmly say this happens, and to hold the card still on the reader and try again.');
+      } else if (e.reason === 'exit_too_early') {
+        state.trainFeedback = { ok: false, text: `Not yet: ${e.stopsLeft} ${e.stopsLeft === 1 ? 'stop' : 'stops'} left` };
+        companion.say(`The learner tried to get off too early. Gently say: not yet, ${e.stopsLeft} more ${e.stopsLeft === 1 ? 'stop' : 'stops'} to ${en(trip.to)}. Listen to the announcements.`);
+      } else if (e.reason === 'missed_stop') {
+        state.trainFeedback = { ok: false, text: `We passed ${az(trip.to)}. Get off here` };
+        companion.say(`The learner missed the stop ${en(trip.to)}. Calmly say it is okay and happens to everyone: get off at this station and take the train back one stop.`);
       } else if (e.reason === 'wrong_direction') {
         state.feedback = { ok: false, text: `${az(trip.to)} is the other way` };
         flash({ tone: 'warn', sub: 'Look at the stations listed on each sign' });
@@ -257,7 +379,10 @@ function onEngineEvent(e) {
       break;
     case 'announcement':
       if (e.kind === 'delay') {
-        state.feedback = { ok: false, text: `Train delayed: about ${e.minutes} min` };
+        const msg = { ok: false, text: `Train delayed: about ${e.minutes} min` };
+        if (inTrain) state.trainFeedback = msg;
+        else state.feedback = msg;
+        announce(`Attention please. The train is delayed by about ${e.minutes} minutes.`);
         companion.say(`An announcement says the train is delayed by about ${e.minutes} minutes. Calmly explain that delays happen, that the learner can wait on the platform, and offer one slow breath together.`);
         // demo default: once the learner is waiting for the train (direction chosen) or sits in a
         // held train, the delay ends by itself after 12 s. The trainer can clear it earlier.
@@ -276,7 +401,10 @@ function onEngineEvent(e) {
       break;
     case 'fault_resolved':
       if (e.fault === 'crowd_noise') stopCrowd();
-      if (e.fault === 'train_delay') state.feedback = { ok: true, text: 'The train is arriving' };
+      if (e.fault === 'train_delay') {
+        if (inTrain) state.trainFeedback = { ok: true, text: 'The train is moving again' };
+        else state.feedback = { ok: true, text: 'The train is arriving' };
+      }
       break;
     case 'session_end':
       beep(1180, 220);
@@ -323,6 +451,8 @@ gaze.onSelect = (obj) => {
   } else if (id.startsWith('sign:') && engine.state.location === 'platform') {
     state.sign = id.slice(5);
     act({ type: 'choose_direction', side: state.sign });
+  } else if (id === 'exit' && engine.state.location === 'train') {
+    act({ type: 'exit' });
   }
 };
 gaze.onHoverChange = (obj) => {
@@ -346,37 +476,69 @@ function beep(freq = 660, ms = 90) {
   o.stop(actx.currentTime + ms / 1000 + 0.02);
 }
 
-// Crowd fault: low rumbling noise (brown noise through a low-pass filter), faded in and out.
-let crowd = null;
-function startCrowd() {
-  if (!actx || crowd) return;
-  const len = actx.sampleRate * 2;
-  const buf = actx.createBuffer(1, len, actx.sampleRate);
-  const d = buf.getChannelData(0);
-  let last = 0;
-  for (let i = 0; i < len; i++) {
-    last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
-    d[i] = last * 3.5;
+// Low noise (brown noise through a low-pass filter): crowd murmur, train rumble.
+// Returns { stop() }; with `duration` it fades out by itself.
+let brown = null;
+function noise({ freq = 900, gain = 0.3, fadeIn = 1.5, duration = 0 } = {}) {
+  if (!actx) return { stop() {} };
+  if (!brown) {
+    const len = actx.sampleRate * 2;
+    brown = actx.createBuffer(1, len, actx.sampleRate);
+    const d = brown.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < len; i++) {
+      last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+      d[i] = last * 3.5;
+    }
   }
   const src = actx.createBufferSource();
-  src.buffer = buf;
+  src.buffer = brown;
   src.loop = true;
   const lp = actx.createBiquadFilter();
   lp.type = 'lowpass';
-  lp.frequency.value = 900;
+  lp.frequency.value = freq;
   const g = actx.createGain();
   g.gain.setValueAtTime(0.0001, actx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.35, actx.currentTime + 1.5);
+  g.gain.exponentialRampToValueAtTime(gain, actx.currentTime + fadeIn);
   src.connect(lp).connect(g).connect(actx.destination);
   src.start();
-  crowd = { src, g };
+  let stopped = false;
+  const stop = (fade = 1) => {
+    if (stopped) return;
+    stopped = true;
+    g.gain.cancelScheduledValues(actx.currentTime);
+    g.gain.setValueAtTime(Math.max(g.gain.value, 0.0001), actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + fade);
+    src.stop(actx.currentTime + fade + 0.1);
+  };
+  if (duration) setTimeout(() => stop(0.8), duration * 1000);
+  return { stop };
+}
+let crowd = null;
+let rumble = null;
+function startCrowd() {
+  if (!crowd) crowd = noise({ freq: 900, gain: 0.35 });
 }
 function stopCrowd() {
-  if (!crowd || !actx) return;
-  const { src, g } = crowd;
-  g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 1);
-  src.stop(actx.currentTime + 1.1);
+  crowd?.stop();
   crowd = null;
+}
+// Door chime before the doors close.
+function chime() {
+  beep(784, 300);
+  setTimeout(() => beep(622, 420), 320);
+}
+// Station announcements with the phone's own speech engine (works offline).
+function announce(text) {
+  try {
+    if (!('speechSynthesis' in window)) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-GB';
+    u.rate = 0.95;
+    u.volume = 0.9;
+    speechSynthesis.speak(u);
+  } catch {}
+  log(`PA: ${text}`);
 }
 
 // ---------- start overlay ----------
@@ -395,6 +557,9 @@ function start(withBox) {
     actx.resume();
   } catch {}
   if ($('#ai').checked) companion.start(actx);
+  try {
+    speechSynthesis.speak(new SpeechSynthesisUtterance('')); // unlock announcements on iOS
+  } catch {}
   navigator.wakeLock?.request('screen').catch(() => {});
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') navigator.wakeLock?.request('screen').catch(() => {});
@@ -448,6 +613,7 @@ window.__app = {
   gaze,
   start,
   act,
+  RIDE, // timings, shortened by the automated test
   select: (id) => gaze.onSelect(world.interactives.find((o) => o.userData.id === id)),
   // point the (drag-look) camera at a panorama image coordinate
   lookAtU: (u, pitchDeg = 0) => {
