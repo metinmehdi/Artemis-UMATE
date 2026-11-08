@@ -14,8 +14,8 @@
       "target": "kiosk",
       "hints": [
         "First we put money on the card. The top-up machine is on your left.",
-        "Follow the arrow to the top-up machine.",
-        "Look at the glowing machine and hold your look for a moment."
+        "Look for the glowing machine on your left.",
+        "Turn left. Look at the glowing machine and hold your look for a moment."
       ]
     },
     {
@@ -25,8 +25,8 @@
       "target": "gate",
       "hints": [
         "Now we go through the turnstile. Touch the card to the green reader.",
-        "Follow the arrow to the turnstile with the green sign.",
-        "Look at the glowing reader and hold your look for a moment."
+        "Look for the glowing turnstile in front of you.",
+        "Look straight ahead at the glowing reader and hold your look for a moment."
       ]
     },
     {
