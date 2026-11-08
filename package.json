@@ -11,7 +11,8 @@
     "data:ingest": "node tools/ingest-osm.js",
     "data:build": "node tools/build-city.js",
     "data:sample": "node tools/gen-sample.js",
-    "data:gold": "node tools/build-gold.js"
+    "data:gold": "node tools/build-gold.js",
+    "voice:gen": "node tools/gen-voice.js"
   },
   "dependencies": {
     "qrcode": "^1.5.4",

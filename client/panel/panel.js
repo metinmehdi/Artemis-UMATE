@@ -173,7 +173,7 @@ function setAi(mode) {
 }
 
 document.querySelectorAll('[data-cmd]').forEach((b) =>
-  b.addEventListener('click', () => net.send({ type: 'cmd', cmd: b.dataset.cmd, text: b.dataset.text })),
+  b.addEventListener('click', () => net.send({ type: 'cmd', cmd: b.dataset.cmd, text: b.dataset.text, voice: b.dataset.voice })),
 );
 // Challenge buttons: the first click starts the challenge, a second click (while it is on) stops it.
 let activeFaults = {};
