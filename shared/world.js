@@ -14,7 +14,7 @@ const UP = new THREE.Vector3(0, 1, 0);
 // panorama files, plus a distance in metres, so they sit on the real object in the photo.
 export const NODES = {
   hall: {
-    pano: '/assets/pano/koroglu-gates.png',
+    pano: '/assets/pano/koroglu-gates.jpg',
     forwardU: 0.5, // the turnstile row
     kiosk: { u: 0.2, v: 0.53, d: 3.0 }, // grey BakıKART kiosk (left wall)
     kioskPanel: { u: 0.235, v: 0.47, d: 1.5 },
@@ -22,7 +22,7 @@ export const NODES = {
     toPlatform: { u: 0.54, ground: 4.6 }, // floor beyond the turnstiles
   },
   platform: {
-    pano: '/assets/pano/koroglu-platform.png',
+    pano: '/assets/pano/koroglu-platform.jpg',
     forwardU: 0.5, // looking along the island platform; tracks at u≈0.25 (left) and u≈0.75 (right)
     // hanging signs perpendicular to the platform (like the real ones), one over each track side
     signLeft: { x: -1.45, y: 2.55, z: -3.9 },
@@ -33,7 +33,7 @@ export const NODES = {
     ],
   },
   train: {
-    pano: '/assets/pano/train-interior.png',
+    pano: '/assets/pano/train-interior.jpg',
     forwardU: 0.172, // facing the exit doors (left doors in the panorama); aisle at u=0.5
     display: { u: 0.172, v: 0.32, d: 1.4 }, // route display above the doors
     doors: { u: 0.172, v: 0.5, d: 1.5 }, // eye level on the door windows, clear of the task card

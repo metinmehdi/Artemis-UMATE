@@ -2,16 +2,20 @@
 //   https://<laptop-ip>:8443/vr/     -> phone (VR box or hand-held)
 //   https://<laptop-ip>:8443/panel/  -> trainer panel / projector
 //   http://<laptop-ip>:8080/         -> one-time phone setup (download local CA certificate)
+//   https://<random>.trycloudflare.com/k/<key> -> public link (any network, no certificate setup)
 import https from 'node:https';
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
+import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import QRCode from 'qrcode';
 import { ensureCerts } from './certs.js';
 import { createRealtimeSecret } from './realtime.js';
 import { EventLog } from './events.js';
+import { startTunnel } from './tunnel.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 try {
@@ -65,21 +69,53 @@ function serveStatic(req, res, pathname) {
         res.end();
         return true;
       }
-      return serveFile(res, path.join(file, 'index.html'));
+      return serveFile(res, path.join(file, 'index.html'), req);
     }
-    return serveFile(res, file);
+    return serveFile(res, file, req);
   }
   return false;
 }
 
-function serveFile(res, file) {
-  if (!fs.existsSync(file)) return false;
-  res.writeHead(200, {
-    'Content-Type': MIME[path.extname(file).toLowerCase()] || 'application/octet-stream',
-    'Cache-Control': 'no-store',
-  });
+// Text files are sent gzip-compressed (three.js shrinks from 2.1 MB to about 0.5 MB), which matters
+// on a slow tunnel or venue Wi-Fi. Images, fonts and the three.js library may be cached by the phone;
+// our own code is never cached, so a reload always gets the latest version.
+const COMPRESSIBLE = new Set(['.html', '.js', '.mjs', '.css', '.json', '.svg', '.webmanifest']);
+const gzCache = new Map(); // file -> { mtimeMs, buf }
+function serveFile(res, file, req) {
+  let stat;
+  try {
+    stat = fs.statSync(file);
+  } catch {
+    return false;
+  }
+  const ext = path.extname(file).toLowerCase();
+  const cacheable = /[\\/](assets|three)[\\/]/.test(file) && !/[\\/]client[\\/](vr|panel)[\\/]/.test(file);
+  const headers = {
+    'Content-Type': MIME[ext] || 'application/octet-stream',
+    'Cache-Control': cacheable ? 'public, max-age=86400' : 'no-store',
+  };
+  if (COMPRESSIBLE.has(ext) && /\bgzip\b/.test(req?.headers['accept-encoding'] || '')) {
+    let hit = gzCache.get(file);
+    if (!hit || hit.mtimeMs !== stat.mtimeMs) {
+      hit = { mtimeMs: stat.mtimeMs, buf: zlib.gzipSync(fs.readFileSync(file), { level: 6 }) };
+      gzCache.set(file, hit);
+    }
+    res.writeHead(200, { ...headers, 'Content-Encoding': 'gzip', 'Content-Length': hit.buf.length, Vary: 'Accept-Encoding' });
+    res.end(hit.buf);
+    return true;
+  }
+  res.writeHead(200, { ...headers, 'Content-Length': stat.size });
   fs.createReadStream(file).pipe(res);
   return true;
+}
+
+function sendDenied(res) {
+  res.writeHead(403, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+  res.end(
+    '<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>UMATE</title>' +
+      '<body style="font:20px system-ui;background:#0b0f16;color:#f7f8fa;padding:24px">' +
+      '<h1>UMATE</h1><p>Please scan the QR code on the trainer\'s panel to open UMATE.</p></body>',
+  );
 }
 
 function sendJson(res, status, obj) {
@@ -91,9 +127,24 @@ const certs = ensureCerts(path.join(ROOT, 'certs'));
 const log = new EventLog(path.join(ROOT, 'data', 'sessions'));
 const urls = (p) => certs.ips.map((ip) => `https://${ip}:${HTTPS_PORT}${p}`);
 
+// ---------- public link (tunnel) + access key ----------
+// Tunnels (Cloudflare quick tunnel, or SSH to localhost.run) connect to a plain-HTTP listener that
+// only accepts connections from this laptop (127.0.0.1:TUNNEL_PORT); the tunnel provider does the
+// public HTTPS. Everything that arrives there is public, so it needs the access key. The QR code on
+// the panel carries it (/k/<key>); the server swaps it for a cookie. LAN requests stay open.
+const TUNNEL_PORT = Number(process.env.TUNNEL_PORT) || 8081;
+const ACCESS_KEY = process.env.UMATE_KEY || crypto.randomBytes(5).toString('hex');
+const viaTunnel = (req) => req.socket.localPort === TUNNEL_PORT || Boolean(req.headers['cf-ray'] || req.headers['cf-connecting-ip']);
+const cookieKey = (req) => /(?:^|;\s*)umate_k=([\w-]+)/.exec(req.headers.cookie || '')?.[1];
+const allowed = (req) => !viaTunnel(req) || cookieKey(req) === ACCESS_KEY;
+let publicUrl = null;
+const publicLinks = () =>
+  publicUrl ? { vr: `${publicUrl}/k/${ACCESS_KEY}`, panel: `${publicUrl}/k/${ACCESS_KEY}?to=panel` } : null;
+
 async function handleApi(req, res, url) {
   if (url.pathname === '/api/info') {
     return sendJson(res, 200, {
+      public: publicLinks(),
       vr: urls('/vr/'),
       panel: urls('/panel/'),
       setup: certs.ips.map((ip) => `http://${ip}:${HTTP_PORT}/`),
@@ -117,9 +168,19 @@ async function handleApi(req, res, url) {
   return sendJson(res, 404, { error: 'not found' });
 }
 
-const server = https.createServer({ key: certs.key, cert: certs.cert }, async (req, res) => {
+async function handleRequest(req, res) {
   const url = new URL(req.url, 'https://localhost');
   try {
+    if (url.pathname.startsWith('/k/')) {
+      const ok = url.pathname.slice(3).replace(/\/$/, '') === ACCESS_KEY;
+      if (!ok) return sendDenied(res);
+      res.writeHead(302, {
+        'Set-Cookie': `umate_k=${ACCESS_KEY}; Path=/; Max-Age=86400; Secure; HttpOnly; SameSite=Lax`,
+        Location: url.searchParams.get('to') === 'panel' ? '/panel/' : '/vr/',
+      });
+      return res.end();
+    }
+    if (!allowed(req)) return sendDenied(res);
     if (url.pathname.startsWith('/api/')) return await handleApi(req, res, url);
     if (url.pathname === '/') {
       res.writeHead(302, { Location: '/vr/' });
@@ -133,12 +194,25 @@ const server = https.createServer({ key: certs.key, cert: certs.cert }, async (r
     console.error('[http]', e);
     if (!res.headersSent) sendJson(res, 500, { error: 'server error' });
   }
-});
+}
+
+const server = https.createServer({ key: certs.key, cert: certs.cert }, handleRequest);
+const tunnelServer = http.createServer(handleRequest); // 127.0.0.1 only, for the tunnel
 
 // ---------- WebSocket hub ----------
 // Phones send: hello, pose (not logged), event / transcript (logged), status.
 // Panels send: cmd -> forwarded to phones.
-const wss = new WebSocketServer({ server, path: '/ws' });
+const wss = new WebSocketServer({ noServer: true });
+for (const s of [server, tunnelServer]) {
+  s.on('upgrade', (req, socket, head) => {
+    const { pathname } = new URL(req.url, 'http://localhost');
+    if (pathname !== '/ws' || !allowed(req)) {
+      socket.write('HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n');
+      return socket.destroy();
+    }
+    wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
+  });
+}
 const clients = new Map(); // ws -> { role, id, device }
 
 function broadcast(filter, msg) {
@@ -218,5 +292,19 @@ server.listen(HTTPS_PORT, '0.0.0.0', () => {
     }
     console.log(`  Laptop panel:       https://localhost:${HTTPS_PORT}/panel/`);
     console.log(`  OpenAI key: ${process.env.OPENAI_API_KEY ? 'OK' : 'MISSING (.env)'}   Gemini key: ${process.env.GEMINI_API_KEY ? 'OK' : 'MISSING (.env)'}\n`);
+    if (process.env.UMATE_TUNNEL === '0') return console.log('  Public link: off (UMATE_TUNNEL=0)\n');
+    tunnelServer.listen(TUNNEL_PORT, '127.0.0.1');
+    startTunnel({
+      root: ROOT,
+      port: TUNNEL_PORT,
+      onUrl: (u, provider) => {
+        publicUrl = u;
+        console.log(`\n  PUBLIC link for phones via ${provider} (any network, no certificate needed):\n    ${publicLinks().vr}\n`);
+      },
+      onDown: (why) => {
+        publicUrl = null;
+        console.log(`  Public link: unavailable (${why}). Phones can still use the Wi-Fi links above.`);
+      },
+    });
   });
 });

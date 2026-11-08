@@ -1,6 +1,6 @@
 # UMATE: practise the metro in VR first, then go alone
 
-**YUNEX 2026 hackathon, Digital Inclusion track** · [Azərbaycanca](README.az.md)
+**Team Artemis** · YUNEX 2026 hackathon, Digital Inclusion track · [Azərbaycanca](README.az.md)
 
 UMATE is a phone + low-cost VR box trainer for young people with cognitive differences (for example
 intellectual disability or autism). They rehearse a real Baku Metro trip with BakıKart payment
@@ -225,7 +225,7 @@ the same result. Money is counted in qəpik (integers) to avoid rounding errors.
 | 1. Top up | Opens the BakıKART machine, holds the card, picks 1, 2 or 5 AZN | Only offered amounts; card can fail to read (fault) |
 | 2. Turnstile | Taps the card | Balance ≥ fare (0.60 AZN), else refused without charging |
 | 3. Platform | Chooses the sign for the right direction | Direction computed from the OSM line order for any station pair |
-| 4. Ride | Gets off at the destination | Too early is refused; a missed stop leads to a ride back |
+| 4. Ride | Rides in a Baku Metro 81-765 car, listens to the announcements, gets off at the destination | Too early is refused; a missed stop leads to a ride back |
 
 **Hints** rise after 8, 15 and 25 seconds without progress: level 1 is a spoken and written hint,
 level 2 makes the target glow, level 3 is the most direct hint. Looking at the buddy for 1.5 seconds
@@ -257,9 +257,23 @@ npm start            # prints the links for the phone and the panel
 | Rebuild the data | Yes for `data:ingest`, no for `data:build` | `npm run data:ingest` refreshes the OSM snapshot; `npm run data:build` rebuilds `network.json` |
 
 - **Panel (projector):** `https://localhost:8443/panel/`
-- **Phone:** scan the QR code on the panel, or open `https://<laptop-ip>:8443/vr/`.
-- **First time on each phone:** open `http://<laptop-ip>:8080/` and install the local certificate
-  (the page explains the steps for Android and iPhone).
+- **Phone (recommended): the public link.** `npm start` also opens a free tunnel and prints a
+  `https://…/k/<key>` link; the QR code on the panel switches to it. It works from any network
+  (venue Wi-Fi, mobile data) with a normal certificate, so nothing has to be installed on the phone.
+  The `<key>` part is a random access key made at each start: without it the public address only
+  shows "scan the QR code", and the AI token and live link are refused. Providers, tried in order:
+  1. Cloudflare quick tunnel: fastest, no time limit. Needs
+     [cloudflared](https://github.com/cloudflare/cloudflared/releases) in `tools/bin/` or on the PATH.
+  2. Pinggy over SSH: no install. Shows a one-time "Enter site" page on the phone (tap it once).
+     Free links last 60 minutes, then a new link and QR code appear: start the server shortly
+     before the demo.
+  3. localhost.run over SSH: last resort, very slow.
+
+  Set `UMATE_TUNNEL=0` to switch the tunnel off.
+- **Phone on the same Wi-Fi (backup, works without internet):** open `https://<laptop-ip>:8443/vr/`.
+  The first time on each phone, open `http://<laptop-ip>:8080/` and install the local certificate
+  (the page explains the steps for Android and iPhone). Some venue Wi-Fi networks block
+  phone-to-laptop traffic; a phone hotspot that both devices join avoids that.
 
 | In VR | How |
 |---|---|
@@ -300,7 +314,7 @@ docs/     concept paper (AZ + EN)
 - [x] Phase 0: VR viewer, gaze input, live panel, AI buddy, HTTPS server
 - [x] Photoreal Baku Metro scenes, Baku-style signage
 - [x] Phase 1: OSM data pipeline, scenario engine, faults, hints, tests
-- [ ] Phase 2: train ride scene, station announcements
+- [x] Phase 2: train ride scene (81-765 car), station announcements, doors, arrival summary; public link
 - [ ] Phase 3: trainer panel redesign (step timeline, wallet)
 - [ ] Phase 4: offline voice lines for the buddy
 - [ ] Phase 5: gold star schema, progress chart with **NÜMUNƏ** sample cohort, Gemini trainer report
