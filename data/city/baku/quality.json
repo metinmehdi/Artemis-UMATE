@@ -1,0 +1,8 @@
+{
+  "errors": [],
+  "warnings": [
+    "line 2B: no official colour on file, OSM says \"lightgreen\"",
+    "10 stations have no name:en in OpenStreetMap: 20 Yanvar, 28 May, 8 Noyabr, Avtovağzal, Azadlıq prospekti, Bakmil, Gənclik, Koroğlu, Nizami, Sahil",
+    "name cleaned: \"20 Yanvar st.\" -> \"20 Yanvar\""
+  ]
+}

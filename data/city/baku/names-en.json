@@ -1,0 +1,31 @@
+{
+  "_note": "English station names used by UMATE for the AI voice and the English UI. Hand-checked transliterations of the Azerbaijani names. Signs in VR always show the Azerbaijani name, as in the real metro. Keys are the cleaned Azerbaijani names from OpenStreetMap.",
+  "names": {
+    "İçərişəhər": "Icherisheher",
+    "Sahil": "Sahil",
+    "28 May": "28 May",
+    "Gənclik": "Ganjlik",
+    "Nəriman Nərimanov": "Nariman Narimanov",
+    "Bakmil": "Bakmil",
+    "Ulduz": "Ulduz",
+    "Koroğlu": "Koroglu",
+    "Qara Qarayev": "Gara Garayev",
+    "Neftçilər": "Neftchilar",
+    "Xalqlar Dostluğu": "Khalglar Dostlugu",
+    "Əhmədli": "Ahmadli",
+    "Həzi Aslanov": "Hazi Aslanov",
+    "Dərnəgül": "Darnagul",
+    "Azadlıq prospekti": "Azadlig Prospekti",
+    "Nəsimi": "Nasimi",
+    "Memar Əcəmi": "Memar Ajami",
+    "20 Yanvar": "20 January",
+    "İnşaatçılar": "Inshaatchilar",
+    "Elmlər Akademiyası": "Elmlar Akademiyasi",
+    "Nizami": "Nizami",
+    "Cəfər Cabbarlı": "Jafar Jabbarli",
+    "Şah İsmayıl Xətai": "Shah Ismail Khatai",
+    "Xocəsən": "Khojasan",
+    "Avtovağzal": "Avtovaghzal",
+    "8 Noyabr": "8 November"
+  }
+}

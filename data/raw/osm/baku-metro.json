@@ -1,0 +1,5281 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-11-08T09:56:18Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "relation",
+  "id": 456667,
+  "members": [
+    {
+      "type": "node",
+      "ref": 1924834867,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 1148914625,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217698,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 4161594118,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 1930089762,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217274,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217100,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670216816,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 182134739,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 52870860,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 783046245,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "green",
+    "from": "Dərnəgül",
+    "name": "Line 2: Dərnəgül → Nizami",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "network:wikipedia": "az:Bakı metrosu",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "2",
+    "route": "subway",
+    "to": "Nizami",
+    "type": "route",
+    "wikidata": "Q3832656",
+    "wikipedia": "az:2-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 456668,
+  "members": [
+    {
+      "type": "node",
+      "ref": 670198805,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670199291,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 5176498844,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670219440,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670219867,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 3896778915,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 9635235525,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220397,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220410,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220733,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220979,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220993,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 533596942,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 52871079,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 535253239,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 386319213,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 326420311,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "red",
+    "from": "İçərişəhər",
+    "name": "Line 1: İçərişəhər → Həzi Aslanov",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "network:wikipedia": "az:Bakı metrosu",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "1",
+    "route": "subway",
+    "to": "Həzi Aslanov",
+    "type": "route",
+    "wikidata": "Q3832654",
+    "wikipedia": "az:1-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7664611,
+  "members": [
+    {
+      "type": "node",
+      "ref": 670199298,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 1288013962,
+      "role": "platform"
+    },
+    {
+      "type": "node",
+      "ref": 2295524457,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 533596943,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "lightgreen",
+    "from": "Şah İsmail Xətai",
+    "name": "Line 2B: Şah İsmail Xətai → Cəfər Cabbarlı",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "network:wikipedia": "en:Baku Metro",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "2B",
+    "route": "subway",
+    "to": "Cəfər Cabbarlı",
+    "type": "route",
+    "wikipedia": "az:2-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7664626,
+  "members": [
+    {
+      "type": "node",
+      "ref": 8809282576,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 7279336600,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 7279336594,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 7293343086,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 951749242,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 1124457865,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 1124457866,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 779540146,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 781144571,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "purple",
+    "from": "Xocəsən",
+    "name": "Line 3: Xocəsən → 8 Noyabr",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "3",
+    "route": "subway",
+    "to": "8 Noyabr",
+    "type": "route",
+    "via": "Memar Əcəmi",
+    "wikidata": "Q25547220",
+    "wikipedia": "az:3-cü xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7680413,
+  "members": [
+    {
+      "type": "node",
+      "ref": 7259856130,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 7259856127,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 7259856124,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 7259856116,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 7259856115,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220144,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 777897274,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 52871068,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 248963475,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 1276508921,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 1250320947,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "red",
+    "from": "İçərişəhər",
+    "name": "Line 1: İçərişəhər → Bakmil",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "1",
+    "route": "subway",
+    "to": "Bakmil",
+    "type": "route",
+    "wikidata": "Q3832654",
+    "wikipedia": "az:1-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7680414,
+  "members": [
+    {
+      "type": "node",
+      "ref": 1148914625,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217698,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 4161594118,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 1930089762,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217274,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217100,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670216816,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 52870860,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 783046245,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "green",
+    "from": "Azadlıq Prospekti",
+    "name": "Line 2: Azadlıq Prospekti → Nizami",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "2",
+    "route": "subway",
+    "to": "Nizami",
+    "type": "route",
+    "wikidata": "Q3832656",
+    "wikipedia": "az:2-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7792466,
+  "members": [
+    {
+      "type": "node",
+      "ref": 3077754725,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 5910339375,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 5176509732,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 8809282576,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 420081384,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 415085451,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 487837819,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 1124769281,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 951749242,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "purple",
+    "from": "8 Noyabr",
+    "name": "Line 3: 8 Noyabr → Xocəsən",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "3",
+    "route": "subway",
+    "to": "Xocəsən",
+    "type": "route",
+    "via": "Memar Əcəmi",
+    "wikidata": "Q25547220",
+    "wikipedia": "az:3-cü xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7792467,
+  "members": [
+    {
+      "type": "node",
+      "ref": 2295524457,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670199298,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 1288013962,
+      "role": "platform"
+    },
+    {
+      "type": "way",
+      "ref": 533596943,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "lightgreen",
+    "from": "Cəfər Cabbarlı",
+    "name": "Line 2B: Cəfər Cabbarlı → Şah İsmail Xətai",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "network:wikipedia": "en:Baku Metro",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "2B",
+    "route": "subway",
+    "to": "Şah İsmail Xətai",
+    "type": "route",
+    "wikipedia": "az:2-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7792468,
+  "members": [
+    {
+      "type": "node",
+      "ref": 670216816,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217100,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217274,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 1930089762,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 4161594118,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217698,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 1148914625,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 1924834867,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 783046245,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 52870860,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 182134739,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "green",
+    "from": "Nizami",
+    "name": "Line 2: Nizami → Dərnəgül",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "network:wikipedia": "az:Bakı metrosu",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "2",
+    "route": "subway",
+    "to": "Dərnəgül",
+    "type": "route",
+    "wikidata": "Q3832656",
+    "wikipedia": "az:2-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7792469,
+  "members": [
+    {
+      "type": "node",
+      "ref": 670216816,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217100,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217274,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 1930089762,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 4161594118,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670217698,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 1148914625,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 783046245,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 52870860,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "green",
+    "from": "Nizami",
+    "name": "Line 2: Nizami → Azadlıq Prospekti",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "2",
+    "route": "subway",
+    "to": "Azadlıq Prospekti",
+    "type": "route",
+    "wikidata": "Q3832656",
+    "wikipedia": "az:2-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7792470,
+  "members": [
+    {
+      "type": "node",
+      "ref": 670220993,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220979,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220733,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220410,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670220397,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 9635235525,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 3896778915,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670219867,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670219440,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 5176498844,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670199291,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670198805,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 326420311,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 386319213,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 535253239,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 52871079,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 533596942,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "red",
+    "from": "Həzi Aslanov",
+    "name": "Line 1: Həzi Aslanov → İçərişəhər",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "network:wikipedia": "az:Bakı metrosu",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "1",
+    "route": "subway",
+    "to": "İçərişəhər",
+    "type": "route",
+    "wikidata": "Q3832654",
+    "wikipedia": "az:1-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "relation",
+  "id": 7792471,
+  "members": [
+    {
+      "type": "node",
+      "ref": 670220144,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670219867,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670219440,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 5176498844,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670199291,
+      "role": "stop"
+    },
+    {
+      "type": "node",
+      "ref": 670198805,
+      "role": "stop"
+    },
+    {
+      "type": "way",
+      "ref": 1250320947,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 1276508921,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 461153495,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 1188516912,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 52871079,
+      "role": ""
+    },
+    {
+      "type": "way",
+      "ref": 533596942,
+      "role": ""
+    }
+  ],
+  "tags": {
+    "colour": "red",
+    "from": "Bakmil",
+    "name": "Line 1: Bakmil → İçərişəhər",
+    "network": "Bakı Metropoliteni",
+    "network:wikidata": "Q213271",
+    "operator": "Bakı Metropoliteni",
+    "operator:wikidata": "Q213271",
+    "public_transport:version": "2",
+    "ref": "1",
+    "route": "subway",
+    "to": "İçərişəhər",
+    "type": "route",
+    "wikidata": "Q3832654",
+    "wikipedia": "az:1-ci xətt (Bakı metrosu)"
+  }
+},
+{
+  "type": "node",
+  "id": 670217275,
+  "lat": 40.3788331,
+  "lon": 49.8071508
+},
+{
+  "type": "node",
+  "id": 3803066073,
+  "lat": 40.3837854,
+  "lon": 49.8047761
+},
+{
+  "type": "node",
+  "id": 670198805,
+  "lat": 40.3659591,
+  "lon": 49.8316454,
+  "tags": {
+    "name": "İçərişəhər",
+    "name:en": "Icherisheher",
+    "name:ru": "Ичеришехер",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7259856130,
+  "lat": 40.3659586,
+  "lon": 49.8316486,
+  "tags": {
+    "name": "İçərişəhər",
+    "name:az": "İçərişəhər",
+    "name:en": "Icherisheher",
+    "name:ru": "Ичеришехер",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3034462015,
+  "lat": 40.3674418,
+  "lon": 49.8323689
+},
+{
+  "type": "node",
+  "id": 7259856129,
+  "lat": 40.3672643,
+  "lon": 49.8322368
+},
+{
+  "type": "node",
+  "id": 11927164431,
+  "lat": 40.3670855,
+  "lon": 49.8321178
+},
+{
+  "type": "node",
+  "id": 13753399780,
+  "lat": 40.3674267,
+  "lon": 49.8323482
+},
+{
+  "type": "node",
+  "id": 13753399781,
+  "lat": 40.3674063,
+  "lon": 49.8323315
+},
+{
+  "type": "node",
+  "id": 670217276,
+  "lat": 40.3762134,
+  "lon": 49.8101248
+},
+{
+  "type": "node",
+  "id": 670217277,
+  "lat": 40.3749970,
+  "lon": 49.8130270
+},
+{
+  "type": "node",
+  "id": 3803117498,
+  "lat": 40.3776349,
+  "lon": 49.8080075
+},
+{
+  "type": "node",
+  "id": 11927164449,
+  "lat": 40.3749410,
+  "lon": 49.8133334
+},
+{
+  "type": "node",
+  "id": 11927164451,
+  "lat": 40.3767882,
+  "lon": 49.8091282
+},
+{
+  "type": "node",
+  "id": 11927164452,
+  "lat": 40.3782291,
+  "lon": 49.8075137
+},
+{
+  "type": "node",
+  "id": 11927164453,
+  "lat": 40.3779212,
+  "lon": 49.8077606
+},
+{
+  "type": "node",
+  "id": 11934071631,
+  "lat": 40.3749198,
+  "lon": 49.8136373
+},
+{
+  "type": "node",
+  "id": 11934071632,
+  "lat": 40.3750907,
+  "lon": 49.8127357
+},
+{
+  "type": "node",
+  "id": 670217099,
+  "lat": 40.3750038,
+  "lon": 49.8149742
+},
+{
+  "type": "node",
+  "id": 670217100,
+  "lat": 40.3751519,
+  "lon": 49.8154836,
+  "tags": {
+    "name": "Elmlər Akademiyası",
+    "name:az": "Metro elmlər",
+    "name:en": "Elmler Akademiyasi",
+    "name:fa": "فرهنگستان علوم",
+    "name:ru": "Элмляр Академиясы",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1985-12-31",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "yes",
+    "wikidata": "Q3025421",
+    "wikimedia_commons": "Category:Elmlər Akademiyası (Baku Metro)",
+    "wikipedia": "az:Elmlər Akademiyası metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 3755639193,
+  "lat": 40.3768875,
+  "lon": 49.8194022
+},
+{
+  "type": "node",
+  "id": 11927164446,
+  "lat": 40.3771567,
+  "lon": 49.8203793
+},
+{
+  "type": "node",
+  "id": 11927164447,
+  "lat": 40.3767448,
+  "lon": 49.8190238
+},
+{
+  "type": "node",
+  "id": 11927164448,
+  "lat": 40.3770254,
+  "lon": 49.8198168
+},
+{
+  "type": "node",
+  "id": 11927164450,
+  "lat": 40.3749240,
+  "lon": 49.8143303
+},
+{
+  "type": "node",
+  "id": 11934071628,
+  "lat": 40.3749526,
+  "lon": 49.8146541
+},
+{
+  "type": "node",
+  "id": 11934071629,
+  "lat": 40.3750694,
+  "lon": 49.8152400
+},
+{
+  "type": "node",
+  "id": 11934071630,
+  "lat": 40.3749127,
+  "lon": 49.8139375
+},
+{
+  "type": "node",
+  "id": 1311652984,
+  "lat": 40.3780486,
+  "lon": 49.8251773
+},
+{
+  "type": "node",
+  "id": 11927164445,
+  "lat": 40.3782521,
+  "lon": 49.8260479
+},
+{
+  "type": "node",
+  "id": 670216816,
+  "lat": 40.3793192,
+  "lon": 49.8300187,
+  "tags": {
+    "colour": "green",
+    "name": "Nizami",
+    "name:fa": "نظامی",
+    "name:ru": "Низами",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1976-12-31",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025411",
+    "wikimedia_commons": "Category:Nizami (Baku Metro)",
+    "wikipedia": "az:Nizami metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 2511247290,
+  "lat": 40.3794727,
+  "lon": 49.8311544
+},
+{
+  "type": "node",
+  "id": 11927164442,
+  "lat": 40.3794895,
+  "lon": 49.8317637
+},
+{
+  "type": "node",
+  "id": 3034448752,
+  "lat": 40.3682974,
+  "lon": 49.8340446
+},
+{
+  "type": "node",
+  "id": 11927164433,
+  "lat": 40.3684558,
+  "lon": 49.8344451
+},
+{
+  "type": "node",
+  "id": 11927164434,
+  "lat": 40.3681454,
+  "lon": 49.8337156
+},
+{
+  "type": "node",
+  "id": 13753399782,
+  "lat": 40.3681921,
+  "lon": 49.8338080
+},
+{
+  "type": "node",
+  "id": 13753399783,
+  "lat": 40.3682360,
+  "lon": 49.8339012
+},
+{
+  "type": "node",
+  "id": 13753399784,
+  "lat": 40.3683244,
+  "lon": 49.8341091
+},
+{
+  "type": "node",
+  "id": 13753399785,
+  "lat": 40.3683566,
+  "lon": 49.8341889
+},
+{
+  "type": "node",
+  "id": 670199291,
+  "lat": 40.3717359,
+  "lon": 49.8445559,
+  "tags": {
+    "name": "Sahil",
+    "name:az": "Sahil",
+    "old_name": "26 Бакинских Комиссаров",
+    "old_name:az": "26 Bakı komissarı",
+    "old_name:az-cyr": "26 Бакы комиссары",
+    "old_name:ru": "26 Бакинских Комиссаров",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7259856127,
+  "lat": 40.3717145,
+  "lon": 49.8445867,
+  "tags": {
+    "name": "Sahil",
+    "name:az": "Sahil",
+    "old_name": "26 Бакинских Комиссаров",
+    "old_name:az": "26 Bakı komissarı",
+    "old_name:az-cyr": "26 Бакы комиссары",
+    "old_name:ru": "26 Бакинских Комиссаров",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11927164423,
+  "lat": 40.3721613,
+  "lon": 49.8452759
+},
+{
+  "type": "node",
+  "id": 11927164424,
+  "lat": 40.3721740,
+  "lon": 49.8452455
+},
+{
+  "type": "node",
+  "id": 11927164425,
+  "lat": 40.3728858,
+  "lon": 49.8459889
+},
+{
+  "type": "node",
+  "id": 11927164426,
+  "lat": 40.3728987,
+  "lon": 49.8459655
+},
+{
+  "type": "node",
+  "id": 12363769444,
+  "lat": 40.3705740,
+  "lon": 49.8410373
+},
+{
+  "type": "node",
+  "id": 670216679,
+  "lat": 40.3788991,
+  "lon": 49.8399541
+},
+{
+  "type": "node",
+  "id": 2494917357,
+  "lat": 40.3794835,
+  "lon": 49.8341133
+},
+{
+  "type": "node",
+  "id": 11927164444,
+  "lat": 40.3794360,
+  "lon": 49.8348345
+},
+{
+  "type": "node",
+  "id": 11934071627,
+  "lat": 40.3789406,
+  "lon": 49.8396289
+},
+{
+  "type": "node",
+  "id": 5176498838,
+  "lat": 40.3779923,
+  "lon": 49.8447958
+},
+{
+  "type": "node",
+  "id": 5188402385,
+  "lat": 40.3777551,
+  "lon": 49.8466045
+},
+{
+  "type": "node",
+  "id": 2295524457,
+  "lat": 40.3796520,
+  "lon": 49.8489498,
+  "tags": {
+    "name": "Cəfər Cabbarlı",
+    "name:en": "Jafar Jabbarly",
+    "name:fa": "جعفر جبارلی",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "operator": "Bakı Metropoliteni",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025580",
+    "wikipedia": "az:Cəfər Cabbarlı metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 5176498831,
+  "lat": 40.3791507,
+  "lon": 49.8488280
+},
+{
+  "type": "node",
+  "id": 5176498832,
+  "lat": 40.3770169,
+  "lon": 49.8486970
+},
+{
+  "type": "node",
+  "id": 5176498839,
+  "lat": 40.3777719,
+  "lon": 49.8475190
+},
+{
+  "type": "node",
+  "id": 5176498840,
+  "lat": 40.3781144,
+  "lon": 49.8481712
+},
+{
+  "type": "node",
+  "id": 5176498841,
+  "lat": 40.3786853,
+  "lon": 49.8485402
+},
+{
+  "type": "node",
+  "id": 5176498843,
+  "lat": 40.3798464,
+  "lon": 49.8485991,
+  "tags": {
+    "addr:city": "Bakı",
+    "addr:street": "28 May Meydanı",
+    "name": "28 May mst",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5176498844,
+  "lat": 40.3798432,
+  "lon": 49.8486908,
+  "tags": {
+    "addr:city": "Bakı",
+    "addr:street": "28 May Meydanı",
+    "name": "28 May",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7259856124,
+  "lat": 40.3798701,
+  "lon": 49.8487572,
+  "tags": {
+    "addr:city": "Bakı",
+    "addr:street": "28 May Meydanı",
+    "name": "28 May",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7259856125,
+  "lat": 40.3791472,
+  "lon": 49.8488900
+},
+{
+  "type": "node",
+  "id": 7259856126,
+  "lat": 40.3770072,
+  "lon": 49.8487570
+},
+{
+  "type": "node",
+  "id": 11927164427,
+  "lat": 40.3766025,
+  "lon": 49.8485532
+},
+{
+  "type": "node",
+  "id": 11927164428,
+  "lat": 40.3766323,
+  "lon": 49.8485045
+},
+{
+  "type": "node",
+  "id": 11927164429,
+  "lat": 40.3774926,
+  "lon": 49.8487812
+},
+{
+  "type": "node",
+  "id": 11927164430,
+  "lat": 40.3774961,
+  "lon": 49.8488547
+},
+{
+  "type": "node",
+  "id": 11927164435,
+  "lat": 40.3777151,
+  "lon": 49.8470593
+},
+{
+  "type": "node",
+  "id": 11927164436,
+  "lat": 40.3778742,
+  "lon": 49.8478549
+},
+{
+  "type": "node",
+  "id": 11927164437,
+  "lat": 40.3779906,
+  "lon": 49.8480326
+},
+{
+  "type": "node",
+  "id": 11927164438,
+  "lat": 40.3777286,
+  "lon": 49.8472867
+},
+{
+  "type": "node",
+  "id": 11927164439,
+  "lat": 40.3790058,
+  "lon": 49.8486794
+},
+{
+  "type": "node",
+  "id": 11927164440,
+  "lat": 40.3788534,
+  "lon": 49.8486309
+},
+{
+  "type": "node",
+  "id": 11927164441,
+  "lat": 40.3799893,
+  "lon": 49.8485547
+},
+{
+  "type": "node",
+  "id": 11927169902,
+  "lat": 40.3795135,
+  "lon": 49.8488512
+},
+{
+  "type": "node",
+  "id": 11927169903,
+  "lat": 40.3795141,
+  "lon": 49.8487855
+},
+{
+  "type": "node",
+  "id": 11934071616,
+  "lat": 40.3777151,
+  "lon": 49.8471752
+},
+{
+  "type": "node",
+  "id": 11934071617,
+  "lat": 40.3777283,
+  "lon": 49.8468386
+},
+{
+  "type": "node",
+  "id": 11934071618,
+  "lat": 40.3778160,
+  "lon": 49.8476916
+},
+{
+  "type": "node",
+  "id": 11934071619,
+  "lat": 40.3779289,
+  "lon": 49.8479545
+},
+{
+  "type": "node",
+  "id": 11934071620,
+  "lat": 40.3780513,
+  "lon": 49.8481081
+},
+{
+  "type": "node",
+  "id": 11934071621,
+  "lat": 40.3782755,
+  "lon": 49.8482956
+},
+{
+  "type": "node",
+  "id": 11934071622,
+  "lat": 40.3787661,
+  "lon": 49.8485866
+},
+{
+  "type": "node",
+  "id": 11934071623,
+  "lat": 40.3789276,
+  "lon": 49.8486593
+},
+{
+  "type": "node",
+  "id": 11934071624,
+  "lat": 40.3791369,
+  "lon": 49.8486886
+},
+{
+  "type": "node",
+  "id": 11934071625,
+  "lat": 40.3793151,
+  "lon": 49.8486747
+},
+{
+  "type": "node",
+  "id": 11934071626,
+  "lat": 40.3799237,
+  "lon": 49.8485784
+},
+{
+  "type": "node",
+  "id": 5176498830,
+  "lat": 40.3807977,
+  "lon": 49.8482398,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 7259856123,
+  "lat": 40.3808125,
+  "lon": 49.8483136,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 12324608960,
+  "lat": 40.3825845,
+  "lon": 49.8512478
+},
+{
+  "type": "node",
+  "id": 12758903921,
+  "lat": 40.3815401,
+  "lon": 49.8495527
+},
+{
+  "type": "node",
+  "id": 670199298,
+  "lat": 40.3832631,
+  "lon": 49.8721427,
+  "tags": {
+    "name": "Şah İsmayıl Xətai",
+    "name:en": "Shah Ismail Khatai",
+    "name:fa": "شاه اسماعیل ختایی",
+    "name:ru": "Шах Исмаил Хатаи",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "operator": "Bakı Metropoliteni",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "short_name": "Xətai",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025592",
+    "wikimedia_commons": "Category:Şah İsmail Xətai (Baku Metro)",
+    "wikipedia": "az:Şah İsmayıl Xətai metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 11944752767,
+  "lat": 40.3832275,
+  "lon": 49.8719654
+},
+{
+  "type": "node",
+  "id": 11944792869,
+  "lat": 40.3832046,
+  "lon": 49.8723392
+},
+{
+  "type": "node",
+  "id": 11944792870,
+  "lat": 40.3831571,
+  "lon": 49.8719815
+},
+{
+  "type": "node",
+  "id": 11944792878,
+  "lat": 40.3832429,
+  "lon": 49.8723304
+},
+{
+  "type": "node",
+  "id": 11944792882,
+  "lat": 40.3832360,
+  "lon": 49.8719332
+},
+{
+  "type": "node",
+  "id": 13602384893,
+  "lat": 40.3832503,
+  "lon": 49.8721459
+},
+{
+  "type": "node",
+  "id": 13602384894,
+  "lat": 40.3832746,
+  "lon": 49.8723232
+},
+{
+  "type": "node",
+  "id": 14255370914,
+  "lat": 40.3831862,
+  "lon": 49.8714524
+},
+{
+  "type": "node",
+  "id": 11927164454,
+  "lat": 40.3927263,
+  "lon": 49.8005533
+},
+{
+  "type": "node",
+  "id": 670217272,
+  "lat": 40.3915122,
+  "lon": 49.8009838
+},
+{
+  "type": "node",
+  "id": 670217274,
+  "lat": 40.3890935,
+  "lon": 49.8023575,
+  "tags": {
+    "name": "İnşaatçılar",
+    "name:en": "Inshaatchilar",
+    "name:fa": "انشاتچیلار",
+    "name:ru": "Иншаатчылар",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1985-12-31",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025436",
+    "wikimedia_commons": "Category:İnşaatçılar (Baku Metro)",
+    "wikipedia": "az:İnşaatçılar metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 1796784026,
+  "lat": 40.3877718,
+  "lon": 49.8031051
+},
+{
+  "type": "node",
+  "id": 670217350,
+  "lat": 40.3965783,
+  "lon": 49.8002543
+},
+{
+  "type": "node",
+  "id": 670217351,
+  "lat": 40.3940494,
+  "lon": 49.8002864
+},
+{
+  "type": "node",
+  "id": 11927164455,
+  "lat": 40.3955707,
+  "lon": 49.8001784
+},
+{
+  "type": "node",
+  "id": 11927164456,
+  "lat": 40.3977362,
+  "lon": 49.8006323
+},
+{
+  "type": "node",
+  "id": 670217349,
+  "lat": 40.3988007,
+  "lon": 49.8011126
+},
+{
+  "type": "node",
+  "id": 670217348,
+  "lat": 40.4022980,
+  "lon": 49.8037384
+},
+{
+  "type": "node",
+  "id": 5910349053,
+  "lat": 40.4031722,
+  "lon": 49.8054122
+},
+{
+  "type": "node",
+  "id": 5910349055,
+  "lat": 40.4007507,
+  "lon": 49.8023056
+},
+{
+  "type": "node",
+  "id": 11927164457,
+  "lat": 40.4018657,
+  "lon": 49.8032483
+},
+{
+  "type": "node",
+  "id": 11927164458,
+  "lat": 40.4025920,
+  "lon": 49.8042202
+},
+{
+  "type": "node",
+  "id": 8809282574,
+  "lat": 40.4219457,
+  "lon": 49.7795100
+},
+{
+  "type": "node",
+  "id": 8809282576,
+  "lat": 40.4211517,
+  "lon": 49.7790664,
+  "tags": {
+    "name": "Xocəsən",
+    "name:en": "Khojasan",
+    "network": "Bakı metropoliteni",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9229612853,
+  "lat": 40.4223695,
+  "lon": 49.7806689
+},
+{
+  "type": "node",
+  "id": 9229612854,
+  "lat": 40.4222467,
+  "lon": 49.7801641
+},
+{
+  "type": "node",
+  "id": 10274176920,
+  "lat": 40.4220815,
+  "lon": 49.7796438
+},
+{
+  "type": "node",
+  "id": 10274176921,
+  "lat": 40.4221581,
+  "lon": 49.7798289
+},
+{
+  "type": "node",
+  "id": 11927310034,
+  "lat": 40.4221214,
+  "lon": 49.7797301
+},
+{
+  "type": "node",
+  "id": 11927310035,
+  "lat": 40.4220167,
+  "lon": 49.7795707
+},
+{
+  "type": "node",
+  "id": 8809282573,
+  "lat": 40.4227851,
+  "lon": 49.7816350,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 9229612855,
+  "lat": 40.4225088,
+  "lon": 49.7812148
+},
+{
+  "type": "node",
+  "id": 10274176919,
+  "lat": 40.4226504,
+  "lon": 49.7815090
+},
+{
+  "type": "node",
+  "id": 10282585601,
+  "lat": 40.4230054,
+  "lon": 49.7818084
+},
+{
+  "type": "node",
+  "id": 10282585602,
+  "lat": 40.4232624,
+  "lon": 49.7820012,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 10282585603,
+  "lat": 40.4239428,
+  "lon": 49.7824176
+},
+{
+  "type": "node",
+  "id": 10282585604,
+  "lat": 40.4248717,
+  "lon": 49.7829513
+},
+{
+  "type": "node",
+  "id": 10282585605,
+  "lat": 40.4258078,
+  "lon": 49.7835413
+},
+{
+  "type": "node",
+  "id": 11927310033,
+  "lat": 40.4225733,
+  "lon": 49.7813722
+},
+{
+  "type": "node",
+  "id": 12133773772,
+  "lat": 40.4231588,
+  "lon": 49.7819234
+},
+{
+  "type": "node",
+  "id": 12133786720,
+  "lat": 40.4235368,
+  "lon": 49.7821691
+},
+{
+  "type": "node",
+  "id": 4168101326,
+  "lat": 40.4241843,
+  "lon": 49.7935250
+},
+{
+  "type": "node",
+  "id": 4802464543,
+  "lat": 40.4253994,
+  "lon": 49.7927653
+},
+{
+  "type": "node",
+  "id": 7279336592,
+  "lat": 40.4241403,
+  "lon": 49.7934384
+},
+{
+  "type": "node",
+  "id": 9764004725,
+  "lat": 40.4246104,
+  "lon": 49.7932949
+},
+{
+  "type": "node",
+  "id": 9764004726,
+  "lat": 40.4250522,
+  "lon": 49.7930250
+},
+{
+  "type": "node",
+  "id": 9764004727,
+  "lat": 40.4258806,
+  "lon": 49.7922865
+},
+{
+  "type": "node",
+  "id": 10282607624,
+  "lat": 40.4258369,
+  "lon": 49.7922047
+},
+{
+  "type": "node",
+  "id": 10282607625,
+  "lat": 40.4250263,
+  "lon": 49.7929347
+},
+{
+  "type": "node",
+  "id": 11177455350,
+  "lat": 40.4253561,
+  "lon": 49.7926891
+},
+{
+  "type": "node",
+  "id": 4161594117,
+  "lat": 40.4146526,
+  "lon": 49.7991347
+},
+{
+  "type": "node",
+  "id": 7279336599,
+  "lat": 40.4146651,
+  "lon": 49.7990509
+},
+{
+  "type": "node",
+  "id": 11177553305,
+  "lat": 40.4192196,
+  "lon": 49.7964650
+},
+{
+  "type": "node",
+  "id": 11177553306,
+  "lat": 40.4191936,
+  "lon": 49.7963788
+},
+{
+  "type": "node",
+  "id": 11927310006,
+  "lat": 40.4147453,
+  "lon": 49.7990672
+},
+{
+  "type": "node",
+  "id": 11927310007,
+  "lat": 40.4147243,
+  "lon": 49.7990120
+},
+{
+  "type": "node",
+  "id": 11927310008,
+  "lat": 40.4143743,
+  "lon": 49.7994766
+},
+{
+  "type": "node",
+  "id": 11927310009,
+  "lat": 40.4144091,
+  "lon": 49.7995089
+},
+{
+  "type": "node",
+  "id": 11927310010,
+  "lat": 40.4145439,
+  "lon": 49.7992479
+},
+{
+  "type": "node",
+  "id": 11927310011,
+  "lat": 40.4144765,
+  "lon": 49.7993629
+},
+{
+  "type": "node",
+  "id": 11927310012,
+  "lat": 40.4145262,
+  "lon": 49.7991744
+},
+{
+  "type": "node",
+  "id": 11927310013,
+  "lat": 40.4144385,
+  "lon": 49.7993307
+},
+{
+  "type": "node",
+  "id": 11927310014,
+  "lat": 40.4145826,
+  "lon": 49.7991144
+},
+{
+  "type": "node",
+  "id": 11927310015,
+  "lat": 40.4145961,
+  "lon": 49.7991835
+},
+{
+  "type": "node",
+  "id": 4168121532,
+  "lat": 40.4214580,
+  "lon": 49.7951554
+},
+{
+  "type": "node",
+  "id": 5176509732,
+  "lat": 40.4213180,
+  "lon": 49.7952372,
+  "tags": {
+    "name": "Avtovağzal",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7279336600,
+  "lat": 40.4212723,
+  "lon": 49.7951004,
+  "tags": {
+    "name": "Avtovağzal",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4802464546,
+  "lat": 40.4292166,
+  "lon": 49.7872368
+},
+{
+  "type": "node",
+  "id": 4802464547,
+  "lat": 40.4288619,
+  "lon": 49.7857413
+},
+{
+  "type": "node",
+  "id": 4802464548,
+  "lat": 40.4274192,
+  "lon": 49.7844062
+},
+{
+  "type": "node",
+  "id": 9764004717,
+  "lat": 40.4280859,
+  "lon": 49.7849501
+},
+{
+  "type": "node",
+  "id": 9764004718,
+  "lat": 40.4285237,
+  "lon": 49.7853223
+},
+{
+  "type": "node",
+  "id": 9764004719,
+  "lat": 40.4291539,
+  "lon": 49.7865009
+},
+{
+  "type": "node",
+  "id": 9764004720,
+  "lat": 40.4290364,
+  "lon": 49.7860977
+},
+{
+  "type": "node",
+  "id": 10282585606,
+  "lat": 40.4263952,
+  "lon": 49.7838998
+},
+{
+  "type": "node",
+  "id": 10282585607,
+  "lat": 40.4269911,
+  "lon": 49.7842551
+},
+{
+  "type": "node",
+  "id": 10282585608,
+  "lat": 40.4274299,
+  "lon": 49.7845351
+},
+{
+  "type": "node",
+  "id": 10282607609,
+  "lat": 40.4276256,
+  "lon": 49.7846903
+},
+{
+  "type": "node",
+  "id": 10282607610,
+  "lat": 40.4281027,
+  "lon": 49.7850718
+},
+{
+  "type": "node",
+  "id": 10282607611,
+  "lat": 40.4284884,
+  "lon": 49.7853860
+},
+{
+  "type": "node",
+  "id": 10282607613,
+  "lat": 40.4288286,
+  "lon": 49.7858010
+},
+{
+  "type": "node",
+  "id": 10282607614,
+  "lat": 40.4289933,
+  "lon": 49.7861440
+},
+{
+  "type": "node",
+  "id": 10282607615,
+  "lat": 40.4290973,
+  "lon": 49.7865214
+},
+{
+  "type": "node",
+  "id": 10282607617,
+  "lat": 40.4291581,
+  "lon": 49.7872311
+},
+{
+  "type": "node",
+  "id": 10282643441,
+  "lat": 40.4261842,
+  "lon": 49.7837710,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 11853872454,
+  "lat": 40.4276588,
+  "lon": 49.7845685
+},
+{
+  "type": "node",
+  "id": 11927310023,
+  "lat": 40.4291726,
+  "lon": 49.7875584
+},
+{
+  "type": "node",
+  "id": 11927310024,
+  "lat": 40.4292313,
+  "lon": 49.7875438
+},
+{
+  "type": "node",
+  "id": 11927310025,
+  "lat": 40.4290516,
+  "lon": 49.7863244
+},
+{
+  "type": "node",
+  "id": 11927310026,
+  "lat": 40.4289204,
+  "lon": 49.7859725
+},
+{
+  "type": "node",
+  "id": 11927310027,
+  "lat": 40.4289570,
+  "lon": 49.7859154
+},
+{
+  "type": "node",
+  "id": 11927310028,
+  "lat": 40.4291014,
+  "lon": 49.7862910
+},
+{
+  "type": "node",
+  "id": 11927310029,
+  "lat": 40.4291850,
+  "lon": 49.7867605
+},
+{
+  "type": "node",
+  "id": 11927310030,
+  "lat": 40.4291309,
+  "lon": 49.7867874
+},
+{
+  "type": "node",
+  "id": 11927310031,
+  "lat": 40.4286945,
+  "lon": 49.7855187
+},
+{
+  "type": "node",
+  "id": 11927310032,
+  "lat": 40.4286520,
+  "lon": 49.7855753
+},
+{
+  "type": "node",
+  "id": 4802464545,
+  "lat": 40.4291062,
+  "lon": 49.7884621
+},
+{
+  "type": "node",
+  "id": 9764004721,
+  "lat": 40.4292343,
+  "lon": 49.7878216
+},
+{
+  "type": "node",
+  "id": 9764004722,
+  "lat": 40.4283789,
+  "lon": 49.7893691
+},
+{
+  "type": "node",
+  "id": 9764004723,
+  "lat": 40.4292059,
+  "lon": 49.7881175
+},
+{
+  "type": "node",
+  "id": 9764004724,
+  "lat": 40.4289488,
+  "lon": 49.7886982
+},
+{
+  "type": "node",
+  "id": 10282607618,
+  "lat": 40.4291715,
+  "lon": 49.7878221
+},
+{
+  "type": "node",
+  "id": 10282607619,
+  "lat": 40.4288948,
+  "lon": 49.7886432
+},
+{
+  "type": "node",
+  "id": 10282607620,
+  "lat": 40.4285551,
+  "lon": 49.7890536
+},
+{
+  "type": "node",
+  "id": 10282607621,
+  "lat": 40.4278771,
+  "lon": 49.7898473
+},
+{
+  "type": "node",
+  "id": 10282607622,
+  "lat": 40.4271705,
+  "lon": 49.7906664
+},
+{
+  "type": "node",
+  "id": 10282607623,
+  "lat": 40.4262267,
+  "lon": 49.7917547
+},
+{
+  "type": "node",
+  "id": 11177476494,
+  "lat": 40.4290619,
+  "lon": 49.7883940
+},
+{
+  "type": "node",
+  "id": 11927310016,
+  "lat": 40.4291439,
+  "lon": 49.7881142
+},
+{
+  "type": "node",
+  "id": 11927310017,
+  "lat": 40.4292229,
+  "lon": 49.7880032
+},
+{
+  "type": "node",
+  "id": 11927310018,
+  "lat": 40.4291711,
+  "lon": 49.7882802
+},
+{
+  "type": "node",
+  "id": 11927310019,
+  "lat": 40.4290302,
+  "lon": 49.7885885
+},
+{
+  "type": "node",
+  "id": 11927310020,
+  "lat": 40.4289796,
+  "lon": 49.7885272
+},
+{
+  "type": "node",
+  "id": 11927310021,
+  "lat": 40.4291115,
+  "lon": 49.7882489
+},
+{
+  "type": "node",
+  "id": 11927310022,
+  "lat": 40.4291653,
+  "lon": 49.7879702
+},
+{
+  "type": "node",
+  "id": 11927310036,
+  "lat": 40.4290878,
+  "lon": 49.7883229
+},
+{
+  "type": "node",
+  "id": 11927310037,
+  "lat": 40.4291284,
+  "lon": 49.7881845
+},
+{
+  "type": "node",
+  "id": 11927310038,
+  "lat": 40.4291569,
+  "lon": 49.7880422
+},
+{
+  "type": "node",
+  "id": 11927310039,
+  "lat": 40.4291914,
+  "lon": 49.7881936
+},
+{
+  "type": "node",
+  "id": 11927310040,
+  "lat": 40.4291454,
+  "lon": 49.7883702
+},
+{
+  "type": "node",
+  "id": 1930089762,
+  "lat": 40.4041390,
+  "lon": 49.8077020,
+  "tags": {
+    "name": "20 Yanvar st.",
+    "name:az": "20 Yanvar st.",
+    "name:fa": "۲۰ ژانویه",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1985-12-31",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025472",
+    "wikimedia_commons": "Category:20 Yanvar (Baku Metro)",
+    "wikipedia": "az:20 Yanvar metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 5910349049,
+  "lat": 40.4049393,
+  "lon": 49.8092128
+},
+{
+  "type": "node",
+  "id": 5910349050,
+  "lat": 40.4055911,
+  "lon": 49.8097865
+},
+{
+  "type": "node",
+  "id": 11360830946,
+  "lat": 40.4045272,
+  "lon": 49.8085074
+},
+{
+  "type": "node",
+  "id": 11927164459,
+  "lat": 40.4047153,
+  "lon": 49.8088702
+},
+{
+  "type": "node",
+  "id": 4200615452,
+  "lat": 40.4059341,
+  "lon": 49.8169041
+},
+{
+  "type": "node",
+  "id": 4200615453,
+  "lat": 40.4049715,
+  "lon": 49.8168243
+},
+{
+  "type": "node",
+  "id": 4910575093,
+  "lat": 40.4027453,
+  "lon": 49.8192716
+},
+{
+  "type": "node",
+  "id": 7293339471,
+  "lat": 40.4059344,
+  "lon": 49.8167571
+},
+{
+  "type": "node",
+  "id": 7293339472,
+  "lat": 40.4048982,
+  "lon": 49.8166816
+},
+{
+  "type": "node",
+  "id": 7293339475,
+  "lat": 40.4030291,
+  "lon": 49.8187048
+},
+{
+  "type": "node",
+  "id": 7293339476,
+  "lat": 40.4028411,
+  "lon": 49.8189171
+},
+{
+  "type": "node",
+  "id": 7293339477,
+  "lat": 40.4022019,
+  "lon": 49.8200353
+},
+{
+  "type": "node",
+  "id": 11927285779,
+  "lat": 40.4056770,
+  "lon": 49.8166525
+},
+{
+  "type": "node",
+  "id": 11927285780,
+  "lat": 40.4051079,
+  "lon": 49.8166318
+},
+{
+  "type": "node",
+  "id": 11927285781,
+  "lat": 40.4053880,
+  "lon": 49.8166092
+},
+{
+  "type": "node",
+  "id": 11927285782,
+  "lat": 40.4057668,
+  "lon": 49.8168296
+},
+{
+  "type": "node",
+  "id": 11927285783,
+  "lat": 40.4054696,
+  "lon": 49.8167714
+},
+{
+  "type": "node",
+  "id": 11927285784,
+  "lat": 40.4051737,
+  "lon": 49.8167835
+},
+{
+  "type": "node",
+  "id": 11927285785,
+  "lat": 40.4047152,
+  "lon": 49.8168092
+},
+{
+  "type": "node",
+  "id": 11927285786,
+  "lat": 40.4047562,
+  "lon": 49.8169611
+},
+{
+  "type": "node",
+  "id": 11927285787,
+  "lat": 40.4029223,
+  "lon": 49.8190092
+},
+{
+  "type": "node",
+  "id": 11927285788,
+  "lat": 40.4027146,
+  "lon": 49.8191037
+},
+{
+  "type": "node",
+  "id": 11927285789,
+  "lat": 40.4053146,
+  "lon": 49.8167682
+},
+{
+  "type": "node",
+  "id": 11927285790,
+  "lat": 40.4052493,
+  "lon": 49.8166147
+},
+{
+  "type": "node",
+  "id": 11927285791,
+  "lat": 40.4061676,
+  "lon": 49.8169027
+},
+{
+  "type": "node",
+  "id": 11927285792,
+  "lat": 40.4060778,
+  "lon": 49.8169921
+},
+{
+  "type": "node",
+  "id": 11927285793,
+  "lat": 40.4056252,
+  "lon": 49.8167866
+},
+{
+  "type": "node",
+  "id": 11927285794,
+  "lat": 40.4047985,
+  "lon": 49.8167392
+},
+{
+  "type": "node",
+  "id": 11927285795,
+  "lat": 40.4048603,
+  "lon": 49.8168804
+},
+{
+  "type": "node",
+  "id": 3762226020,
+  "lat": 40.4067653,
+  "lon": 49.8109205
+},
+{
+  "type": "node",
+  "id": 4161594119,
+  "lat": 40.4104996,
+  "lon": 49.8113918
+},
+{
+  "type": "node",
+  "id": 4161594120,
+  "lat": 40.4109178,
+  "lon": 49.8078239
+},
+{
+  "type": "node",
+  "id": 5910339375,
+  "lat": 40.4105171,
+  "lon": 49.8124430,
+  "tags": {
+    "name": "Memar Əcəmi",
+    "name:en": "Memar Ajami",
+    "name:ru": "Мемар Аджеми",
+    "network": "Bakı Metropoliteni",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5910349051,
+  "lat": 40.4080038,
+  "lon": 49.8121784
+},
+{
+  "type": "node",
+  "id": 5910349052,
+  "lat": 40.4084033,
+  "lon": 49.8125214
+},
+{
+  "type": "node",
+  "id": 7279336594,
+  "lat": 40.4104480,
+  "lon": 49.8124557,
+  "tags": {
+    "name": "Memar Əcəmi",
+    "name:en": "Memar Ajami",
+    "name:ru": "Мемар Аджеми",
+    "network": "Bakı Metropoliteni",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7279336595,
+  "lat": 40.4104102,
+  "lon": 49.8114029
+},
+{
+  "type": "node",
+  "id": 7279336596,
+  "lat": 40.4108261,
+  "lon": 49.8079576
+},
+{
+  "type": "node",
+  "id": 7293339464,
+  "lat": 40.4104884,
+  "lon": 49.8137861
+},
+{
+  "type": "node",
+  "id": 11927164460,
+  "lat": 40.4090351,
+  "lon": 49.8129690
+},
+{
+  "type": "node",
+  "id": 11927309990,
+  "lat": 40.4105531,
+  "lon": 49.8133347
+},
+{
+  "type": "node",
+  "id": 11927309991,
+  "lat": 40.4105581,
+  "lon": 49.8135778
+},
+{
+  "type": "node",
+  "id": 11927309992,
+  "lat": 40.4104858,
+  "lon": 49.8133836
+},
+{
+  "type": "node",
+  "id": 11927309993,
+  "lat": 40.4104938,
+  "lon": 49.8136190
+},
+{
+  "type": "node",
+  "id": 11927309994,
+  "lat": 40.4105551,
+  "lon": 49.8137222
+},
+{
+  "type": "node",
+  "id": 11927309995,
+  "lat": 40.4104793,
+  "lon": 49.8138760
+},
+{
+  "type": "node",
+  "id": 11927309996,
+  "lat": 40.4104096,
+  "lon": 49.8116460
+},
+{
+  "type": "node",
+  "id": 11927309997,
+  "lat": 40.4104939,
+  "lon": 49.8116515
+},
+{
+  "type": "node",
+  "id": 11927309998,
+  "lat": 40.4104063,
+  "lon": 49.8115173
+},
+{
+  "type": "node",
+  "id": 11927309999,
+  "lat": 40.4104923,
+  "lon": 49.8115145
+},
+{
+  "type": "node",
+  "id": 11927310000,
+  "lat": 40.4109709,
+  "lon": 49.8074660
+},
+{
+  "type": "node",
+  "id": 11927310001,
+  "lat": 40.4109017,
+  "lon": 49.8076457
+},
+{
+  "type": "node",
+  "id": 11927310002,
+  "lat": 40.4108513,
+  "lon": 49.8078037
+},
+{
+  "type": "node",
+  "id": 11927310003,
+  "lat": 40.4109565,
+  "lon": 49.8076981
+},
+{
+  "type": "node",
+  "id": 11927310004,
+  "lat": 40.4110198,
+  "lon": 49.8075463
+},
+{
+  "type": "node",
+  "id": 11927310005,
+  "lat": 40.4108855,
+  "lon": 49.8080088
+},
+{
+  "type": "node",
+  "id": 14111840139,
+  "lat": 40.4105469,
+  "lon": 49.8138311
+},
+{
+  "type": "node",
+  "id": 4161594118,
+  "lat": 40.4106807,
+  "lon": 49.8139435,
+  "tags": {
+    "name": "Memar Əcəmi",
+    "name:en": "Memar Ajami",
+    "name:ru": "Мемар Аджеми",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1985-12-31",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025490",
+    "wikimedia_commons": "Category:Memar Əcəmi (Baku Metro)",
+    "wikipedia": "az:Memar Əcəmi metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 4200615447,
+  "lat": 40.4102918,
+  "lon": 49.8154489
+},
+{
+  "type": "node",
+  "id": 4200615448,
+  "lat": 40.4099763,
+  "lon": 49.8164157
+},
+{
+  "type": "node",
+  "id": 4200615450,
+  "lat": 40.4081102,
+  "lon": 49.8180924
+},
+{
+  "type": "node",
+  "id": 4200615451,
+  "lat": 40.4072929,
+  "lon": 49.8178322
+},
+{
+  "type": "node",
+  "id": 7293339466,
+  "lat": 40.4099423,
+  "lon": 49.8163766
+},
+{
+  "type": "node",
+  "id": 7293339467,
+  "lat": 40.4094758,
+  "lon": 49.8170223
+},
+{
+  "type": "node",
+  "id": 7293339468,
+  "lat": 40.4085352,
+  "lon": 49.8178084
+},
+{
+  "type": "node",
+  "id": 7293339469,
+  "lat": 40.4081063,
+  "lon": 49.8179512
+},
+{
+  "type": "node",
+  "id": 7293339470,
+  "lat": 40.4073088,
+  "lon": 49.8177128
+},
+{
+  "type": "node",
+  "id": 11927309972,
+  "lat": 40.4075872,
+  "lon": 49.8179784
+},
+{
+  "type": "node",
+  "id": 11927309973,
+  "lat": 40.4078671,
+  "lon": 49.8180703
+},
+{
+  "type": "node",
+  "id": 11927309974,
+  "lat": 40.4091774,
+  "lon": 49.8174122
+},
+{
+  "type": "node",
+  "id": 11927309976,
+  "lat": 40.4088411,
+  "lon": 49.8176981
+},
+{
+  "type": "node",
+  "id": 11927309977,
+  "lat": 40.4083477,
+  "lon": 49.8180209
+},
+{
+  "type": "node",
+  "id": 11927309978,
+  "lat": 40.4076006,
+  "lon": 49.8178677
+},
+{
+  "type": "node",
+  "id": 11927309979,
+  "lat": 40.4078399,
+  "lon": 49.8179362
+},
+{
+  "type": "node",
+  "id": 11927309980,
+  "lat": 40.4083071,
+  "lon": 49.8179115
+},
+{
+  "type": "node",
+  "id": 11927309981,
+  "lat": 40.4091337,
+  "lon": 49.8173763
+},
+{
+  "type": "node",
+  "id": 11927309982,
+  "lat": 40.4097538,
+  "lon": 49.8168189
+},
+{
+  "type": "node",
+  "id": 11927309983,
+  "lat": 40.4097205,
+  "lon": 49.8167757
+},
+{
+  "type": "node",
+  "id": 11927309984,
+  "lat": 40.4088533,
+  "lon": 49.8175998
+},
+{
+  "type": "node",
+  "id": 11927309985,
+  "lat": 40.4102090,
+  "lon": 49.8159364
+},
+{
+  "type": "node",
+  "id": 13785672087,
+  "lat": 40.4101611,
+  "lon": 49.8159103
+},
+{
+  "type": "node",
+  "id": 3077754725,
+  "lat": 40.4018871,
+  "lon": 49.8208280,
+  "tags": {
+    "name": "8 Noyabr",
+    "network": "Bakı Metropoliteni",
+    "proposed:railway": "station",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7293343086,
+  "lat": 40.4018009,
+  "lon": 49.8207432,
+  "tags": {
+    "name": "8 Noyabr",
+    "network": "Bakı Metropoliteni",
+    "proposed:railway": "station",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5176498834,
+  "lat": 40.3922214,
+  "lon": 49.8431355
+},
+{
+  "type": "node",
+  "id": 5176498835,
+  "lat": 40.3906452,
+  "lon": 49.8435863
+},
+{
+  "type": "node",
+  "id": 7259856121,
+  "lat": 40.3922230,
+  "lon": 49.8431930
+},
+{
+  "type": "node",
+  "id": 7259856122,
+  "lat": 40.3906606,
+  "lon": 49.8436524
+},
+{
+  "type": "node",
+  "id": 11927169898,
+  "lat": 40.3917785,
+  "lon": 49.8432262
+},
+{
+  "type": "node",
+  "id": 11927169899,
+  "lat": 40.3912499,
+  "lon": 49.8433694
+},
+{
+  "type": "node",
+  "id": 11927169900,
+  "lat": 40.3917444,
+  "lon": 49.8433042
+},
+{
+  "type": "node",
+  "id": 11927169901,
+  "lat": 40.3911938,
+  "lon": 49.8434459
+},
+{
+  "type": "node",
+  "id": 2943399252,
+  "lat": 40.3937634,
+  "lon": 49.8433151
+},
+{
+  "type": "node",
+  "id": 2943399253,
+  "lat": 40.3960851,
+  "lon": 49.8437432
+},
+{
+  "type": "node",
+  "id": 7259856118,
+  "lat": 40.3974098,
+  "lon": 49.8448832
+},
+{
+  "type": "node",
+  "id": 7259856119,
+  "lat": 40.3960888,
+  "lon": 49.8437613
+},
+{
+  "type": "node",
+  "id": 7259856120,
+  "lat": 40.3937595,
+  "lon": 49.8433470
+},
+{
+  "type": "node",
+  "id": 11927169886,
+  "lat": 40.3975020,
+  "lon": 49.8450179
+},
+{
+  "type": "node",
+  "id": 11927169887,
+  "lat": 40.3973489,
+  "lon": 49.8448064
+},
+{
+  "type": "node",
+  "id": 11927169889,
+  "lat": 40.3973701,
+  "lon": 49.8448033
+},
+{
+  "type": "node",
+  "id": 11927169890,
+  "lat": 40.3975131,
+  "lon": 49.8450070
+},
+{
+  "type": "node",
+  "id": 11927169893,
+  "lat": 40.3963084,
+  "lon": 49.8438417
+},
+{
+  "type": "node",
+  "id": 11927169894,
+  "lat": 40.3960104,
+  "lon": 49.8437391
+},
+{
+  "type": "node",
+  "id": 11927169895,
+  "lat": 40.3960134,
+  "lon": 49.8437264
+},
+{
+  "type": "node",
+  "id": 11927169896,
+  "lat": 40.3961563,
+  "lon": 49.8437895
+},
+{
+  "type": "node",
+  "id": 11927169897,
+  "lat": 40.3961568,
+  "lon": 49.8437738
+},
+{
+  "type": "node",
+  "id": 11963680845,
+  "lat": 40.3968731,
+  "lon": 49.8442530
+},
+{
+  "type": "node",
+  "id": 11963680846,
+  "lat": 40.3968808,
+  "lon": 49.8442311
+},
+{
+  "type": "node",
+  "id": 11963680847,
+  "lat": 40.3962957,
+  "lon": 49.8438569
+},
+{
+  "type": "node",
+  "id": 11963680848,
+  "lat": 40.3965623,
+  "lon": 49.8439847
+},
+{
+  "type": "node",
+  "id": 11963680849,
+  "lat": 40.3965559,
+  "lon": 49.8440006
+},
+{
+  "type": "node",
+  "id": 11963680850,
+  "lat": 40.3967278,
+  "lon": 49.8440997
+},
+{
+  "type": "node",
+  "id": 11963680851,
+  "lat": 40.3967189,
+  "lon": 49.8441178
+},
+{
+  "type": "node",
+  "id": 11963680852,
+  "lat": 40.3971304,
+  "lon": 49.8445057
+},
+{
+  "type": "node",
+  "id": 11963680853,
+  "lat": 40.3971187,
+  "lon": 49.8445180
+},
+{
+  "type": "node",
+  "id": 5176498837,
+  "lat": 40.3985730,
+  "lon": 49.8470168
+},
+{
+  "type": "node",
+  "id": 7259856117,
+  "lat": 40.3986465,
+  "lon": 49.8472277
+},
+{
+  "type": "node",
+  "id": 11927169884,
+  "lat": 40.3985561,
+  "lon": 49.8470272
+},
+{
+  "type": "node",
+  "id": 11927169885,
+  "lat": 40.3986615,
+  "lon": 49.8472150
+},
+{
+  "type": "node",
+  "id": 670219440,
+  "lat": 40.3999085,
+  "lon": 49.8505647,
+  "tags": {
+    "name": "Gənclik",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7259856116,
+  "lat": 40.3998792,
+  "lon": 49.8506007,
+  "tags": {
+    "name": "Gənclik",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5910339377,
+  "lat": 40.4159394,
+  "lon": 49.8157321
+},
+{
+  "type": "node",
+  "id": 5910339367,
+  "lat": 40.4217161,
+  "lon": 49.8197720
+},
+{
+  "type": "node",
+  "id": 5910339373,
+  "lat": 40.4224857,
+  "lon": 49.8202667
+},
+{
+  "type": "node",
+  "id": 5910339374,
+  "lat": 40.4209962,
+  "lon": 49.8192589
+},
+{
+  "type": "node",
+  "id": 9915845256,
+  "lat": 40.4194803,
+  "lon": 49.8180800
+},
+{
+  "type": "node",
+  "id": 670217698,
+  "lat": 40.4246452,
+  "lon": 49.8262798,
+  "tags": {
+    "name": "Nəsimi",
+    "name:en": "Nasimi",
+    "name:fa": "نسیمی",
+    "name:ru": "Насими",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "2008-10-09",
+    "station": "subway",
+    "subway": "yes",
+    "wheelchair": "limited",
+    "wikidata": "Q3025513",
+    "wikimedia_commons": "Category:Nəsimi (Baku Metro)",
+    "wikipedia": "az:Nəsimi metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 5910339368,
+  "lat": 40.4241702,
+  "lon": 49.8226381
+},
+{
+  "type": "node",
+  "id": 5910339369,
+  "lat": 40.4241177,
+  "lon": 49.8223574
+},
+{
+  "type": "node",
+  "id": 5910339370,
+  "lat": 40.4236915,
+  "lon": 49.8213570
+},
+{
+  "type": "node",
+  "id": 5910339371,
+  "lat": 40.4233774,
+  "lon": 49.8210070
+},
+{
+  "type": "node",
+  "id": 5910339372,
+  "lat": 40.4230683,
+  "lon": 49.8206910
+},
+{
+  "type": "node",
+  "id": 10972010620,
+  "lat": 40.4238461,
+  "lon": 49.8215979
+},
+{
+  "type": "node",
+  "id": 14024914806,
+  "lat": 40.4240575,
+  "lon": 49.8221411
+},
+{
+  "type": "node",
+  "id": 14024914808,
+  "lat": 40.4237736,
+  "lon": 49.8214705
+},
+{
+  "type": "node",
+  "id": 14024914810,
+  "lat": 40.4239880,
+  "lon": 49.8219480
+},
+{
+  "type": "node",
+  "id": 3908901271,
+  "lat": 40.4249847,
+  "lon": 49.8287583
+},
+{
+  "type": "node",
+  "id": 3115474592,
+  "lat": 40.4254894,
+  "lon": 49.8346384
+},
+{
+  "type": "node",
+  "id": 7508663461,
+  "lat": 40.4257850,
+  "lon": 49.8389422
+},
+{
+  "type": "node",
+  "id": 4802451848,
+  "lat": 40.4256276,
+  "lon": 49.8542951,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 1148914625,
+  "lat": 40.4259622,
+  "lon": 49.8429264,
+  "tags": {
+    "name": "Azadlıq prospekti",
+    "name:fa": "خیابان آزادلیق",
+    "name:ru": "Азадлыг проспекти",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "2009-12-30",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025522",
+    "wikimedia_commons": "Category:Azadlıq prospekti (Baku Metro)",
+    "wikipedia": "az:Azadlıq Prospekti metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 7508663552,
+  "lat": 40.4259594,
+  "lon": 49.8426253
+},
+{
+  "type": "node",
+  "id": 11853872438,
+  "lat": 40.4026696,
+  "lon": 49.8643777
+},
+{
+  "type": "node",
+  "id": 11853872439,
+  "lat": 40.4028395,
+  "lon": 49.8631701
+},
+{
+  "type": "node",
+  "id": 11853872440,
+  "lat": 40.4027934,
+  "lon": 49.8634476
+},
+{
+  "type": "node",
+  "id": 11927169877,
+  "lat": 40.4027411,
+  "lon": 49.8626152
+},
+{
+  "type": "node",
+  "id": 11927169878,
+  "lat": 40.4026786,
+  "lon": 49.8626301
+},
+{
+  "type": "node",
+  "id": 11927169882,
+  "lat": 40.4028485,
+  "lon": 49.8634696
+},
+{
+  "type": "node",
+  "id": 11927169883,
+  "lat": 40.4026158,
+  "lon": 49.8642848
+},
+{
+  "type": "node",
+  "id": 13868430615,
+  "lat": 40.4020400,
+  "lon": 49.8599291
+},
+{
+  "type": "node",
+  "id": 13868430616,
+  "lat": 40.4020958,
+  "lon": 49.8599057
+},
+{
+  "type": "node",
+  "id": 13868430617,
+  "lat": 40.4027798,
+  "lon": 49.8631668
+},
+{
+  "type": "node",
+  "id": 670219867,
+  "lat": 40.4028824,
+  "lon": 49.8705891,
+  "tags": {
+    "name": "Nəriman Nərimanov",
+    "name:en": "Nariman Narimanov station",
+    "name:ru": "Нариман Нариманов",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 7259856115,
+  "lat": 40.4027833,
+  "lon": 49.8706869,
+  "tags": {
+    "name": "Nəriman Nərimanov",
+    "name:en": "Nariman Narimanov station",
+    "name:ru": "Нариман Нариманов",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 9590235089,
+  "lat": 40.4032908,
+  "lon": 49.8715015
+},
+{
+  "type": "node",
+  "id": 9590235090,
+  "lat": 40.4032096,
+  "lon": 49.8715640
+},
+{
+  "type": "node",
+  "id": 11853872426,
+  "lat": 40.4022448,
+  "lon": 49.8695269
+},
+{
+  "type": "node",
+  "id": 11853872427,
+  "lat": 40.4023459,
+  "lon": 49.8694602
+},
+{
+  "type": "node",
+  "id": 11853872432,
+  "lat": 40.4022097,
+  "lon": 49.8688110
+},
+{
+  "type": "node",
+  "id": 11853872433,
+  "lat": 40.4021730,
+  "lon": 49.8678418
+},
+{
+  "type": "node",
+  "id": 11853872434,
+  "lat": 40.4022689,
+  "lon": 49.8664540
+},
+{
+  "type": "node",
+  "id": 11853872435,
+  "lat": 40.4021578,
+  "lon": 49.8666897
+},
+{
+  "type": "node",
+  "id": 11853872436,
+  "lat": 40.4020692,
+  "lon": 49.8678921
+},
+{
+  "type": "node",
+  "id": 11853872437,
+  "lat": 40.4021091,
+  "lon": 49.8688665
+},
+{
+  "type": "node",
+  "id": 12766893268,
+  "lat": 40.4022610,
+  "lon": 49.8691455
+},
+{
+  "type": "node",
+  "id": 12766893269,
+  "lat": 40.4021476,
+  "lon": 49.8691683
+},
+{
+  "type": "node",
+  "id": 670220250,
+  "lat": 40.4067760,
+  "lon": 49.8787710
+},
+{
+  "type": "node",
+  "id": 2556683002,
+  "lat": 40.4125160,
+  "lon": 49.8792952,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 2556683011,
+  "lat": 40.4063904,
+  "lon": 49.8780238
+},
+{
+  "type": "node",
+  "id": 7259856114,
+  "lat": 40.4067128,
+  "lon": 49.8787987
+},
+{
+  "type": "node",
+  "id": 11036190272,
+  "lat": 40.4070241,
+  "lon": 49.8792391
+},
+{
+  "type": "node",
+  "id": 11036190278,
+  "lat": 40.4069542,
+  "lon": 49.8790008
+},
+{
+  "type": "node",
+  "id": 11853872424,
+  "lat": 40.4071770,
+  "lon": 49.8792258
+},
+{
+  "type": "node",
+  "id": 670220015,
+  "lat": 40.4078611,
+  "lon": 49.8802144
+},
+{
+  "type": "node",
+  "id": 670220038,
+  "lat": 40.4081602,
+  "lon": 49.8804451
+},
+{
+  "type": "node",
+  "id": 670220039,
+  "lat": 40.4087695,
+  "lon": 49.8805672
+},
+{
+  "type": "node",
+  "id": 670220040,
+  "lat": 40.4090637,
+  "lon": 49.8805094
+},
+{
+  "type": "node",
+  "id": 670220268,
+  "lat": 40.4115346,
+  "lon": 49.8845502
+},
+{
+  "type": "node",
+  "id": 2556682988,
+  "lat": 40.4093841,
+  "lon": 49.8803288
+},
+{
+  "type": "node",
+  "id": 2556682990,
+  "lat": 40.4076562,
+  "lon": 49.8800043
+},
+{
+  "type": "node",
+  "id": 2556682992,
+  "lat": 40.4090951,
+  "lon": 49.8803732
+},
+{
+  "type": "node",
+  "id": 2556682995,
+  "lat": 40.4082609,
+  "lon": 49.8804846
+},
+{
+  "type": "node",
+  "id": 2556682996,
+  "lat": 40.4073314,
+  "lon": 49.8796302,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 2556683003,
+  "lat": 40.4085160,
+  "lon": 49.8805480
+},
+{
+  "type": "node",
+  "id": 2556683004,
+  "lat": 40.4080467,
+  "lon": 49.8803692
+},
+{
+  "type": "node",
+  "id": 2556683014,
+  "lat": 40.4085866,
+  "lon": 49.8802578
+},
+{
+  "type": "node",
+  "id": 2556683016,
+  "lat": 40.4088774,
+  "lon": 49.8805570
+},
+{
+  "type": "node",
+  "id": 2556683017,
+  "lat": 40.4089583,
+  "lon": 49.8803704
+},
+{
+  "type": "node",
+  "id": 2556683019,
+  "lat": 40.4092299,
+  "lon": 49.8803624
+},
+{
+  "type": "node",
+  "id": 2556683022,
+  "lat": 40.4079614,
+  "lon": 49.8798853,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 2556750281,
+  "lat": 40.4079527,
+  "lon": 49.8802957
+},
+{
+  "type": "node",
+  "id": 2556750302,
+  "lat": 40.4083939,
+  "lon": 49.8805241
+},
+{
+  "type": "node",
+  "id": 2556750391,
+  "lat": 40.4086410,
+  "lon": 49.8805638
+},
+{
+  "type": "node",
+  "id": 11036190268,
+  "lat": 40.4106487,
+  "lon": 49.8834802
+},
+{
+  "type": "node",
+  "id": 11036190269,
+  "lat": 40.4094074,
+  "lon": 49.8812912
+},
+{
+  "type": "node",
+  "id": 11036190270,
+  "lat": 40.4090995,
+  "lon": 49.8808315
+},
+{
+  "type": "node",
+  "id": 11036190271,
+  "lat": 40.4085855,
+  "lon": 49.8803733
+},
+{
+  "type": "node",
+  "id": 11291711876,
+  "lat": 40.4097378,
+  "lon": 49.8819410
+},
+{
+  "type": "node",
+  "id": 11850637239,
+  "lat": 40.4088024,
+  "lon": 49.8803423
+},
+{
+  "type": "node",
+  "id": 1924834867,
+  "lat": 40.4254022,
+  "lon": 49.8617881,
+  "tags": {
+    "name": "Dərnəgül",
+    "name:en": "Darnagul",
+    "name:fa": "دارناگول",
+    "name:ru": "Дарнагюль",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "2011-06-29",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025554",
+    "wikimedia_commons": "Category:Dərnəgül (Baku Metro)",
+    "wikipedia": "az:Dərnəgül metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 670220144,
+  "lat": 40.4141403,
+  "lon": 49.8787959,
+  "tags": {
+    "name": "Bakmil",
+    "name:az": "Bakmil",
+    "name:fa": "باکمیل",
+    "name:ru": "Бакмил",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1979-12-31",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3025343",
+    "wikimedia_commons": "Category:Bakmil (Baku Metro)",
+    "wikipedia": "az:Bakmil metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 4566972310,
+  "lat": 40.4128725,
+  "lon": 49.8792340,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 11850637240,
+  "lat": 40.4133360,
+  "lon": 49.8790633,
+  "tags": {
+    "railway": "switch"
+  }
+},
+{
+  "type": "node",
+  "id": 11850637241,
+  "lat": 40.4145598,
+  "lon": 49.8786643
+},
+{
+  "type": "node",
+  "id": 11850938689,
+  "lat": 40.4136762,
+  "lon": 49.8789476
+},
+{
+  "type": "node",
+  "id": 670220270,
+  "lat": 40.4145994,
+  "lon": 49.8893317
+},
+{
+  "type": "node",
+  "id": 3896778915,
+  "lat": 40.4149630,
+  "lon": 49.8914348,
+  "tags": {
+    "name": "Ulduz",
+    "name:en": "Ulduz",
+    "name:fa": "اولدوز",
+    "name:ru": "Улдуз",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1970-05-05",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q1109176",
+    "wikimedia_commons": "Category:Ulduz (Baku Metro)",
+    "wikipedia": "az:Ulduz metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 3896778916,
+  "lat": 40.4148594,
+  "lon": 49.8907745
+},
+{
+  "type": "node",
+  "id": 11853872416,
+  "lat": 40.4143834,
+  "lon": 49.8881376
+},
+{
+  "type": "node",
+  "id": 11853872417,
+  "lat": 40.4142743,
+  "lon": 49.8877726
+},
+{
+  "type": "node",
+  "id": 11853872418,
+  "lat": 40.4140869,
+  "lon": 49.8874526
+},
+{
+  "type": "node",
+  "id": 11853872419,
+  "lat": 40.4137418,
+  "lon": 49.8870622
+},
+{
+  "type": "node",
+  "id": 11927287112,
+  "lat": 40.4141880,
+  "lon": 49.8876068
+},
+{
+  "type": "node",
+  "id": 11927287113,
+  "lat": 40.4143318,
+  "lon": 49.8879512
+},
+{
+  "type": "node",
+  "id": 670220272,
+  "lat": 40.4158158,
+  "lon": 49.8963793
+},
+{
+  "type": "node",
+  "id": 11853872414,
+  "lat": 40.4153232,
+  "lon": 49.8937131
+},
+{
+  "type": "node",
+  "id": 11927169873,
+  "lat": 40.4164321,
+  "lon": 49.8989702
+},
+{
+  "type": "node",
+  "id": 9765087800,
+  "lat": 40.4169636,
+  "lon": 49.9033624
+},
+{
+  "type": "node",
+  "id": 10831319190,
+  "lat": 40.4169765,
+  "lon": 49.9013655
+},
+{
+  "type": "node",
+  "id": 11927169874,
+  "lat": 40.4167138,
+  "lon": 49.9000085
+},
+{
+  "type": "node",
+  "id": 11927169875,
+  "lat": 40.4168335,
+  "lon": 49.9005113
+},
+{
+  "type": "node",
+  "id": 11927169876,
+  "lat": 40.4169256,
+  "lon": 49.9009350
+},
+{
+  "type": "node",
+  "id": 670220296,
+  "lat": 40.4178344,
+  "lon": 49.9099414
+},
+{
+  "type": "node",
+  "id": 9630666962,
+  "lat": 40.4188189,
+  "lon": 49.9120396
+},
+{
+  "type": "node",
+  "id": 10831319189,
+  "lat": 40.4170330,
+  "lon": 49.9070768
+},
+{
+  "type": "node",
+  "id": 11927164468,
+  "lat": 40.4171189,
+  "lon": 49.9075940
+},
+{
+  "type": "node",
+  "id": 11927169869,
+  "lat": 40.4172423,
+  "lon": 49.9081793
+},
+{
+  "type": "node",
+  "id": 11927169870,
+  "lat": 40.4173870,
+  "lon": 49.9087034
+},
+{
+  "type": "node",
+  "id": 11927169871,
+  "lat": 40.4175891,
+  "lon": 49.9093062
+},
+{
+  "type": "node",
+  "id": 11927169872,
+  "lat": 40.4177148,
+  "lon": 49.9096359
+},
+{
+  "type": "node",
+  "id": 670220980,
+  "lat": 40.3711967,
+  "lon": 49.9534631
+},
+{
+  "type": "node",
+  "id": 670220993,
+  "lat": 40.3730376,
+  "lon": 49.9535736,
+  "tags": {
+    "name": "Həzi Aslanov",
+    "name:en": "Hazi Aslanov",
+    "name:fa": "هزی اصلانوف",
+    "name:ru": "Ази Асланов",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "2002-12-10",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q2020145",
+    "wikimedia_commons": "Category:Həzi Aslanov (Baku Metro)",
+    "wikipedia": "az:Həzi Aslanov metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 3029568543,
+  "lat": 40.3788942,
+  "lon": 49.9539468
+},
+{
+  "type": "node",
+  "id": 9891914363,
+  "lat": 40.3781988,
+  "lon": 49.9539126
+},
+{
+  "type": "node",
+  "id": 670220741,
+  "lat": 40.3818230,
+  "lon": 49.9539764
+},
+{
+  "type": "node",
+  "id": 670220979,
+  "lat": 40.3855583,
+  "lon": 49.9539452,
+  "tags": {
+    "name": "Əhmədli",
+    "name:en": "Ahmadli",
+    "name:fa": "احمدلی",
+    "name:ru": "Ахмедлы",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1989-04-28",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3024552",
+    "wikimedia_commons": "Category:Əhmədli (Baku Metro)",
+    "wikipedia": "az:Əhmədli metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 3604316705,
+  "lat": 40.3844638,
+  "lon": 49.9539476
+},
+{
+  "type": "node",
+  "id": 2470944751,
+  "lat": 40.3869019,
+  "lon": 49.9539437
+},
+{
+  "type": "node",
+  "id": 670220633,
+  "lat": 40.3950139,
+  "lon": 49.9538666
+},
+{
+  "type": "node",
+  "id": 670220733,
+  "lat": 40.3968851,
+  "lon": 49.9529864,
+  "tags": {
+    "alt_name:ru": "Дружбы народов",
+    "name": "Xalqlar Dostluğu",
+    "name:en": "Halglar Dostlugu",
+    "name:fa": "خالقلار دوستلوغو",
+    "name:ru": "Халглар Достлугу",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1989-04-28",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3024561",
+    "wikimedia_commons": "Category:Xalqlar Dostluğu (Baku Metro)",
+    "wikipedia": "az:Xalqlar Dostluğu metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 3602269415,
+  "lat": 40.3957139,
+  "lon": 49.9538097
+},
+{
+  "type": "node",
+  "id": 3602269416,
+  "lat": 40.3959176,
+  "lon": 49.9537190
+},
+{
+  "type": "node",
+  "id": 9780143288,
+  "lat": 40.3958216,
+  "lon": 49.9537772
+},
+{
+  "type": "node",
+  "id": 3604363122,
+  "lat": 40.4002234,
+  "lon": 49.9504864
+},
+{
+  "type": "node",
+  "id": 3604927260,
+  "lat": 40.4043924,
+  "lon": 49.9475599
+},
+{
+  "type": "node",
+  "id": 670220400,
+  "lat": 40.4101440,
+  "lon": 49.9433623
+},
+{
+  "type": "node",
+  "id": 670220410,
+  "lat": 40.4111550,
+  "lon": 49.9425681,
+  "tags": {
+    "name": "Neftçilər",
+    "name:az-cyr": "Нефтчиләр",
+    "name:en": "Neftchilar",
+    "name:fa": "نفتچیلر",
+    "name:ru": "Нефтчиляр",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1972-11-06",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q2008806",
+    "wikimedia_commons": "Category:Neftchilar (Baku Metro)",
+    "wikipedia": "az:Neftçilər metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 3610142655,
+  "lat": 40.4084310,
+  "lon": 49.9445892
+},
+{
+  "type": "node",
+  "id": 3066211543,
+  "lat": 40.4190608,
+  "lon": 49.9125758
+},
+{
+  "type": "node",
+  "id": 11927164466,
+  "lat": 40.4191933,
+  "lon": 49.9129207
+},
+{
+  "type": "node",
+  "id": 9635235525,
+  "lat": 40.4207630,
+  "lon": 49.9180920,
+  "tags": {
+    "name": "Koroğlu",
+    "public_transport": "stop_position",
+    "railway": "stop",
+    "subway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 11927164467,
+  "lat": 40.4193578,
+  "lon": 49.9134826
+},
+{
+  "type": "node",
+  "id": 670220373,
+  "lat": 40.4209095,
+  "lon": 49.9197138
+},
+{
+  "type": "node",
+  "id": 670220374,
+  "lat": 40.4199398,
+  "lon": 49.9227674
+},
+{
+  "type": "node",
+  "id": 4323153886,
+  "lat": 40.4193910,
+  "lon": 49.9250729
+},
+{
+  "type": "node",
+  "id": 4323153887,
+  "lat": 40.4201332,
+  "lon": 49.9215189
+},
+{
+  "type": "node",
+  "id": 4323153888,
+  "lat": 40.4202081,
+  "lon": 49.9211572
+},
+{
+  "type": "node",
+  "id": 4323155489,
+  "lat": 40.4205304,
+  "lon": 49.9203012
+},
+{
+  "type": "node",
+  "id": 4323155490,
+  "lat": 40.4205938,
+  "lon": 49.9202035
+},
+{
+  "type": "node",
+  "id": 11927164461,
+  "lat": 40.4202599,
+  "lon": 49.9209266
+},
+{
+  "type": "node",
+  "id": 11927164462,
+  "lat": 40.4203340,
+  "lon": 49.9206833
+},
+{
+  "type": "node",
+  "id": 11927164463,
+  "lat": 40.4204334,
+  "lon": 49.9204670
+},
+{
+  "type": "node",
+  "id": 13791044356,
+  "lat": 40.4200379,
+  "lon": 49.9222116
+},
+{
+  "type": "node",
+  "id": 13791766850,
+  "lat": 40.4207567,
+  "lon": 49.9200524
+},
+{
+  "type": "node",
+  "id": 13791766851,
+  "lat": 40.4208863,
+  "lon": 49.9198835
+},
+{
+  "type": "node",
+  "id": 3630836930,
+  "lat": 40.4191097,
+  "lon": 49.9264087
+},
+{
+  "type": "node",
+  "id": 10229252810,
+  "lat": 40.4181257,
+  "lon": 49.9313497
+},
+{
+  "type": "node",
+  "id": 670220397,
+  "lat": 40.4176118,
+  "lon": 49.9339594,
+  "tags": {
+    "alt_name:ru": "Кара Караев",
+    "name": "Qara Qarayev",
+    "name:en": "Gara Garayev",
+    "name:fa": "قرا قرایف",
+    "name:ru": "Гара Гараев",
+    "network": "Bakı Metropoliteni",
+    "opening_hours": "Mo-Su 06:00-00:00",
+    "public_transport": "stop_position",
+    "railway": "station",
+    "start_date": "1972-11-06",
+    "station": "subway",
+    "subway": "yes",
+    "wikidata": "Q3024692",
+    "wikipedia": "az:Qara Qarayev metrostansiyası"
+  }
+},
+{
+  "type": "node",
+  "id": 1430724878,
+  "lat": 40.4169955,
+  "lon": 49.9369903
+},
+{
+  "type": "node",
+  "id": 3612263309,
+  "lat": 40.4166996,
+  "lon": 49.9383973
+},
+{
+  "type": "node",
+  "id": 3612263310,
+  "lat": 40.4167318,
+  "lon": 49.9383146
+},
+{
+  "type": "node",
+  "id": 3630808832,
+  "lat": 40.4175054,
+  "lon": 49.9345397
+},
+{
+  "type": "node",
+  "id": 670220398,
+  "lat": 40.4166541,
+  "lon": 49.9384561
+},
+{
+  "type": "node",
+  "id": 670220399,
+  "lat": 40.4152000,
+  "lon": 49.9395682
+},
+{
+  "type": "way",
+  "id": 52870860,
+  "nodes": [
+    1148914625,
+    7508663552,
+    7508663461,
+    3115474592,
+    3908901271,
+    670217698,
+    5910339368,
+    5910339369,
+    14024914806,
+    14024914810,
+    10972010620,
+    14024914808,
+    5910339370,
+    5910339371,
+    5910339372,
+    5910339373,
+    5910339367,
+    5910339374,
+    9915845256,
+    5910339377,
+    4161594118,
+    11927164460,
+    5910349052,
+    5910349051,
+    3762226020,
+    5910349050,
+    5910349049,
+    11927164459,
+    11360830946,
+    1930089762,
+    5910349053,
+    11927164458,
+    670217348,
+    11927164457,
+    5910349055,
+    670217349,
+    11927164456,
+    670217350,
+    11927164455,
+    670217351,
+    11927164454,
+    670217272,
+    670217274,
+    1796784026,
+    3803066073,
+    670217275,
+    11927164452,
+    11927164453,
+    3803117498
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-3",
+    "name": "Bakı metropoliteni - Yaşıl xətt",
+    "name:en": "Baku Metro - Green Line",
+    "name:ru": "Бакинский Метрополитен - Зелёная линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 52871079,
+  "nodes": [
+    2556683022,
+    11853872424,
+    11036190278,
+    670220250,
+    2556683011,
+    9590235089,
+    670219867,
+    11853872427,
+    12766893268,
+    11853872432,
+    11853872433,
+    11853872434,
+    11853872438,
+    11927169882,
+    11853872439,
+    11927169877,
+    13868430616,
+    670219440,
+    11927169885,
+    5176498837,
+    11927169890,
+    11927169889,
+    11963680852,
+    11963680846,
+    11963680850,
+    11963680848,
+    11927169893,
+    11927169897,
+    2943399253,
+    11927169895,
+    2943399252,
+    5176498834,
+    11927169898,
+    11927169899,
+    5176498835,
+    5176498830
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-4",
+    "name": "Bakı Metropoliteni - Qırmızı xətt",
+    "name:en": "Baku Metro - Red Line",
+    "name:ru": "Бакинский Метрополитен - Красная линия",
+    "oneway": "yes",
+    "railway": "subway",
+    "railway:track_ref": "II",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 533596942,
+  "nodes": [
+    670198805,
+    11927164431,
+    7259856129,
+    13753399781,
+    13753399780,
+    3034462015,
+    11927164434,
+    13753399782,
+    13753399783,
+    3034448752,
+    13753399784,
+    13753399785,
+    11927164433,
+    670199291,
+    11927164424,
+    11927164426,
+    11927164428,
+    5176498832,
+    11927164429,
+    5176498831,
+    11927169903,
+    5176498844,
+    5176498830
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-4",
+    "name": "Bakı Metropoliteni - Qırmızı xətt",
+    "name:en": "Baku Metro - Red Line",
+    "name:ru": "Бакинский Метрополитен - Красная линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 777897274,
+  "nodes": [
+    7259856130,
+    11927164431,
+    7259856129,
+    13753399781,
+    13753399780,
+    3034462015,
+    11927164434,
+    13753399782,
+    13753399783,
+    3034448752,
+    13753399784,
+    13753399785,
+    11927164433,
+    12363769444,
+    7259856127,
+    11927164423,
+    11927164425,
+    11927164427,
+    7259856126,
+    11927164430,
+    7259856125,
+    11927169902,
+    7259856124,
+    7259856123,
+    7259856122,
+    11927169901,
+    11927169900,
+    7259856121,
+    7259856120,
+    11927169894,
+    7259856119,
+    11927169896,
+    11963680847,
+    11963680849,
+    11963680851,
+    11963680845,
+    11963680853,
+    11927169887,
+    7259856118,
+    11927169886,
+    11927169884,
+    7259856117,
+    7259856116,
+    13868430615,
+    11927169878,
+    13868430617,
+    11853872440,
+    11927169883,
+    11853872435,
+    11853872436,
+    11853872437,
+    12766893269,
+    11853872426,
+    7259856115,
+    9590235090,
+    7259856114,
+    11036190272,
+    2556682996
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-4",
+    "name": "Bakı Metropoliteni - Qırmızı xətt",
+    "name:en": "Baku Metro - Red Line",
+    "name:ru": "Бакинский Метрополитен - Красная линия",
+    "oneway": "yes",
+    "railway": "subway",
+    "railway:track_ref": "I",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 783046245,
+  "nodes": [
+    3803117498,
+    11927164451,
+    670217276,
+    11934071632,
+    670217277,
+    11927164449,
+    11934071631,
+    11934071630,
+    11927164450,
+    11934071628,
+    670217099,
+    11934071629,
+    670217100,
+    11927164447,
+    3755639193,
+    11927164448,
+    11927164446,
+    1311652984,
+    11927164445,
+    670216816,
+    2511247290,
+    11927164442,
+    2494917357,
+    11927164444,
+    11934071627,
+    670216679,
+    5176498838,
+    5188402385,
+    11934071617,
+    11927164435,
+    11934071616,
+    11927164438,
+    5176498839,
+    11934071618,
+    11927164436,
+    11934071619,
+    11927164437,
+    11934071620,
+    5176498840,
+    11934071621,
+    5176498841,
+    11934071622,
+    11927164440,
+    11934071623,
+    11927164439,
+    11934071624,
+    11934071625,
+    5176498843,
+    11934071626,
+    11927164441,
+    5176498830
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-3",
+    "name": "Bakı metropoliteni - Yaşıl xətt",
+    "name:en": "Baku Metro - Green Line",
+    "name:ru": "Бакинский Метрополитен - Зелёная линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 533596943,
+  "nodes": [
+    2295524457,
+    12758903921,
+    12324608960,
+    14255370914,
+    11944792882,
+    670199298
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-3",
+    "name": "Bakı metropoliteni (C. Cabbarlı - Xətai)",
+    "name:en": "Baku Metro (J. Jabbarli - Khatai)",
+    "name:ru": "Бакинский Метрополитен (Дж. Джаббарлы - Хатаи)",
+    "railway": "subway",
+    "tunnel": "yes",
+    "voltage": "750",
+    "wikidata": "Q213271",
+    "wikipedia": "az:Bakı metrosu"
+  }
+},
+{
+  "type": "way",
+  "id": 1288013962,
+  "nodes": [
+    11944752767,
+    13602384893,
+    13602384894,
+    11944792878,
+    11944792869,
+    11944792870,
+    11944752767
+  ],
+  "tags": {
+    "departures_board": "yes",
+    "layer": "-1",
+    "network": "Bakı Metropoliteni",
+    "operator": "Bakı Metropoliteni",
+    "public_transport": "platform",
+    "railway": "platform",
+    "subway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 415085451,
+  "nodes": [
+    5910339375,
+    11927309997,
+    11927309999,
+    4161594119,
+    11927310005,
+    4161594120,
+    11927310003,
+    11927310004,
+    11927310009,
+    11927310011,
+    11927310010,
+    11927310015,
+    4161594117,
+    11927310006,
+    11177553305,
+    5176509732,
+    4168121532,
+    4168101326
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 779540146,
+  "nodes": [
+    7279336592,
+    7279336600,
+    11177553306,
+    11927310007,
+    7279336599,
+    11927310014,
+    11927310012,
+    11927310013,
+    11927310008,
+    11927310000,
+    11927310001,
+    11927310002,
+    7279336596,
+    7279336595,
+    11927309998,
+    11927309996,
+    7279336594
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 951749242,
+  "nodes": [
+    8809282573,
+    10274176919,
+    11927310033,
+    9229612855,
+    9229612853,
+    9229612854,
+    10274176921,
+    11927310034,
+    10274176920,
+    11927310035,
+    8809282574,
+    8809282576
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 487837819,
+  "nodes": [
+    4168101326,
+    9764004725,
+    9764004726,
+    4802464543,
+    9764004727,
+    9764004722,
+    9764004724,
+    11927310019,
+    4802464545,
+    11927310040,
+    11927310018,
+    11927310039,
+    9764004723,
+    11927310017,
+    9764004721,
+    11927310024,
+    4802464546,
+    11927310029,
+    9764004719,
+    11927310028,
+    9764004720,
+    11927310027,
+    4802464547,
+    11927310031,
+    9764004718,
+    9764004717,
+    11853872454,
+    4802464548
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 1124457865,
+  "nodes": [
+    8809282573,
+    10282585601,
+    12133773772,
+    10282585602,
+    12133786720,
+    10282585603,
+    10282585604,
+    10282585605,
+    10282643441,
+    10282585606,
+    10282585607,
+    10282585608
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 1124457866,
+  "nodes": [
+    10282585608,
+    10282607609,
+    10282607610,
+    10282607611,
+    11927310032,
+    10282607613,
+    11927310026,
+    10282607614,
+    11927310025,
+    10282607615,
+    11927310030,
+    10282607617,
+    11927310023,
+    10282607618,
+    11927310022,
+    11927310038,
+    11927310016,
+    11927310037,
+    11927310021,
+    11927310036,
+    11177476494,
+    11927310020,
+    10282607619,
+    10282607620,
+    10282607621,
+    10282607622,
+    10282607623,
+    10282607624,
+    11177455350,
+    10282607625,
+    7279336592
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 1124769281,
+  "nodes": [
+    4802464548,
+    8809282573
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 182134739,
+  "nodes": [
+    1924834867,
+    4802451848,
+    1148914625
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Yaşıl xətt",
+    "name:en": "Baku Metro - Green Line",
+    "name:ru": "Бакинский Метрополитен - Зелёная линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 420081384,
+  "nodes": [
+    5910339375,
+    11927309990,
+    11927309991,
+    11927309994,
+    14111840139,
+    4200615447,
+    11927309985,
+    4200615448,
+    11927309982,
+    11927309974,
+    11927309976,
+    11927309977,
+    4200615450,
+    11927309973,
+    11927309972,
+    4200615451,
+    11927285792,
+    4200615452,
+    11927285782,
+    11927285793,
+    11927285783,
+    11927285789,
+    11927285784,
+    4200615453,
+    11927285795,
+    11927285786,
+    11927285787,
+    4910575093,
+    3077754725
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 781144571,
+  "nodes": [
+    7279336594,
+    11927309992,
+    11927309993,
+    7293339464,
+    11927309995,
+    13785672087,
+    7293339466,
+    11927309983,
+    7293339467,
+    11927309981,
+    11927309984,
+    7293339468,
+    11927309980,
+    7293339469,
+    11927309979,
+    11927309978,
+    7293339470,
+    11927285791,
+    7293339471,
+    11927285779,
+    11927285781,
+    11927285790,
+    11927285780,
+    7293339472,
+    11927285794,
+    11927285785,
+    7293339475,
+    7293339476,
+    11927285788,
+    7293339477,
+    7293343086
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Bənövşəyi xətt",
+    "name:en": "Baku Metro - Purple Line",
+    "name:ru": "Бакинский Метрополитен - Фиолетовая линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 386319213,
+  "nodes": [
+    3896778915,
+    11853872414,
+    670220272,
+    11927169873,
+    11927169874,
+    11927169875,
+    11927169876,
+    10831319190,
+    9765087800,
+    10831319189,
+    11927164468,
+    11927169869,
+    11927169870,
+    11927169871,
+    11927169872,
+    670220296,
+    9630666962,
+    3066211543,
+    11927164466,
+    11927164467,
+    9635235525,
+    670220373,
+    13791766851,
+    13791766850,
+    4323155490,
+    4323155489,
+    11927164463,
+    11927164462,
+    11927164461,
+    4323153888,
+    4323153887,
+    13791044356,
+    670220374,
+    4323153886,
+    3630836930,
+    10229252810,
+    670220397,
+    3630808832,
+    1430724878,
+    3612263310,
+    3612263309,
+    670220398,
+    670220399,
+    670220410,
+    670220400,
+    3610142655,
+    3604927260,
+    3604363122,
+    670220733
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Qırmızı xətt",
+    "name:en": "Baku Metro - Red Line",
+    "name:ru": "Бакинский Метрополитен - Красная линия",
+    "operator": "Bakı Metropoliteni",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 248963475,
+  "nodes": [
+    670220015,
+    2556750281,
+    2556683004,
+    670220038,
+    2556682995,
+    2556750302,
+    2556683003,
+    2556750391,
+    670220039,
+    2556683016,
+    670220040,
+    4566972310
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "name": "Bakı Metropoliteni - Qırmızı xətt (Bakmil)",
+    "name:en": "Baku Metro - Red Line (Bakmil)",
+    "name:ru": "Бакинский Метрополитен - Красная линия (Бакмил)",
+    "railway": "subway",
+    "railway:track_ref": "III",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 461153495,
+  "nodes": [
+    4566972310,
+    2556683002,
+    2556682988,
+    2556683019,
+    2556682992,
+    2556683017,
+    11850637239,
+    2556683014
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "name": "Bakı Metropoliteni - Qırmızı xətt (Bakmil)",
+    "name:en": "Baku Metro - Red Line (Bakmil)",
+    "name:ru": "Бакинский Метрополитен - Красная линия (Бакмил)",
+    "railway": "subway",
+    "railway:track_ref": "IV",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 535253239,
+  "nodes": [
+    3896778915,
+    3896778916,
+    670220270,
+    11853872416,
+    11927287113,
+    11853872417,
+    11927287112,
+    11853872418,
+    11853872419,
+    670220268,
+    11036190268,
+    11291711876,
+    11036190269,
+    11036190270,
+    11036190271,
+    2556683022
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-4",
+    "name": "Bakı Metropoliteni - Qırmızı xətt",
+    "name:en": "Baku Metro - Red Line",
+    "name:ru": "Бакинский Метрополитен - Красная линия",
+    "oneway": "yes",
+    "railway": "subway",
+    "railway:track_ref": "II",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 52871068,
+  "nodes": [
+    2556682996,
+    2556682990,
+    670220015
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-4",
+    "name": "Bakı Metropoliteni - Qırmızı xətt (Bakmil)",
+    "name:en": "Baku Metro - Red Line (Bakmil)",
+    "name:ru": "Бакинский Метрополитен - Красная линия (Бакмил)",
+    "oneway": "yes",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 1188516912,
+  "nodes": [
+    2556683014,
+    2556683022
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-1",
+    "name": "Bakı Metropoliteni - Qırmızı xətt (Bakmil)",
+    "name:en": "Baku Metro - Red Line (Bakmil)",
+    "name:ru": "Бакинский Метрополитен - Красная линия (Бакмил)",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 1250320947,
+  "nodes": [
+    11850938689,
+    670220144,
+    11850637241
+  ],
+  "tags": {
+    "covered": "yes",
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "name": "Bakı Metropoliteni - Qırmızı xətt (Bakmil)",
+    "name:en": "Baku Metro - Red Line (Bakmil)",
+    "name:ru": "Бакинский Метрополитен - Красная линия (Бакмил)",
+    "railway": "subway",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 1276508921,
+  "nodes": [
+    4566972310,
+    11850637240,
+    11850938689
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "name": "Bakı Metropoliteni - Qırmızı xətt (Bakmil)",
+    "name:en": "Baku Metro - Red Line (Bakmil)",
+    "name:ru": "Бакинский Метрополитен - Красная линия (Бакмил)",
+    "railway": "subway",
+    "usage": "main",
+    "voltage": "750"
+  }
+},
+{
+  "type": "way",
+  "id": 326420311,
+  "nodes": [
+    670220733,
+    3602269416,
+    9780143288,
+    3602269415,
+    670220633,
+    2470944751,
+    670220979,
+    3604316705,
+    670220741,
+    3029568543,
+    9891914363,
+    670220993,
+    670220980
+  ],
+  "tags": {
+    "electrified": "rail",
+    "frequency": "0",
+    "gauge": "1520",
+    "layer": "-2",
+    "name": "Bakı Metropoliteni - Qırmızı xətt",
+    "name:en": "Baku Metro - Red Line",
+    "name:ru": "Бакинский Метрополитен - Красная линия",
+    "railway": "subway",
+    "tunnel": "yes",
+    "usage": "main",
+    "voltage": "750"
+  }
+}
+
+  ]
+}

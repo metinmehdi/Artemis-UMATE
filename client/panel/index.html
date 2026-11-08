@@ -33,8 +33,19 @@
         </div>
 
         <div class="card">
+          <h2>Challenges (judge)</h2>
+          <div class="btns">
+            <button data-fault="insufficient_balance" aria-pressed="false">Not enough balance</button>
+            <button data-fault="card_unreadable" aria-pressed="false">Card not read</button>
+            <button data-fault="train_delay" aria-pressed="false">Train delayed</button>
+            <button data-fault="crowd_noise" aria-pressed="false">Crowd and noise</button>
+          </div>
+        </div>
+
+        <div class="card">
           <h2>Trainer controls</h2>
           <div class="btns">
+            <button data-cmd="hint">Give a hint</button>
             <button data-cmd="recenter">Recenter view</button>
             <button data-cmd="say" data-text="Say hello to the learner and ask how they feel, in one short sentence.">Buddy: say hello</button>
             <button data-cmd="say" data-text="The learner may be stressed. Calmly guide one slow breath together, then ask if they are ready to continue.">Buddy: calm down</button>

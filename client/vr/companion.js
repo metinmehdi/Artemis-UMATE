@@ -125,9 +125,33 @@ export class Companion {
     if (this.ready) this.dc.send(JSON.stringify(obj));
   }
 
-  // Ask the buddy to speak now, guided by an instruction (not shown to the learner).
+  // Ask the buddy to speak, guided by an instruction (not shown to the learner).
+  // The API refuses a new response while one is active, so while the buddy is generating or
+  // still talking we keep the latest instruction and send it as soon as the buddy is quiet.
+  // Only the latest one is kept: an older hint is out of date by then.
   say(instructions) {
+    if (!this.ready) return;
+    const now = performance.now();
+    const busy = this.busy && now - this.busySince < 15000;
+    const playing = this.playing && now - this.playingSince < 30000;
+    if (busy || playing) {
+      this.pending = instructions;
+      return;
+    }
+    this._sendSay(instructions);
+  }
+
+  _sendSay(instructions) {
+    this.busy = true;
+    this.busySince = performance.now();
     this.send({ type: 'response.create', response: { instructions } });
+  }
+
+  _flush() {
+    if (!this.pending || this.busy || this.playing) return;
+    const next = this.pending;
+    this.pending = null;
+    this._sendSay(next);
   }
 
   // Tell the buddy what is happening in the app (ground truth from the scenario engine).
@@ -158,15 +182,26 @@ export class Companion {
         this.userSpeaking = false;
         this.releaseAt = performance.now() + 600;
         break;
-      case 'output_audio_buffer.started':
       case 'response.created':
+        this.busy = true;
+        this.busySince = performance.now();
+        this.setMode('speaking');
+        break;
+      case 'output_audio_buffer.started':
+        this.playing = true;
+        this.playingSince = performance.now();
         this.setMode('speaking');
         break;
       case 'output_audio_buffer.stopped':
+      case 'output_audio_buffer.cleared':
+        this.playing = false;
         this.setMode(this.mic?.enabled ? 'listening' : 'idle');
+        this._flush();
         break;
       case 'response.done':
+        this.busy = false;
         if (this.mode === 'speaking' && !this._audioEvents) this.setMode('idle');
+        this._flush();
         break;
       case 'response.output_audio_transcript.done':
         if (ev.transcript) this.onTranscript('buddy', ev.transcript);

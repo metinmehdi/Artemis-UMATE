@@ -1,0 +1,614 @@
+{
+  "city": "Baku",
+  "source": {
+    "raw": "data/raw/osm/baku-metro.json",
+    "osm_timestamp": "2026-11-08T09:56:18Z",
+    "licence": "ODbL 1.0, (c) OpenStreetMap contributors"
+  },
+  "lines": [
+    {
+      "ref": "1",
+      "name_en": "Red line",
+      "colour": "#EE1D23",
+      "osm_colour": "red",
+      "stations": [
+        "icherisheher",
+        "sahil",
+        "28-may",
+        "ganjlik",
+        "nariman-narimanov",
+        "ulduz",
+        "koroglu",
+        "gara-garayev",
+        "neftchilar",
+        "khalglar-dostlugu",
+        "ahmadli",
+        "hazi-aslanov"
+      ],
+      "routes": [
+        {
+          "osm_id": 456668,
+          "from": "icherisheher",
+          "to": "hazi-aslanov",
+          "stops": [
+            "icherisheher",
+            "sahil",
+            "28-may",
+            "ganjlik",
+            "nariman-narimanov",
+            "ulduz",
+            "koroglu",
+            "gara-garayev",
+            "neftchilar",
+            "khalglar-dostlugu",
+            "ahmadli",
+            "hazi-aslanov"
+          ]
+        },
+        {
+          "osm_id": 7680413,
+          "from": "icherisheher",
+          "to": "bakmil",
+          "stops": [
+            "icherisheher",
+            "sahil",
+            "28-may",
+            "ganjlik",
+            "nariman-narimanov",
+            "bakmil"
+          ]
+        },
+        {
+          "osm_id": 7792470,
+          "from": "hazi-aslanov",
+          "to": "icherisheher",
+          "stops": [
+            "hazi-aslanov",
+            "ahmadli",
+            "khalglar-dostlugu",
+            "neftchilar",
+            "gara-garayev",
+            "koroglu",
+            "ulduz",
+            "nariman-narimanov",
+            "ganjlik",
+            "28-may",
+            "sahil",
+            "icherisheher"
+          ]
+        },
+        {
+          "osm_id": 7792471,
+          "from": "bakmil",
+          "to": "icherisheher",
+          "stops": [
+            "bakmil",
+            "nariman-narimanov",
+            "ganjlik",
+            "28-may",
+            "sahil",
+            "icherisheher"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "2",
+      "name_en": "Green line",
+      "colour": "#00AB5B",
+      "osm_colour": "green",
+      "stations": [
+        "darnagul",
+        "azadlig-prospekti",
+        "nasimi",
+        "memar-ajami",
+        "20-january",
+        "inshaatchilar",
+        "elmlar-akademiyasi",
+        "nizami"
+      ],
+      "routes": [
+        {
+          "osm_id": 456667,
+          "from": "darnagul",
+          "to": "nizami",
+          "stops": [
+            "darnagul",
+            "azadlig-prospekti",
+            "nasimi",
+            "memar-ajami",
+            "20-january",
+            "inshaatchilar",
+            "elmlar-akademiyasi",
+            "nizami"
+          ]
+        },
+        {
+          "osm_id": 7680414,
+          "from": "azadlig-prospekti",
+          "to": "nizami",
+          "stops": [
+            "azadlig-prospekti",
+            "nasimi",
+            "memar-ajami",
+            "20-january",
+            "inshaatchilar",
+            "elmlar-akademiyasi",
+            "nizami"
+          ]
+        },
+        {
+          "osm_id": 7792468,
+          "from": "nizami",
+          "to": "darnagul",
+          "stops": [
+            "nizami",
+            "elmlar-akademiyasi",
+            "inshaatchilar",
+            "20-january",
+            "memar-ajami",
+            "nasimi",
+            "azadlig-prospekti",
+            "darnagul"
+          ]
+        },
+        {
+          "osm_id": 7792469,
+          "from": "nizami",
+          "to": "azadlig-prospekti",
+          "stops": [
+            "nizami",
+            "elmlar-akademiyasi",
+            "inshaatchilar",
+            "20-january",
+            "memar-ajami",
+            "nasimi",
+            "azadlig-prospekti"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "2B",
+      "name_en": "Green line shuttle",
+      "colour": null,
+      "osm_colour": "lightgreen",
+      "stations": [
+        "shah-ismail-khatai",
+        "jafar-jabbarli"
+      ],
+      "routes": [
+        {
+          "osm_id": 7664611,
+          "from": "shah-ismail-khatai",
+          "to": "jafar-jabbarli",
+          "stops": [
+            "shah-ismail-khatai",
+            "jafar-jabbarli"
+          ]
+        },
+        {
+          "osm_id": 7792467,
+          "from": "jafar-jabbarli",
+          "to": "shah-ismail-khatai",
+          "stops": [
+            "jafar-jabbarli",
+            "shah-ismail-khatai"
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "3",
+      "name_en": "Purple line",
+      "colour": "#8E177C",
+      "osm_colour": "purple",
+      "stations": [
+        "khojasan",
+        "avtovaghzal",
+        "memar-ajami",
+        "8-november"
+      ],
+      "routes": [
+        {
+          "osm_id": 7664626,
+          "from": "khojasan",
+          "to": "8-november",
+          "stops": [
+            "khojasan",
+            "avtovaghzal",
+            "memar-ajami",
+            "8-november"
+          ]
+        },
+        {
+          "osm_id": 7792466,
+          "from": "8-november",
+          "to": "khojasan",
+          "stops": [
+            "8-november",
+            "memar-ajami",
+            "avtovaghzal",
+            "khojasan"
+          ]
+        }
+      ]
+    }
+  ],
+  "stations": [
+    {
+      "id": "20-january",
+      "name_az": "20 Yanvar",
+      "name_en": "20 January",
+      "name_en_source": "hand-checked list",
+      "lat": 40.404139,
+      "lon": 49.807702,
+      "lines": [
+        "2"
+      ],
+      "osm_nodes": [
+        1930089762
+      ]
+    },
+    {
+      "id": "28-may",
+      "name_az": "28 May",
+      "name_en": "28 May",
+      "name_en_source": "hand-checked list",
+      "lat": 40.37985,
+      "lon": 49.848707,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        5176498844,
+        7259856124
+      ]
+    },
+    {
+      "id": "8-november",
+      "name_az": "8 Noyabr",
+      "name_en": "8 November",
+      "name_en_source": "hand-checked list",
+      "lat": 40.401844,
+      "lon": 49.820786,
+      "lines": [
+        "3"
+      ],
+      "osm_nodes": [
+        3077754725,
+        7293343086
+      ]
+    },
+    {
+      "id": "ahmadli",
+      "name_az": "Əhmədli",
+      "name_en": "Ahmadli",
+      "name_en_source": "hand-checked list",
+      "lat": 40.385558,
+      "lon": 49.953945,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670220979
+      ]
+    },
+    {
+      "id": "avtovaghzal",
+      "name_az": "Avtovağzal",
+      "name_en": "Avtovaghzal",
+      "name_en_source": "hand-checked list",
+      "lat": 40.421295,
+      "lon": 49.795169,
+      "lines": [
+        "3"
+      ],
+      "osm_nodes": [
+        5176509732,
+        7279336600
+      ]
+    },
+    {
+      "id": "azadlig-prospekti",
+      "name_az": "Azadlıq prospekti",
+      "name_en": "Azadlig Prospekti",
+      "name_en_source": "hand-checked list",
+      "lat": 40.425962,
+      "lon": 49.842926,
+      "lines": [
+        "2"
+      ],
+      "osm_nodes": [
+        1148914625
+      ]
+    },
+    {
+      "id": "bakmil",
+      "name_az": "Bakmil",
+      "name_en": "Bakmil",
+      "name_en_source": "hand-checked list",
+      "lat": 40.41414,
+      "lon": 49.878796,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670220144
+      ]
+    },
+    {
+      "id": "darnagul",
+      "name_az": "Dərnəgül",
+      "name_en": "Darnagul",
+      "name_en_source": "hand-checked list",
+      "lat": 40.425402,
+      "lon": 49.861788,
+      "lines": [
+        "2"
+      ],
+      "osm_nodes": [
+        1924834867
+      ]
+    },
+    {
+      "id": "elmlar-akademiyasi",
+      "name_az": "Elmlər Akademiyası",
+      "name_en": "Elmlar Akademiyasi",
+      "name_en_source": "hand-checked list",
+      "lat": 40.375152,
+      "lon": 49.815484,
+      "lines": [
+        "2"
+      ],
+      "osm_nodes": [
+        670217100
+      ]
+    },
+    {
+      "id": "ganjlik",
+      "name_az": "Gənclik",
+      "name_en": "Ganjlik",
+      "name_en_source": "hand-checked list",
+      "lat": 40.399901,
+      "lon": 49.850574,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670219440,
+        7259856116
+      ]
+    },
+    {
+      "id": "gara-garayev",
+      "name_az": "Qara Qarayev",
+      "name_en": "Gara Garayev",
+      "name_en_source": "hand-checked list",
+      "lat": 40.417612,
+      "lon": 49.933959,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670220397
+      ]
+    },
+    {
+      "id": "hazi-aslanov",
+      "name_az": "Həzi Aslanov",
+      "name_en": "Hazi Aslanov",
+      "name_en_source": "hand-checked list",
+      "lat": 40.373038,
+      "lon": 49.953574,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670220993
+      ]
+    },
+    {
+      "id": "icherisheher",
+      "name_az": "İçərişəhər",
+      "name_en": "Icherisheher",
+      "name_en_source": "hand-checked list",
+      "lat": 40.365959,
+      "lon": 49.831646,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670198805,
+        7259856130
+      ]
+    },
+    {
+      "id": "inshaatchilar",
+      "name_az": "İnşaatçılar",
+      "name_en": "Inshaatchilar",
+      "name_en_source": "hand-checked list",
+      "lat": 40.389094,
+      "lon": 49.802357,
+      "lines": [
+        "2"
+      ],
+      "osm_nodes": [
+        670217274
+      ]
+    },
+    {
+      "id": "jafar-jabbarli",
+      "name_az": "Cəfər Cabbarlı",
+      "name_en": "Jafar Jabbarli",
+      "name_en_source": "hand-checked list",
+      "lat": 40.379652,
+      "lon": 49.84895,
+      "lines": [
+        "2B"
+      ],
+      "osm_nodes": [
+        2295524457
+      ]
+    },
+    {
+      "id": "khalglar-dostlugu",
+      "name_az": "Xalqlar Dostluğu",
+      "name_en": "Khalglar Dostlugu",
+      "name_en_source": "hand-checked list",
+      "lat": 40.396885,
+      "lon": 49.952986,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670220733
+      ]
+    },
+    {
+      "id": "khojasan",
+      "name_az": "Xocəsən",
+      "name_en": "Khojasan",
+      "name_en_source": "hand-checked list",
+      "lat": 40.421152,
+      "lon": 49.779066,
+      "lines": [
+        "3"
+      ],
+      "osm_nodes": [
+        8809282576
+      ]
+    },
+    {
+      "id": "koroglu",
+      "name_az": "Koroğlu",
+      "name_en": "Koroglu",
+      "name_en_source": "hand-checked list",
+      "lat": 40.420763,
+      "lon": 49.918092,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        9635235525
+      ]
+    },
+    {
+      "id": "memar-ajami",
+      "name_az": "Memar Əcəmi",
+      "name_en": "Memar Ajami",
+      "name_en_source": "hand-checked list",
+      "lat": 40.410615,
+      "lon": 49.813445,
+      "lines": [
+        "2",
+        "3"
+      ],
+      "osm_nodes": [
+        4161594118,
+        5910339375,
+        7279336594
+      ]
+    },
+    {
+      "id": "nariman-narimanov",
+      "name_az": "Nəriman Nərimanov",
+      "name_en": "Nariman Narimanov",
+      "name_en_source": "hand-checked list",
+      "lat": 40.402858,
+      "lon": 49.870614,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670219867,
+        7259856115
+      ]
+    },
+    {
+      "id": "nasimi",
+      "name_az": "Nəsimi",
+      "name_en": "Nasimi",
+      "name_en_source": "hand-checked list",
+      "lat": 40.424645,
+      "lon": 49.82628,
+      "lines": [
+        "2"
+      ],
+      "osm_nodes": [
+        670217698
+      ]
+    },
+    {
+      "id": "neftchilar",
+      "name_az": "Neftçilər",
+      "name_en": "Neftchilar",
+      "name_en_source": "hand-checked list",
+      "lat": 40.411155,
+      "lon": 49.942568,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670220410
+      ]
+    },
+    {
+      "id": "nizami",
+      "name_az": "Nizami",
+      "name_en": "Nizami",
+      "name_en_source": "hand-checked list",
+      "lat": 40.379319,
+      "lon": 49.830019,
+      "lines": [
+        "2"
+      ],
+      "osm_nodes": [
+        670216816
+      ]
+    },
+    {
+      "id": "sahil",
+      "name_az": "Sahil",
+      "name_en": "Sahil",
+      "name_en_source": "hand-checked list",
+      "lat": 40.371731,
+      "lon": 49.844564,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        670199291,
+        7259856127
+      ]
+    },
+    {
+      "id": "shah-ismail-khatai",
+      "name_az": "Şah İsmayıl Xətai",
+      "name_en": "Shah Ismail Khatai",
+      "name_en_source": "hand-checked list",
+      "lat": 40.383263,
+      "lon": 49.872143,
+      "lines": [
+        "2B"
+      ],
+      "osm_nodes": [
+        670199298
+      ]
+    },
+    {
+      "id": "ulduz",
+      "name_az": "Ulduz",
+      "name_en": "Ulduz",
+      "name_en_source": "hand-checked list",
+      "lat": 40.414963,
+      "lon": 49.891435,
+      "lines": [
+        "1"
+      ],
+      "osm_nodes": [
+        3896778915
+      ]
+    }
+  ]
+}

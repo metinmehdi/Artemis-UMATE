@@ -1,0 +1,9 @@
+{
+  "currency": "AZN",
+  "fare": 0.6,
+  "fare_source": "Ministry of Digital Development and Transport of Azerbaijan: single metro ride 60 qəpik from 1 October 2025, https://mincom.gov.az/en/media-en/news/approval-of-new-fares-for-metro-and-bus-routes-with-cashless-payment-systems-and-modern-standards",
+  "fare_verified": "2026-11-08",
+  "topup_amounts": [1, 2, 5],
+  "topup_note": "Simplified for training. Real BakıKART machines accept coins and notes of many values; UMATE offers three buttons so the choice stays small.",
+  "start_balance": 0
+}

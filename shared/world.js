@@ -5,7 +5,6 @@
 import * as THREE from 'three';
 import { makeBuddy } from './buddy.js';
 import { makeDirectionSign, makeTaskCard, makeButton, makeHotspot, makeFloorTarget, makePanel, TOKENS, text, rr, icon, roundel } from './ui3d.js';
-import { RED_LINE, nextStops } from './route.js';
 
 export const EYE = 1.6;
 const PANO_R = 12;
@@ -147,7 +146,9 @@ function makeKiosk() {
 }
 
 // ---------- build ----------
-export function buildWorld() {
+// `trip` comes from the scenario engine (createTrip): signs and station names are built from the
+// OpenStreetMap network data, not typed by hand.
+export function buildWorld({ trip }) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#0b0f16');
   const interactives = [];
@@ -183,23 +184,16 @@ export function buildWorld() {
     const cfg = NODES.platform;
     const group = new THREE.Group();
     const sphere = makePanoSphere(cfg.pano);
-    const stops = nextStops(RED_LINE, 'Koroglu');
-    const start = RED_LINE.stations[0];
-    const end = RED_LINE.stations[RED_LINE.stations.length - 1];
-    const signLeft = makeDirectionSign({
-      id: 'sign:left',
-      towards: start.az,
-      towardsEn: start.en,
-      stations: stops.towardsStart.slice(0, 4).map((s) => s.az),
-      arrow: 'left',
-    });
-    const signRight = makeDirectionSign({
-      id: 'sign:right',
-      towards: end.az,
-      towardsEn: end.en,
-      stations: stops.towardsEnd.slice(0, 4).map((s) => s.az),
-      arrow: 'right',
-    });
+    const signFor = (side) =>
+      makeDirectionSign({
+        id: 'sign:' + side,
+        towards: trip.signs[side].towards.name_az,
+        towardsEn: trip.signs[side].towards.name_en,
+        stations: trip.signs[side].next.slice(0, 4).map((s) => s.name_az),
+        arrow: side,
+      });
+    const signLeft = signFor('left');
+    const signRight = signFor('right');
     for (const [sign, c] of [[signLeft, cfg.signLeft], [signRight, cfg.signRight]]) {
       sign.position.set(c.x, c.y, c.z); // faces +Z (towards the learner), perpendicular to the platform
       // thin mounting rods to the ceiling
@@ -219,8 +213,8 @@ export function buildWorld() {
         ctx.fillStyle = TOKENS.metroBlue;
         ctx.fill();
         roundel(ctx, 90, h / 2, 62);
-        text(ctx, 'Koroğlu', 190, h / 2 + 46, { size: 132 });
-        text(ctx, 'Koroglu', w - 60, h / 2 + 20, { size: 54, weight: 400, align: 'right', color: TOKENS.muted });
+        text(ctx, trip.from.name_az, 190, h / 2 + 46, { size: 132 });
+        text(ctx, trip.from.name_en, w - 60, h / 2 + 20, { size: 54, weight: 400, align: 'right', color: TOKENS.muted });
       });
       b.position.copy(pointAt(c.u, c.v, c.d));
       faceCamera(b);
@@ -270,7 +264,9 @@ export function buildWorld() {
   function render(s) {
     const hall = nodes.hall;
     const plat = nodes.platform;
-    hall.kioskSpot.userData.ring.redraw({ hover: hoverId === 'kiosk', state: s.kiosk === 'done' ? 'ok' : null });
+    // hint level 2+ makes the target glow as if the learner were looking at it
+    const hinted = (id) => hoverId === id || ((s.hint?.level || 0) >= 2 && s.hint?.target === id);
+    hall.kioskSpot.userData.ring.redraw({ hover: hinted('kiosk'), state: s.kiosk === 'done' ? 'ok' : null });
     hall.kioskSpot.userData.chip.redraw({ label: s.kiosk === 'done' ? 'Card topped up' : 'Top-up machine' });
     hall.kioskSpot.visible = !s.kioskOpen;
     hall.kiosk.visible = !!s.kioskOpen;
@@ -281,12 +277,15 @@ export function buildWorld() {
       b.visible = s.kiosk === 'amount';
       b.redraw({ hover: hoverId === b.userData.id });
     });
-    hall.gateSpot.userData.ring.redraw({ hover: hoverId === 'gate', state: s.gate === 'ok' ? 'ok' : s.gate === 'bad' ? 'bad' : null });
-    hall.gateSpot.userData.chip.redraw({ label: s.gate === 'ok' ? 'Go through' : s.gate === 'bad' ? 'Not enough balance' : 'Tap your card here' });
+    const bad = s.gate === 'bad' || s.gate === 'unread';
+    hall.gateSpot.userData.ring.redraw({ hover: hinted('gate'), state: s.gate === 'ok' ? 'ok' : bad ? 'bad' : null });
+    hall.gateSpot.userData.chip.redraw({
+      label: s.gate === 'ok' ? 'Go through' : s.gate === 'bad' ? 'Not enough balance' : s.gate === 'unread' ? 'Card not read. Try again' : 'Tap your card here',
+    });
     hall.toPlatform.visible = (s.targets || []).includes('platform');
-    hall.toPlatform.userData.disc.redraw({ hover: hoverId === 'go:platform' });
-    plat.signLeft.redraw({ highlight: hoverId === 'sign:left' || s.sign === 'left' });
-    plat.signRight.redraw({ highlight: hoverId === 'sign:right' || s.sign === 'right' });
+    hall.toPlatform.userData.disc.redraw({ hover: hinted('go:platform') });
+    plat.signLeft.redraw({ highlight: hinted('sign:left') || s.sign === 'left' });
+    plat.signRight.redraw({ highlight: hinted('sign:right') || s.sign === 'right' });
     plat.feedback.redraw(s.feedback || {});
     taskCard.redraw(s.task || {});
     buddy.userData.mode = s.buddyMode || buddy.userData.mode;

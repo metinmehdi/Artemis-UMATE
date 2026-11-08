@@ -1,0 +1,61 @@
+{
+  "id": "baku-red-koroglu-28may",
+  "title": "Koroğlu to 28 May by metro",
+  "city": "baku",
+  "line": "1",
+  "from": "koroglu",
+  "to": "28-may",
+  "hint_delays_s": [8, 15, 25],
+  "steps": [
+    {
+      "id": "topup",
+      "title": "Top up your BakıKart",
+      "sub": "Look at the top-up machine on your left",
+      "target": "kiosk",
+      "hints": [
+        "First we put money on the card. The top-up machine is on your left.",
+        "Look for the glowing machine on your left.",
+        "Turn left. Look at the glowing machine and hold your look for a moment."
+      ]
+    },
+    {
+      "id": "gate",
+      "title": "Tap your card at the turnstile",
+      "sub": "Look at the turnstile in front of you",
+      "target": "gate",
+      "hints": [
+        "Now we go through the turnstile. Touch the card to the green reader.",
+        "Look for the glowing turnstile in front of you.",
+        "Look straight ahead at the glowing reader and hold your look for a moment."
+      ]
+    },
+    {
+      "id": "platform",
+      "title": "Find the train to {to}",
+      "sub": "Your trip: {from} → {to}",
+      "target": "sign:{correct_side}",
+      "hints": [
+        "Read the station names on each sign. Which sign shows {to}?",
+        "{to} is on the sign towards {terminus}.",
+        "Look at the glowing sign towards {terminus}."
+      ]
+    },
+    {
+      "id": "ride",
+      "title": "Get off at {to}",
+      "sub": "{stops_left} stops left",
+      "target": "exit",
+      "hints": [
+        "Listen to the station name and count the stops.",
+        "The next station is {next}. We get off at {to}.",
+        "This is {to}. Look at the doors to get off."
+      ]
+    }
+  ],
+  "faults": {
+    "insufficient_balance": { "label": "Not enough balance", "set_balance": 0.2 },
+    "card_unreadable": { "label": "Card not read", "failures": 1 },
+    "train_delay": { "label": "Train delayed", "minutes": 3 },
+    "crowd_noise": { "label": "Crowd and noise" }
+  }
+}

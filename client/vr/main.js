@@ -1,9 +1,12 @@
 // Phone VR app: photoreal Baku Metro panoramas + gaze input + AI buddy + live link to the panel.
-// The trip logic below is a temporary hand-written flow; Phase 1 moves it into the scenario engine.
+// The trip logic lives in the shared scenario engine (shared/engine.js); this file only turns
+// gaze selections into engine actions and engine events into visuals, sounds and buddy lines.
 import * as THREE from 'three';
 import { StereoEffect } from 'three/addons/effects/StereoEffect.js';
 import { buildWorld, EYE, yawOfU } from '/shared/world.js';
 import { loadFonts } from '/shared/ui3d.js';
+import { loadTripData } from '/shared/data.js';
+import { Engine } from '/shared/engine.js';
 import { Gyro, DragLook } from './gyro.js';
 import { Gaze } from './gaze.js';
 import { Net } from './net.js';
@@ -13,8 +16,13 @@ const $ = (s) => document.querySelector(s);
 const canvas = $('#c');
 const fadeEl = $('#fade');
 const logEl = $('#log');
+const now = () => Math.round(performance.now());
 
-await loadFonts();
+const [, tripData] = await Promise.all([loadFonts(), loadTripData()]);
+
+// ---------- scenario engine ----------
+const engine = new Engine(tripData, (e) => onEngineEvent(e));
+const trip = engine.trip;
 
 // ---------- renderer / camera / rig ----------
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -24,7 +32,7 @@ camera.position.y = EYE;
 const rig = new THREE.Group();
 rig.add(camera);
 
-const world = buildWorld();
+const world = buildWorld({ trip });
 world.scene.add(rig);
 
 const stereo = new StereoEffect(renderer);
@@ -88,10 +96,14 @@ const net = new Net({
     if (m.cmd === 'say' && m.text) companion.say(m.text);
     if (m.cmd === 'reset') resetFlow();
     if (m.cmd === 'reload') location.reload();
+    if (m.cmd === 'fault' && m.fault) act({ type: 'fault', fault: m.fault, by: 'trainer' });
+    if (m.cmd === 'fault_clear' && m.fault) act({ type: 'fault_clear', fault: m.fault });
+    if (m.cmd === 'hint') act({ type: 'trainer_hint' });
   },
 });
 
 function event(name, data = {}) {
+  if (!sessionId) return;
   net.send({ type: 'event', sessionId, name, step: state.step, node: state.node, data });
 }
 
@@ -109,7 +121,7 @@ const companion = new Companion({
   },
   onLog: (lvl, text) => {
     log(text);
-    net.send({ type: 'event', sessionId, name: 'ai_log', data: { lvl, text } });
+    event('ai_log', { lvl, text });
   },
 });
 
@@ -124,63 +136,153 @@ function recenter() {
   event('recenter');
 }
 let teleporting = false;
-function teleport(nodeId) {
+function teleport(after) {
   if (teleporting) return;
   teleporting = true;
   fadeEl.classList.add('on');
   setTimeout(() => {
-    state.node = nodeId;
-    faceYaw(world.forwardYaw(nodeId));
-    onArrive(nodeId);
+    after();
+    faceYaw(world.forwardYaw(state.node));
     fadeEl.classList.remove('on');
     teleporting = false;
   }, 260);
 }
 
-// ---------- TEMP trip flow (moves into the scenario engine in Phase 1) ----------
-const FARE = 0.6; // ASSUMPTION: to be verified and moved to data/city/baku/rules.json
-const TASKS = [
-  { title: 'Top up your BakıKart', sub: 'Look at the top-up machine on your left' },
-  { title: 'Tap your card at the turnstile', sub: 'Look at the turnstile in front of you' },
-  { title: 'Find the train to 28 May', sub: 'Your trip: Koroğlu → 28 May' },
-  { title: 'Well done!', sub: 'Next: ride the train (coming soon)' },
-];
+// ---------- view state (what the 3D world shows) ----------
+// Derived from the engine state, plus a few purely visual things (kiosk screen open, payment
+// animation, short feedback messages).
 const state = {};
-function setTask(step, extra = {}) {
-  state.step = step;
-  state.task = { step, total: 4, ...TASKS[Math.min(step, 3)], ...extra };
+let taskOverride = null; // short-lived warning or praise on the task card
+let overrideTimer = 0;
+let hintInfo = null; // last hint_shown event of the current step
+const en = (s) => s.name_en;
+const az = (s) => s.name_az;
+
+function flash(task, ms = 3500, then) {
+  taskOverride = task;
+  clearTimeout(overrideTimer);
+  overrideTimer = setTimeout(() => {
+    taskOverride = null;
+    then?.();
+    syncView();
+  }, ms);
 }
-function resetFlow() {
-  Object.assign(state, {
-    node: 'hall',
-    balance: 0,
-    kiosk: 'idle',
-    kioskOpen: false,
-    amount: null,
-    progress: 0,
-    gate: null,
-    targets: [],
-    sign: null,
-    feedback: null,
-    buddyMode: companion.mode,
-  });
-  setTask(0);
-  faceYaw(world.forwardYaw('hall'));
+
+function syncView() {
+  const e = engine.state;
+  state.step = e.step;
+  state.node = e.location === 'hall' ? 'hall' : 'platform'; // the train scene arrives in Phase 2
+  state.balance = e.balance / 100;
+  if (state.kiosk !== 'paying') state.kiosk = e.kiosk;
+  state.gate = { open: 'ok', rejected: 'bad', unread: 'unread' }[e.gate] || null;
+  state.targets = e.gate === 'open' && e.location === 'hall' ? ['platform'] : [];
+  state.hint = hintInfo ? { level: hintInfo.level, target: hintInfo.target } : null;
+  state.faults = e.faults;
+  const task = { ...engine.task };
+  if (hintInfo && !e.done) task.sub = hintInfo.text;
+  if (e.location === 'train' && !e.done) task.sub = `Train towards ${az(trip.terminus)}. The ride scene comes in the next update.`;
+  state.task = taskOverride ? { ...task, ...taskOverride } : task;
   pushState();
 }
+
 function pushState() {
   world.applyState(state);
   net.send({ type: 'state', state });
 }
-function onArrive(nodeId) {
-  event('arrive', { node: nodeId });
-  if (nodeId === 'platform') {
-    setTask(2);
-    companion.context(
-      'Learner is on the Koroglu platform (Red line). Trip: Koroglu to 28 May, 4 stops. 28 May is towards Icherisheher: the LEFT sign. The right sign goes towards Hazi Aslanov (wrong way). Task: choose the correct direction sign.',
-    );
+
+function act(action) {
+  const events = engine.dispatch({ t: now(), ...action });
+  syncView();
+  return events;
+}
+
+function resetFlow() {
+  clearTimeout(overrideTimer);
+  taskOverride = null;
+  hintInfo = null;
+  stopCrowd();
+  Object.assign(state, { kioskOpen: false, kiosk: 'idle', amount: null, progress: 0, sign: null, feedback: null, buddyMode: companion.mode });
+  engine.reset(now());
+  faceYaw(world.forwardYaw('hall'));
+  syncView();
+}
+
+// ---------- engine events -> feedback, sounds, buddy, log ----------
+const balance = () => (engine.state.balance / 100).toFixed(2); // engine state is current inside events
+const STEP_CONTEXT = {
+  topup: () => `New trip: ${en(trip.from)} to ${en(trip.to)} on the ${trip.line.name_en}. Task: top up the BakuKart at the machine on the left. Balance ${balance()} AZN, a ride costs ${(trip.fare / 100).toFixed(2)} AZN.`,
+  gate: () => `Top-up done. Balance ${balance()} AZN. Next task: tap the card at the turnstile straight ahead.`,
+  platform: () =>
+    `Learner is on the ${en(trip.from)} platform (${trip.line.name_en}). Trip: ${en(trip.from)} to ${en(trip.to)}, ${trip.stops} stops. ${en(trip.to)} is towards ${en(trip.terminus)}: the ${trip.correctSide.toUpperCase()} sign. The other sign goes towards ${en(trip.otherTerminus)} (wrong way). Task: choose the correct direction sign.`,
+  ride: () => `Learner is on the train towards ${en(trip.terminus)}. They get off at ${en(trip.to)} after ${trip.stops} stops.`,
+};
+
+function onEngineEvent(e) {
+  event(e.type, e);
+  switch (e.type) {
+    case 'step_enter':
+      hintInfo = null;
+      companion.context(STEP_CONTEXT[e.id]());
+      break;
+    case 'hint_shown':
+      hintInfo = e;
+      log(`hint ${e.level}: ${e.text}`);
+      if (e.level === 1 || e.level === 3 || e.trigger === 'ask') companion.say(`Give the learner this hint kindly, in one short sentence: "${e.text}"`);
+      break;
+    case 'wallet':
+      if (e.tx === 'topup') beep(880, 120);
+      if (e.tx === 'fare' && e.ok) beep(990, 160);
+      break;
+    case 'error':
+      beep(220, 260);
+      if (e.reason === 'insufficient_balance') {
+        flash({ tone: 'warn', title: 'Not enough balance', sub: 'Top up your card at the machine first' }, 3500, () => act({ type: 'gate_reset' }));
+        companion.say(`The turnstile rejected the card: not enough balance (${e.balance.toFixed(2)} AZN, the fare is ${e.fare.toFixed(2)} AZN). Calmly say this is okay and that they can top up at the machine on the left.`);
+      } else if (e.reason === 'card_not_read') {
+        flash({ tone: 'warn', title: 'Card not read', sub: 'Hold the card still on the reader and try again' }, 3500, () => act({ type: 'gate_reset' }));
+        companion.say('The card was not read. Calmly say this happens, and to hold the card still on the reader and try again.');
+      } else if (e.reason === 'wrong_direction') {
+        state.feedback = { ok: false, text: `${az(trip.to)} is the other way` };
+        flash({ tone: 'warn', sub: 'Look at the stations listed on each sign' });
+        companion.say(`The learner chose the wrong direction. Gently say it is okay. Tell them to read the station list on the signs and find ${en(trip.to)}.`);
+      }
+      break;
+    case 'choice':
+      if (e.ok) {
+        state.feedback = { ok: true, text: `Right way: towards ${az(trip.terminus)}` };
+        flash({ tone: 'good', title: 'Right way!' }, 3000);
+        companion.say('The learner chose the correct direction. Praise them warmly in one short sentence.');
+        beep(990, 160);
+      }
+      break;
+    case 'announcement':
+      if (e.kind === 'delay') {
+        state.feedback = { ok: false, text: `Train delayed: about ${e.minutes} min` };
+        companion.say(`An announcement says the train is delayed by about ${e.minutes} minutes. Calmly explain that delays happen, that the learner can wait on the platform, and offer one slow breath together.`);
+        // demo default: once the learner is waiting for the train (direction chosen) or sits in a
+        // held train, the delay ends by itself after 12 s. The trainer can clear it earlier.
+        const waiting = (engine.state.location === 'platform' && engine.state.direction) || engine.state.location === 'train';
+        if (waiting) {
+          setTimeout(() => engine.state.faults.train_delay && act({ type: 'fault_clear', fault: 'train_delay' }), 12_000);
+        }
+      }
+      break;
+    case 'fault_injected':
+      log(`fault: ${e.fault}`);
+      if (e.fault === 'crowd_noise') {
+        startCrowd();
+        companion.say('The station suddenly became crowded and noisy. Calmly offer a short breathing exercise: breathe in for 4, out for 4. Then say they are doing well.');
+      }
+      break;
+    case 'fault_resolved':
+      if (e.fault === 'crowd_noise') stopCrowd();
+      if (e.fault === 'train_delay') state.feedback = { ok: true, text: 'The train is arriving' };
+      break;
+    case 'session_end':
+      beep(1180, 220);
+      companion.say(`The learner arrived at ${en(trip.to)}. Congratulate them warmly in one sentence.`);
+      break;
   }
-  pushState();
 }
 
 function payAnimation(amount) {
@@ -192,14 +294,8 @@ function payAnimation(amount) {
     state.progress = Math.min(1, (performance.now() - t0) / 1600);
     pushState();
     if (state.progress < 1) return requestAnimationFrame(tick);
-    const before = state.balance;
-    state.balance = +(state.balance + amount).toFixed(2);
     state.kiosk = 'done';
-    event('wallet', { tx: 'topup', amount, balanceBefore: before, balanceAfter: state.balance, ok: true });
-    setTask(1);
-    companion.context(`Top-up done. Balance now ${state.balance.toFixed(2)} AZN. Next task: tap the card at the turnstile straight ahead.`);
-    beep(880, 120);
-    pushState();
+    act({ type: 'topup', amount });
     setTimeout(() => {
       state.kioskOpen = false;
       pushState();
@@ -212,60 +308,26 @@ gaze.onSelect = (obj) => {
   const id = obj.userData.id;
   beep(660);
   event('select', { target: id });
-  if (id === 'kiosk' && state.kiosk !== 'done') {
+  if (id === 'kiosk' && engine.state.kiosk !== 'done') {
     state.kioskOpen = true;
-    companion.context('Learner opened the BakuKart top-up machine screen. Balance 0 AZN. They should hold the card to the reader, then choose an amount (1 AZN is enough).');
-  } else if (id === 'kiosk:card' && state.kiosk === 'idle') {
-    state.kiosk = 'amount';
-  } else if (id.startsWith('kiosk:amount:') && state.kiosk === 'amount') {
-    return payAnimation(Number(id.split(':')[2]));
-  } else if (id === 'gate' && state.gate !== 'ok') {
-    if (state.balance >= FARE) {
-      const before = state.balance;
-      state.balance = +(state.balance - FARE).toFixed(2);
-      event('wallet', { tx: 'fare', amount: FARE, balanceBefore: before, balanceAfter: state.balance, ok: true });
-      Object.assign(state, { gate: 'ok', targets: ['platform'] });
-      setTask(1, { title: 'Walk through the turnstile', sub: 'Look at the circle on the floor ahead' });
-      beep(990, 160);
-    } else {
-      event('wallet', { tx: 'fare', amount: FARE, balanceBefore: state.balance, balanceAfter: state.balance, ok: false });
-      event('error', { reason: 'insufficient_balance' });
-      state.gate = 'bad';
-      setTask(state.step, { tone: 'warn', title: 'Not enough balance', sub: 'Top up your card at the machine first' });
-      companion.say('The turnstile rejected the card: not enough balance. Calmly say this is okay and that they can top up at the machine on the left.');
-      beep(220, 260);
-      setTimeout(() => {
-        if (state.gate === 'bad') {
-          state.gate = null;
-          setTask(state.step);
-          pushState();
-        }
-      }, 3500);
-    }
-  } else if (id === 'go:platform') {
-    state.targets = [];
-    return teleport('platform');
-  } else if (id.startsWith('sign:') && state.node === 'platform' && state.step < 3) {
-    const ok = id === 'sign:left';
+    companion.context(`Learner opened the BakuKart top-up machine screen. Balance ${balance()} AZN. They should hold the card to the reader, then choose an amount (1 AZN is enough).`);
+    syncView();
+  } else if (id === 'kiosk:card' && engine.state.kiosk === 'idle') {
+    act({ type: 'kiosk_tap_card' });
+  } else if (id.startsWith('kiosk:amount:') && engine.state.kiosk === 'amount' && state.kiosk !== 'paying') {
+    payAnimation(Number(id.split(':')[2]));
+  } else if (id === 'gate' && engine.state.gate !== 'open') {
+    act({ type: 'gate_tap' });
+  } else if (id === 'go:platform' && engine.state.gate === 'open') {
+    teleport(() => act({ type: 'walk', to: 'platform' }));
+  } else if (id.startsWith('sign:') && engine.state.location === 'platform') {
     state.sign = id.slice(5);
-    event(ok ? 'choice_correct' : 'error', { choice: id });
-    if (ok) {
-      state.feedback = { ok: true, text: 'Right way: towards İçərişəhər' };
-      setTask(3, { tone: 'good' });
-      companion.say('The learner chose the correct direction. Praise them warmly in one short sentence.');
-      beep(990, 160);
-    } else {
-      state.feedback = { ok: false, text: '28 May is the other way' };
-      setTask(2, { tone: 'warn', sub: 'Look at the stations listed on each sign' });
-      companion.say('The learner chose the wrong direction. Gently say it is okay. Tell them to read the station list on the signs and find 28 May.');
-      beep(220, 260);
-    }
+    act({ type: 'choose_direction', side: state.sign });
   }
-  pushState();
 };
 gaze.onHoverChange = (obj) => {
   world.setHover(obj?.userData.id || null);
-  net.send({ type: 'event', sessionId, name: 'hover', data: { target: obj?.userData.id || null } });
+  event('hover', { target: obj?.userData.id || null });
 };
 
 // ---------- sounds ----------
@@ -282,6 +344,39 @@ function beep(freq = 660, ms = 90) {
   o.connect(g).connect(actx.destination);
   o.start();
   o.stop(actx.currentTime + ms / 1000 + 0.02);
+}
+
+// Crowd fault: low rumbling noise (brown noise through a low-pass filter), faded in and out.
+let crowd = null;
+function startCrowd() {
+  if (!actx || crowd) return;
+  const len = actx.sampleRate * 2;
+  const buf = actx.createBuffer(1, len, actx.sampleRate);
+  const d = buf.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < len; i++) {
+    last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02;
+    d[i] = last * 3.5;
+  }
+  const src = actx.createBufferSource();
+  src.buffer = buf;
+  src.loop = true;
+  const lp = actx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.value = 900;
+  const g = actx.createGain();
+  g.gain.setValueAtTime(0.0001, actx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.35, actx.currentTime + 1.5);
+  src.connect(lp).connect(g).connect(actx.destination);
+  src.start();
+  crowd = { src, g };
+}
+function stopCrowd() {
+  if (!crowd || !actx) return;
+  const { src, g } = crowd;
+  g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 1);
+  src.stop(actx.currentTime + 1.1);
+  crowd = null;
 }
 
 // ---------- start overlay ----------
@@ -311,9 +406,9 @@ function start(withBox) {
       .catch(() => {});
   }
   sessionId = 's-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
-  net.send({ type: 'event', sessionId, name: 'session_start', data: { device: deviceName, mode: vrMode ? 'vr' : 'window' } });
   started = true;
   $('#start').hidden = true;
+  event('device', { device: deviceName, mode: vrMode ? 'vr' : 'window' });
   resetFlow();
   gyroP.then(() => setTimeout(recenter, 400));
 }
@@ -341,14 +436,18 @@ const timer = new THREE.Timer();
 const camPos = new THREE.Vector3();
 const camQuat = new THREE.Quaternion();
 let poseT = 0;
+let tickT = 0;
+let buddyGaze = 0; // looking at the buddy for a moment counts as asking for help
+let lastAsk = -1e9;
 resetFlow();
 // dev/test hook (used by the automated smoke test)
 window.__app = {
   state,
+  engine,
   world,
   gaze,
-  teleport,
   start,
+  act,
   select: (id) => gaze.onSelect(world.interactives.find((o) => o.userData.id === id)),
   // point the (drag-look) camera at a panorama image coordinate
   lookAtU: (u, pitchDeg = 0) => {
@@ -366,10 +465,22 @@ renderer.setAnimationLoop((ts) => {
   camera.getWorldPosition(camPos);
   camera.getWorldQuaternion(camQuat);
   if (started && !teleporting) gaze.update(dt);
-  companion.setGaze(started && gaze.hover === world.buddy);
+  const atBuddy = started && gaze.hover === world.buddy;
+  companion.setGaze(atBuddy);
+  buddyGaze = atBuddy ? buddyGaze + dt : 0;
+  if (buddyGaze > 1.5 && performance.now() - lastAsk > 10_000) {
+    lastAsk = performance.now();
+    act({ type: 'ask_help' });
+  }
   world.buddy.userData.level = companion.outputLevel();
   world.buddy.userData.mic = companion.micLevel();
   world.update(dt, t, camPos, camQuat);
+
+  tickT += dt;
+  if (started && tickT > 0.5) {
+    tickT = 0;
+    if (engine.dispatch({ type: 'tick', t: now() }).length) syncView();
+  }
 
   poseT += dt;
   if (started && poseT > 0.05) {

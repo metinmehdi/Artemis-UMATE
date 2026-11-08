@@ -1,0 +1,12 @@
+{
+  "fetchedAt": "2026-11-08T09:58:11.377Z",
+  "endpoint": "imported from a saved Overpass response (osm-raw.json)",
+  "queryFile": "tools/queries/baku-metro.overpassql",
+  "osmTimestamp": "2026-11-08T09:56:18Z",
+  "elements": {
+    "relation": 12,
+    "node": 487,
+    "way": 26
+  },
+  "licence": "ODbL 1.0, (c) OpenStreetMap contributors, https://www.openstreetmap.org/copyright"
+}
