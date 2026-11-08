@@ -51,8 +51,8 @@ Server işə düşəndə terminalda linkləri göstərir. Real Wi-Fi ünvanı, y
 > Windows server üçün firewall icazəsi istəsə **Allow** basın. Hotspot şəbəkəsi çox vaxt "Public"
 > kimi tanınır, ona görə həm **Private**, həm də **Public** şəbəkələrini seçin.
 
-**İnternet olmasa:** VR, panel, ipucları (tapşırıq kartında yazılı göstərilir), çətinliklər və log
-işləyir. Yalnız AI-ın səsi işləmir.
+**İnternet olmasa:** VR, panel, ipucları, çətinliklər və log işləyir. AI yoldaş əvvəlcədən yazılmış
+səslərlə danışır (`npm run voice:gen` ilə yaradılır). Canlı söhbət üçün internet və OpenAI krediti lazımdır.
 
 ## Telefonu ilk dəfə qoşmaq (hər telefonda bir dəfə)
 
