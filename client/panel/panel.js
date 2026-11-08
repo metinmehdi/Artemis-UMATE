@@ -19,11 +19,29 @@ const [, tripData, runtime] = await Promise.all([loadFonts(), loadTripData(), lo
 // Cloud (Vercel + Supabase): this panel owns a room code; the phone joins it through the QR code.
 // The access key protects the API; it is asked once per computer (or given as ?k= in the link).
 const CLOUD = runtime.mode === 'cloud';
+// Asks for the access key in a dialog (not the browser prompt, which looks broken on a projector).
+function askKey(rejected = false) {
+  const dlg = $('#key-dialog');
+  $('#key-error').hidden = !rejected;
+  $('#key-input').value = '';
+  return new Promise((resolve) => {
+    const done = () => {
+      dlg.removeEventListener('close', done);
+      const k = dlg.returnValue === 'cancel' ? '' : $('#key-input').value.trim();
+      resolve(k || null);
+    };
+    dlg.returnValue = '';
+    dlg.addEventListener('close', done);
+    dlg.showModal();
+    $('#key-input').focus();
+  });
+}
+$('#key-dialog').addEventListener('cancel', () => ($('#key-dialog').returnValue = 'cancel'));
 if (CLOUD) {
   runtime.room = panelRoom();
   if (!runtime.key) {
-    const k = prompt('Enter the UMATE access key (only once on this computer):');
-    if (k) setKey((runtime.key = k.trim()));
+    const k = await askKey();
+    if (k) setKey((runtime.key = k));
   }
 }
 useKey(runtime.key);
@@ -38,9 +56,9 @@ const keep = (k, v) => {
 async function api(path, opts) {
   let r = await apiFetch(path, opts);
   if (r.status === 401 && CLOUD) {
-    const k = prompt('The access key was not accepted. Enter it again:');
+    const k = await askKey(true);
     if (k) {
-      setKey((runtime.key = k.trim()));
+      setKey((runtime.key = k));
       useKey(runtime.key);
       refreshInfo();
       r = await apiFetch(path, opts);
@@ -74,6 +92,8 @@ let lastPose = 0;
 let hoverInfo = null;
 const HOVER_NAMES = { kiosk: 'the top-up machine', gate: 'the turnstile', 'go:platform': 'the way to the platform', 'sign:left': 'the left sign', 'sign:right': 'the right sign', exit: 'the doors', buddy: 'the buddy' };
 
+const hoverText = $('#hover span');
+const hoverBar = $('#hover .dwell i');
 const timer = new THREE.Timer();
 renderer.setAnimationLoop((ts) => {
   timer.update(ts);
@@ -83,12 +103,15 @@ renderer.setAnimationLoop((ts) => {
   world.update(dt, timer.getElapsed(), camera.position, camera.quaternion);
   renderer.render(world.scene, camera);
   $('#waiting').hidden = performance.now() - lastPose < 3000;
+  // what the learner is looking at, with a bar that fills while the look selects it
   const ov = $('#hover');
-  if (hoverInfo?.hover) {
-    ov.style.display = 'block';
+  const live = hoverInfo?.hover && performance.now() - lastPose < 3000;
+  ov.classList.toggle('idle', !live);
+  if (live) {
     const name = HOVER_NAMES[hoverInfo.hover] || (hoverInfo.hover.startsWith('kiosk:') ? 'the machine screen' : hoverInfo.hover);
-    ov.textContent = `Looking at ${name}${hoverInfo.dwell > 0 ? `, selecting ${Math.round(hoverInfo.dwell * 100)}%` : ''}`;
-  } else ov.style.display = 'none';
+    hoverText.textContent = `Looking at ${name}`;
+    hoverBar.style.width = `${Math.round((hoverInfo.dwell || 0) * 100)}%`;
+  }
 });
 
 // ---------- the trip as a metro line ----------
@@ -115,8 +138,11 @@ function onState(st) {
   world.applyState(st);
   renderFaults(st.faults);
   $('#short-ride').setAttribute('aria-pressed', String(!!st.shortRide));
-  $('#balance').textContent = `Balance ${(st.balance ?? 0).toFixed(2)} AZN`;
+  $('#balance').textContent = `${(st.balance ?? 0).toFixed(2)} AZN`;
   const idx = st.step ?? 0;
+  const kicker = $('#now-step');
+  kicker.textContent = idx >= STEPS.length ? 'Trip complete' : `Step ${idx + 1} of ${STEPS.length}: ${STEP_NAMES[STEPS[idx]]}`;
+  kicker.classList.remove('off');
   STEPS.forEach((k, i) => {
     if (i < idx) steps[k].status = 'done';
     else if (i === idx) steps[k].status = 'current';
@@ -126,7 +152,7 @@ function onState(st) {
   const now = $('#now');
   const t = st.task || {};
   now.innerHTML = t.title ? `<b>${esc(t.title)}</b><span>${esc(t.sub || '')}</span>` : '';
-  now.classList.toggle('warn', t.tone === 'warn');
+  now.closest('.caption').classList.toggle('warn', t.tone === 'warn');
 }
 
 function onEvent(m) {
@@ -228,7 +254,8 @@ function addTranscript(who, text) {
   const el = $('#transcript');
   el.querySelector('.empty')?.remove();
   const p = document.createElement('p');
-  p.innerHTML = `<span class="who-${who === 'buddy' ? 'buddy' : 'learner'}">${who === 'buddy' ? 'Buddy' : 'Learner'}:</span> ${esc(text)}`;
+  p.className = who === 'buddy' ? 'buddy' : 'learner-line';
+  p.innerHTML = `<span class="who">${who === 'buddy' ? 'Buddy' : 'Learner'}:</span>${esc(text)}`;
   el.prepend(p);
   while (el.childNodes.length > 200) el.lastChild.remove();
 }
@@ -250,8 +277,9 @@ function addEvent(m) {
   if (!f && ['select', 'ai_log', 'device', 'recenter', 'announcement', 'choice', 'boarded', 'return_trip'].includes(m.name)) return;
   const el = $('#events');
   const d = document.createElement('div');
-  if (m.name === 'error' || m.data?.ok === false) d.className = 'ev-error';
-  d.innerHTML = `<time>${new Date().toLocaleTimeString([], { hour12: false })}</time>${esc(f ? f(m.data || {}) : m.name)}`;
+  const bad = m.name === 'error' || m.data?.ok === false;
+  if (bad) d.className = 'ev-error';
+  d.innerHTML = `<time>${new Date().toLocaleTimeString([], { hour12: false })}</time>${bad ? '<svg class="i"><use href="#i-alert"/></svg>' : ''}<span>${esc(f ? f(m.data || {}) : m.name)}</span>`;
   el.prepend(d);
   while (el.childNodes.length > 300) el.lastChild.remove();
 }
@@ -355,10 +383,12 @@ function renderChart({ learner, progress, cohort }) {
   const maxN = Math.max(rows.length, cohort.at(-1)?.n || 0, 4);
   const x = (n) => m.l + ((n - 1) / Math.max(1, maxN - 1)) * (W - m.l - m.r);
   const y = (v) => m.t + (1 - v / 4) * (H - m.t - m.b);
-  const grid = [0, 1, 2, 3, 4].map((v) => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#2b3f78" stroke-width="1"/><text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end" fill="#b3bedc" font-size="14">${v}</text>`).join('');
+  // colours come from the brand tokens: learner = ink, NÜMUNƏ = dashed sample purple, grid = hairline
+  const C = { grid: 'var(--line)', axis: 'var(--ink-2)', learner: 'var(--ink)', sample: 'var(--sample)', ring: 'var(--paper)' };
+  const grid = [0, 1, 2, 3, 4].map((v) => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" style="stroke:${C.grid}" stroke-width="1"/><text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end" style="fill:${C.axis}" font-size="14">${v}</text>`).join('');
   const xt = Array.from({ length: maxN }, (_, i) => i + 1)
     .filter((n) => maxN <= 10 || n % 2 === 1)
-    .map((n) => `<text x="${x(n)}" y="${H - 8}" text-anchor="middle" fill="#b3bedc" font-size="14">${n}</text>`)
+    .map((n) => `<text x="${x(n)}" y="${H - 8}" text-anchor="middle" style="fill:${C.axis}" font-size="14">${n}</text>`)
     .join('');
   const path = (pts) => pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('');
   const lp = rows.map((r) => [x(r.n), y(r.independent_steps)]);
@@ -373,13 +403,13 @@ function renderChart({ learner, progress, cohort }) {
     <div class="legend"><span><i class="key"></i>${esc(name)}</span>${cohort.length ? '<span><i class="key sample"></i>NÜMUNƏ average (invented sample)</span>' : ''}</div>
     <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Steps done alone per session for ${esc(name)}, from 0 to 4">
       ${grid}${xt}
-      <text x="${W - m.r + 10}" y="${H - 8}" fill="#b3bedc" font-size="14">session</text>
-      ${cp.length ? `<path d="${path(cp)}" fill="none" stroke="var(--s-sample)" stroke-width="2" stroke-dasharray="6 5"/>` : ''}
-      <path d="${path(lp)}" fill="none" stroke="var(--s-learner)" stroke-width="2.5"/>
-      ${lp.map((p) => `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="var(--s-learner)" stroke="#13234f" stroke-width="2"/>`).join('')}
-      <text x="${lastL[0] + 10}" y="${lyL}" fill="#f7f8fa" font-size="15">${esc(name.length > 12 ? name.slice(0, 11) + '…' : name)}</text>
-      ${lastC ? `<text x="${lastC[0] + 10}" y="${lyC}" fill="#b3bedc" font-size="15">NÜMUNƏ avg</text>` : ''}
-      <line class="cross" x1="0" x2="0" y1="${m.t}" y2="${H - m.b}" stroke="#b3bedc" stroke-width="1" visibility="hidden"/>
+      <text x="${W - m.r + 26}" y="${H - 8}" style="fill:${C.axis}" font-size="14">session</text>
+      ${cp.length ? `<path d="${path(cp)}" fill="none" style="stroke:${C.sample}" stroke-width="2.5" stroke-dasharray="7 5" stroke-linecap="round"/>` : ''}
+      <path d="${path(lp)}" fill="none" style="stroke:${C.learner}" stroke-width="2.5" stroke-linejoin="round"/>
+      ${lp.map((p) => `<circle cx="${p[0]}" cy="${p[1]}" r="5" style="fill:${C.learner};stroke:${C.ring}" stroke-width="2"/>`).join('')}
+      <text x="${lastL[0] + 12}" y="${lyL}" style="fill:${C.learner}" font-size="15" font-weight="600">${esc(name.length > 12 ? name.slice(0, 11) + '…' : name)}</text>
+      ${lastC ? `<text x="${lastC[0] + 12}" y="${lyC}" style="fill:${C.axis}" font-size="15">NÜMUNƏ avg</text>` : ''}
+      <line class="cross" x1="0" x2="0" y1="${m.t}" y2="${H - m.b}" style="stroke:${C.axis}" stroke-width="1" visibility="hidden"/>
       ${Array.from({ length: maxN }, (_, i) => i + 1).map((n) => `<rect data-n="${n}" x="${x(n) - (W - m.l - m.r) / Math.max(1, maxN - 1) / 2}" y="${m.t}" width="${(W - m.l - m.r) / Math.max(1, maxN - 1)}" height="${H - m.t - m.b}" fill="transparent"/>`).join('')}
     </svg>
     <div class="tip" hidden></div>
@@ -412,8 +442,12 @@ function renderChart({ learner, progress, cohort }) {
   });
 
   const v = [];
-  v.push(progress.ready ? '<span class="badge good">&#10003; Readiness rule met: trainer may plan a first real trip</span>' : '<span class="badge wait">&#9711; Not ready yet: keep practising in VR</span>');
-  if (progress.focus_step) v.push(`<span class="badge">Practise next: ${esc(STEP_NAMES[progress.focus_step])}</span>`);
+  v.push(
+    progress.ready
+      ? '<span class="badge good"><svg class="i"><use href="#i-check"/></svg>Readiness rule met: the trainer may plan a first real trip</span>'
+      : '<span class="badge wait"><svg class="i"><use href="#i-clock"/></svg>Not ready yet: keep practising in VR</span>',
+  );
+  if (progress.focus_step) v.push(`<span class="badge"><svg class="i"><use href="#i-route"/></svg>Practise next: ${esc(STEP_NAMES[progress.focus_step])}</span>`);
   if (progress.is_sample) v.push('<span class="badge sample">NÜMUNƏ: invented sample data, not evidence</span>');
   $('#verdict').innerHTML = v.join('');
 }
@@ -421,8 +455,9 @@ function renderChart({ learner, progress, cohort }) {
 $('#report-btn').addEventListener('click', async () => {
   const btn = $('#report-btn');
   const out = $('#report');
+  const label = btn.querySelector('span');
   btn.disabled = true;
-  btn.textContent = 'Writing the report…';
+  label.textContent = 'Writing the report…';
   try {
     const id = progressFor || currentLearner?.id;
     const r = await (await api('/api/report', { method: 'POST', json: { learner: id } })).json();
@@ -431,7 +466,7 @@ $('#report-btn').addEventListener('click', async () => {
     out.textContent = 'The report could not be written. Check that the laptop server is running.';
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Write trainer report';
+    label.textContent = 'Write trainer report';
   }
 });
 
@@ -451,7 +486,7 @@ async function refreshInfo() {
       ].join('<br>');
       if (url !== qrFor) {
         qrFor = url;
-        $('#qr').src = $('#qr-big').src = '/api/qr?text=' + encodeURIComponent(url);
+        showQr('/api/qr?text=' + encodeURIComponent(url));
       }
       return;
     }
@@ -465,11 +500,13 @@ async function refreshInfo() {
     ].join('<br>');
     if (url && url !== qrFor) {
       qrFor = url;
-      const src = '/api/qr?text=' + encodeURIComponent(url);
-      $('#qr').src = src;
-      $('#qr-big').src = src;
+      showQr('/api/qr?text=' + encodeURIComponent(url));
     }
   } catch {}
+}
+// the same code in the header, in the QR dialog and large on the stage while no phone is connected
+function showQr(src) {
+  for (const id of ['#qr', '#qr-big', '#qr-stage']) $(id).src = src;
 }
 refreshInfo();
 setInterval(refreshInfo, 10_000);

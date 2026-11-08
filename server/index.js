@@ -234,7 +234,7 @@ async function handleApi(req, res, url) {
   }
   if (url.pathname === '/api/qr') {
     const text = url.searchParams.get('text') || '';
-    const svg = await QRCode.toString(text, { type: 'svg', margin: 1, width: 220 });
+    const svg = await QRCode.toString(text, { type: 'svg', margin: 2, width: 220, color: { dark: '#230d37', light: '#fffdf6' } });
     res.writeHead(200, { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'no-store' });
     return res.end(svg);
   }
