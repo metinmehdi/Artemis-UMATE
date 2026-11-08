@@ -25,8 +25,39 @@ export class Companion {
     this.onMode(m);
   }
 
+  // Voice levels (0..1) for the buddy orb animation.
+  _level(an) {
+    if (!an) return 0;
+    const buf = this._buf || (this._buf = new Uint8Array(an.fftSize));
+    an.getByteTimeDomainData(buf);
+    let sum = 0;
+    for (let i = 0; i < buf.length; i++) {
+      const v = (buf[i] - 128) / 128;
+      sum += v * v;
+    }
+    return Math.min(1, Math.sqrt(sum / buf.length) * 4);
+  }
+  outputLevel() {
+    return this._level(this.outAnalyser);
+  }
+  micLevel() {
+    return this.mic?.enabled ? this._level(this.micAnalyser) : 0;
+  }
+  _analyse(stream) {
+    if (!this.actx) return null;
+    try {
+      const an = this.actx.createAnalyser();
+      an.fftSize = 512;
+      this.actx.createMediaStreamSource(stream).connect(an);
+      return an;
+    } catch {
+      return null;
+    }
+  }
+
   // Call synchronously from a user tap (mic permission + iOS audio unlock).
-  start() {
+  start(actx) {
+    this.actx = actx || null;
     this.audio = document.createElement('audio');
     this.audio.autoplay = true;
     this.audio.setAttribute('playsinline', '');
@@ -46,6 +77,7 @@ export class Companion {
     const stream = await micP;
     this.mic = stream.getAudioTracks()[0];
     this.mic.enabled = false;
+    this.micAnalyser = this._analyse(stream);
 
     const tokRes = await fetch('/api/realtime-token', { method: 'POST' });
     const tok = await tokRes.json();
@@ -57,6 +89,7 @@ export class Companion {
     pc.ontrack = (e) => {
       this.audio.srcObject = e.streams[0];
       this.audio.play().catch((err) => this.onLog('warn', `audio play blocked: ${err.message}`));
+      this.outAnalyser = this._analyse(e.streams[0]);
     };
     pc.onconnectionstatechange = () => {
       if (['failed', 'disconnected', 'closed'].includes(pc.connectionState)) {
