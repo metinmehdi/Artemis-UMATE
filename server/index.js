@@ -16,6 +16,9 @@ import { ensureCerts } from './certs.js';
 import { createRealtimeSecret } from './realtime.js';
 import { EventLog } from './events.js';
 import { startTunnel } from './tunnel.js';
+import { reportFacts, writeReport } from './report.js';
+import { buildStar, learnerProgress } from '../shared/analytics.js';
+import { readLogs } from '../tools/build-gold.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 try {
@@ -141,7 +144,96 @@ let publicUrl = null;
 const publicLinks = () =>
   publicUrl ? { vr: `${publicUrl}/k/${ACCESS_KEY}`, panel: `${publicUrl}/k/${ACCESS_KEY}?to=panel` } : null;
 
+// ---------- learner profiles (no accounts: the trainer picks who is training) ----------
+// data/learners.json holds the demo profile (committed); profiles added from the panel go to
+// data/learners.local.json, which git ignores (nicknames of real learners stay on this laptop).
+const LEARNERS_FILE = path.join(ROOT, 'data', 'learners.json');
+const LOCAL_LEARNERS_FILE = path.join(ROOT, 'data', 'learners.local.json');
+const readJsonFile = (f, fallback) => {
+  try {
+    return JSON.parse(fs.readFileSync(f, 'utf8'));
+  } catch {
+    return fallback;
+  }
+};
+const allLearners = () => [...readJsonFile(LEARNERS_FILE, []), ...readJsonFile(LOCAL_LEARNERS_FILE, [])];
+let currentLearner = allLearners()[0] || { id: 'demo', nickname: 'Demo' };
+
+function readBody(req, limit = 10_000) {
+  return new Promise((resolve, reject) => {
+    let s = '';
+    req.on('data', (c) => {
+      s += c;
+      if (s.length > limit) reject(new Error('body too large'));
+    });
+    req.on('end', () => {
+      try {
+        resolve(s ? JSON.parse(s) : {});
+      } catch {
+        reject(new Error('bad JSON'));
+      }
+    });
+  });
+}
+
+function selectLearner(l) {
+  currentLearner = { id: l.id, nickname: l.nickname };
+  broadcast((c) => c.role === 'panel', { type: 'learner', learner: currentLearner });
+}
+
+// Progress of one learner + the NÜMUNƏ cohort average for comparison (computed fresh each time:
+// a few thousand log lines take milliseconds).
+function progressPayload(learnerId) {
+  const star = buildStar(readLogs(ROOT).lines);
+  const dim = star.dims.dim_learner.find((l) => l.learner_key === learnerId);
+  const progress = { ...learnerProgress(star, learnerId), is_sample: !!dim?.is_sample };
+  const sampleRows = star.dims.dim_learner.filter((l) => l.is_sample).map((l) => learnerProgress(star, l.learner_key).sessions);
+  const cohort = [];
+  for (let n = 1; n <= 10; n++) {
+    const vals = sampleRows.map((rows) => rows[n - 1]?.independent_steps).filter((v) => v !== undefined);
+    if (vals.length >= 3) cohort.push({ n, avg_independent_steps: +(vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2), learners: vals.length });
+  }
+  const learners = star.dims.dim_learner.map((l) => {
+    const p = learnerProgress(star, l.learner_key);
+    return { id: l.learner_key, nickname: l.nickname, is_sample: l.is_sample, sessions: p.sessions.length, ready: p.ready, last: p.sessions.at(-1)?.date ?? null };
+  });
+  return { learner: dim ? { id: dim.learner_key, nickname: dim.nickname } : { id: learnerId }, progress, cohort, learners };
+}
+
 async function handleApi(req, res, url) {
+  if (url.pathname === '/api/learners' && req.method === 'GET') {
+    return sendJson(res, 200, { learners: allLearners(), current: currentLearner });
+  }
+  if (url.pathname === '/api/learners' && req.method === 'POST') {
+    const body = await readBody(req);
+    const nickname = String(body.nickname || '').trim().slice(0, 40);
+    if (!nickname) return sendJson(res, 400, { error: 'nickname required' });
+    const id = nickname.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'learner';
+    const local = readJsonFile(LOCAL_LEARNERS_FILE, []);
+    const uniqueId = allLearners().some((l) => l.id === id) ? `${id}-${Date.now().toString(36).slice(-4)}` : id;
+    const learner = { id: uniqueId, nickname };
+    fs.writeFileSync(LOCAL_LEARNERS_FILE, JSON.stringify([...local, learner], null, 2) + '\n');
+    selectLearner(learner);
+    return sendJson(res, 200, { learner });
+  }
+  if (url.pathname === '/api/learner' && req.method === 'POST') {
+    const body = await readBody(req);
+    const l = allLearners().find((x) => x.id === body.id);
+    if (!l) return sendJson(res, 404, { error: 'unknown learner' });
+    selectLearner(l);
+    return sendJson(res, 200, { learner: l });
+  }
+  if (url.pathname === '/api/progress') {
+    return sendJson(res, 200, progressPayload(url.searchParams.get('learner') || currentLearner.id));
+  }
+  if (url.pathname === '/api/report' && req.method === 'POST') {
+    const body = await readBody(req);
+    const p = progressPayload(body.learner || currentLearner.id);
+    const facts = reportFacts(p.progress, p.learner.nickname || p.learner.id);
+    const report = await writeReport(facts);
+    if (report.fallback) console.warn('[report] template used:', report.fallback);
+    return sendJson(res, 200, { ...report, facts });
+  }
   if (url.pathname === '/api/info') {
     return sendJson(res, 200, {
       public: publicLinks(),
@@ -248,7 +340,7 @@ wss.on('connection', (ws) => {
         break;
       case 'event':
       case 'transcript':
-        log.append(msg.sessionId, msg);
+        log.append(msg.sessionId, { ...msg, learner: currentLearner });
         broadcast((c) => c.role === 'panel', { ...msg, from: info.id });
         break;
       case 'status':
