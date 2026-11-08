@@ -1,56 +1,197 @@
-* { box-sizing: border-box; }
-html, body {
+/* UMATE phone app. Dark variant of the brand (night purple, ivory text, mint "go"), because the phone
+   goes into a VR box: a bright screen at the moment it meets the eyes would glare. */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #1b1e26;
-  color: #fff;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: var(--ink);
+  color: var(--ivory);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
   -webkit-user-select: none;
   user-select: none;
   touch-action: none;
 }
-#c { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+#c {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
 
 #fade {
-  position: fixed; inset: 0; background: #000; opacity: 0;
-  pointer-events: none; transition: opacity 0.25s ease;
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
 }
-#fade.on { opacity: 1; }
+#fade.on {
+  opacity: 1;
+}
 
 #divider {
-  display: none; position: fixed; top: 0; bottom: 0; left: 50%;
-  width: 2px; margin-left: -1px; background: #000; pointer-events: none;
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: #000;
+  pointer-events: none;
 }
-body.vr #divider { display: block; }
+body.vr #divider {
+  display: block;
+}
 
 #rotate {
-  display: none; position: fixed; inset: 0; z-index: 20;
-  align-items: center; justify-content: center; text-align: center;
-  background: #1b1e26; font-size: 22px; padding: 24px;
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--ink);
+  font: 700 26px/1.25 var(--font-display);
+  padding: 24px;
 }
-body.vr.portrait #rotate { display: flex; }
+body.vr.portrait #rotate {
+  display: flex;
+}
 
+/* ---------- start screen ---------- */
 #start {
-  position: fixed; inset: 0; z-index: 10; overflow: auto;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 12px; padding: 24px 16px; background: #1b1e26;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  background: var(--ink);
+  touch-action: pan-y;
 }
-#start[hidden] { display: none; }
-#start h1 { margin: 0; font-size: 34px; }
-#start .sub { margin: 0 0 8px; opacity: 0.75; }
+#start[hidden] {
+  display: none;
+}
+.intro {
+  text-align: center;
+}
+#start h1 {
+  margin: 0;
+  line-height: 0;
+}
+#start h1 img {
+  height: 52px;
+  width: auto;
+}
+#start .sub {
+  margin: 14px 0 0;
+  font-size: 17px;
+  color: var(--ink-soft);
+}
+#start .warn {
+  margin: 14px auto 0;
+  max-width: 30ch;
+  padding: 8px 14px;
+  border-radius: var(--r-s);
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 15px;
+}
+.actions {
+  width: min(380px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 #start button {
-  width: min(360px, 100%); padding: 16px; font-size: 18px; font-weight: 700;
-  border-radius: 14px; border: 1px solid #3a4150; background: #262b36; color: #fff;
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 18px;
+  font: 600 18px/1.2 var(--font-ui);
+  border-radius: var(--r-m);
+  border: 2px solid rgba(250, 246, 233, 0.55);
+  background: transparent;
+  color: var(--ivory);
+  cursor: pointer;
 }
-#start button.primary { background: #1f9d55; border-color: #1f9d55; }
-#start .ai { font-size: 15px; opacity: 0.9; }
-#start .help { max-width: 360px; font-size: 14px; opacity: 0.7; line-height: 1.5; padding-left: 20px; }
+#start button:active {
+  background: rgba(250, 246, 233, 0.08);
+}
+#start button.primary {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: var(--ink);
+}
+#start button.primary:active {
+  background: var(--mint-deep);
+}
+#start .ai {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+#start .ai input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--mint);
+  flex: none;
+}
+#start .help {
+  margin: 4px 0 0;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+#start .help b {
+  color: var(--ivory);
+  font-weight: 600;
+}
 
+/* landscape phones: logo on the left, buttons and help on the right */
+@media (orientation: landscape) and (max-height: 560px) {
+  #start {
+    flex-direction: row;
+    gap: 40px;
+  }
+  .intro {
+    text-align: left;
+    max-width: 280px;
+  }
+  #start .warn {
+    margin-left: 0;
+  }
+}
+
+/* ---------- debug line (window mode only) ---------- */
 #hud {
-  position: fixed; left: 8px; bottom: 6px; right: 8px; z-index: 5;
-  font-size: 11px; opacity: 0.55; pointer-events: none; text-shadow: 0 1px 2px #000;
+  position: fixed;
+  left: 8px;
+  bottom: 6px;
+  right: 8px;
+  z-index: 5;
+  font-size: 11px;
+  opacity: 0.55;
+  pointer-events: none;
+  text-shadow: 0 1px 2px #000;
 }
-body.vr #hud { display: none; }
-
-#start .warn { color: #fcd34d; font-weight: 700; margin: 0 0 12px; }
+body.vr #hud {
+  display: none;
+}

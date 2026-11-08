@@ -6,12 +6,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="theme-color" content="#1b1e26" />
+    <meta name="theme-color" content="#230d37" />
     <!-- use-credentials: through the public link the manifest also needs the access cookie -->
     <link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%237fdcff'/%3E%3C/svg%3E" />
+    <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" />
     <title>UMATE</title>
-    <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+    <link rel="stylesheet" href="/assets/brand.css" />
     <link rel="stylesheet" href="style.css" />
     <script type="importmap">
       {
@@ -28,18 +29,22 @@
     <div id="fade"></div>
     <div id="rotate">Rotate the phone to landscape</div>
 
-    <div id="start">
-      <h1>UMATE</h1>
-      <p class="sub">Metro practice with your AI travel buddy</p>
-      <button id="go-vr" class="primary">Start in VR box</button>
-      <button id="go-window">Start without box</button>
-      <label class="ai"><input type="checkbox" id="ai" checked /> AI buddy (uses microphone)</label>
-      <ol class="help">
-        <li>Tap <b>Start in VR box</b>, allow motion &amp; microphone.</li>
-        <li>Put the phone in the box, screen facing your eyes.</li>
-        <li>Look at things for 1.5 s to choose. Look at the green circle on the floor to walk.</li>
-        <li>Look at the glowing buddy to talk to it.</li>
-      </ol>
+    <div id="start" class="on-ink">
+      <div class="intro">
+        <h1><img src="/assets/brand/umate-logo-dark.svg" alt="UMATE" width="200" height="45" /></h1>
+        <p class="sub">Practise the Baku Metro with your travel buddy</p>
+      </div>
+      <div class="actions">
+        <button id="go-vr" class="primary">Start in VR box</button>
+        <button id="go-window">Start without box</button>
+        <label class="ai"><input type="checkbox" id="ai" checked /><span>Talk with the AI buddy (uses the microphone)</span></label>
+        <ol class="help">
+          <li>Tap <b>Start in VR box</b> and allow motion and the microphone.</li>
+          <li>Put the phone in the box, screen facing your eyes.</li>
+          <li>To choose something, look at it for a moment. To walk, look at the circle on the floor.</li>
+          <li>To talk, look at the glowing buddy.</li>
+        </ol>
+      </div>
     </div>
 
     <div id="hud">

@@ -4,7 +4,7 @@
 // Shared by the phone (stereo) and the panel (mono spectator). Pure view: applyState(state).
 import * as THREE from 'three';
 import { makeBuddy } from './buddy.js';
-import { makeDirectionSign, makeTaskCard, makeButton, makeHotspot, makeFloorTarget, makePanel, TOKENS, text, rr, icon, roundel } from './ui3d.js';
+import { makeDirectionSign, makeTaskCard, makeButton, makeHotspot, makeFloorTarget, makePanel, TOKENS, FONT_DISPLAY, text, rr, icon, roundel } from './ui3d.js';
 
 export const EYE = 1.6;
 const PANO_R = 12;
@@ -125,11 +125,11 @@ function makeKiosk() {
         ctx.fillStyle = 'rgba(255,255,255,0.15)';
         rr(ctx, w * 0.2, 380, w * 0.6, 18, 9);
         ctx.fill();
-        ctx.fillStyle = TOKENS.go;
+        ctx.fillStyle = TOKENS.kioskGo;
         rr(ctx, w * 0.2, 380, w * 0.6 * (s.progress || 0), 18, 9);
         ctx.fill();
       } else if (st === 'done') {
-        ctx.fillStyle = TOKENS.go;
+        ctx.fillStyle = TOKENS.kioskGo;
         ctx.beginPath();
         ctx.arc(w / 2, 240, 74, 0, Math.PI * 2);
         ctx.fill();
@@ -153,7 +153,7 @@ function makeKiosk() {
   return g;
 }
 
-// ---------- short feedback banner (green = good, amber = gentle warning) ----------
+// ---------- short feedback banner (mint = good, amber = gentle warning; never red) ----------
 function makeFeedbackPanel() {
   return makePanel(
     1.3,
@@ -161,10 +161,10 @@ function makeFeedbackPanel() {
     (ctx, w, h, s) => {
       if (!s.text) return;
       rr(ctx, 0, 0, w, h, 28);
-      ctx.fillStyle = s.ok ? 'rgba(22,163,74,0.95)' : 'rgba(180,83,9,0.95)';
+      ctx.fillStyle = s.ok ? TOKENS.go : TOKENS.stop;
       ctx.fill();
-      (s.ok ? icon.check : icon.cross)(ctx, 80, h / 2, 80);
-      text(ctx, s.text, 150, h / 2 + 22, { size: 58, maxWidth: w - 180 });
+      (s.ok ? icon.check : icon.cross)(ctx, 80, h / 2, 80, TOKENS.ink);
+      text(ctx, s.text, 150, h / 2 + 22, { size: 58, maxWidth: w - 180, color: TOKENS.ink });
     },
     { renderOrder: 28, depthTest: false },
   );
@@ -240,7 +240,7 @@ function makeRouteDisplay(trip) {
           ctx.stroke();
         }
         text(ctx, st(i).name_az, x, y + 78, { size: 28, weight: here || dest ? 700 : 400, align: 'center', color: passed ? '#8a93a3' : TOKENS.paper, maxWidth: step * 0.95 || 300 });
-        if (dest) text(ctx, 'Your stop', x, y + 114, { size: 24, align: 'center', color: '#4ade80' });
+        if (dest) text(ctx, 'Your stop', x, y + 114, { size: 24, align: 'center', color: TOKENS.go });
       });
     },
     { renderOrder: 16 },
@@ -255,15 +255,15 @@ function makeSummary(trip) {
     (ctx, w, h, s) => {
       if (!s.steps) return;
       rr(ctx, 0, 0, w, h, 34);
-      ctx.fillStyle = 'rgba(10,15,24,0.94)';
+      ctx.fillStyle = 'rgba(35,13,55,0.95)';
       ctx.fill();
       ctx.fillStyle = TOKENS.go;
       ctx.beginPath();
       ctx.arc(110, 120, 62, 0, Math.PI * 2);
       ctx.fill();
-      icon.check(ctx, 110, 120, 90);
-      text(ctx, `You arrived at ${trip.to.name_az}!`, 200, 112, { size: 58, maxWidth: w - 230 });
-      text(ctx, `${trip.from.name_az} → ${trip.to.name_az} · ${trip.stops} stops`, 200, 160, { size: 32, weight: 400, color: TOKENS.muted });
+      icon.check(ctx, 110, 120, 90, TOKENS.ink);
+      text(ctx, `You arrived at ${trip.to.name_az}!`, 200, 116, { size: 60, maxWidth: w - 230, font: FONT_DISPLAY });
+      text(ctx, `${trip.from.name_az} to ${trip.to.name_az}, ${trip.stops} stops`, 200, 164, { size: 32, weight: 400, color: TOKENS.muted });
       const rows = [
         ['Steps done', `${s.steps} of 4`],
         ['Hints used', String(s.hints)],
@@ -285,7 +285,7 @@ function makeSummary(trip) {
 // OpenStreetMap network data, not typed by hand.
 export function buildWorld({ trip }) {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#0b0f16');
+  scene.background = new THREE.Color('#230d37');
   const interactives = [];
   const nodes = {};
 

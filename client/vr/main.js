@@ -23,7 +23,7 @@ const [, tripData, runtime] = await Promise.all([loadFonts(), loadTripData(), lo
 useKey(runtime.key);
 // In the cloud the phone must come from the panel's QR code (it carries the room and the key).
 if (runtime.mode === 'cloud' && (!runtime.room || !runtime.key)) {
-  document.querySelector('#start .sub')?.insertAdjacentHTML('afterend', '<p class="warn">Open UMATE by scanning the QR code on the trainer panel.</p>');
+  document.querySelector('#start .sub')?.insertAdjacentHTML('afterend', '<p class="warn">Scan the QR code on the trainer panel to open UMATE.</p>');
 }
 
 // ---------- scenario engine ----------

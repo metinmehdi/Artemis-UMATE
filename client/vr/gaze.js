@@ -73,13 +73,13 @@ function makeCursor() {
     new THREE.MeshBasicMaterial({ color, transparent: true, opacity, depthTest: false, depthWrite: false });
   const dot = new THREE.Mesh(new THREE.CircleGeometry(0.008, 16), mat(0xffffff, 0.9));
   const ring = new THREE.Mesh(new THREE.RingGeometry(0.018, 0.024, 32), mat(0xffffff, 0.6));
-  const fill = new THREE.Mesh(new THREE.RingGeometry(0.018, 0.024, 32, 1, 0, 0.0001), mat(0x3ddc84, 1));
+  const fill = new THREE.Mesh(new THREE.RingGeometry(0.018, 0.024, 32, 1, 0, 0.0001), mat(0x7ee0c3, 1));
   for (const m of [dot, ring, fill]) m.renderOrder = 999;
   g.add(dot, ring, fill);
   g.position.z = -1; // 1 m in front of the eyes
   let lastP = -1;
   g.userData.setState = (hovering, p) => {
-    ring.material.color.set(hovering ? 0x3ddc84 : 0xffffff);
+    ring.material.color.set(hovering ? 0x7ee0c3 : 0xffffff);
     const s = hovering ? 1.35 : 1;
     ring.scale.setScalar(s);
     fill.scale.setScalar(s);
