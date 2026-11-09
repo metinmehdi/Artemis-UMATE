@@ -81,25 +81,44 @@ səslərlə danışır (`npm run voice:gen` ilə yaradılır). Canlı söhbət �
 | AI ilə danışmaq | Parlayan kürəyə baxın. Halqa işıqlananda danışın. 1.5 saniyə baxmaq həm də kömək istəmək sayılır |
 | Görüntünü mərkəzə gətirmək | Paneldə **Recenter view** düyməsi və ya klaviaturada `R` |
 
+## Real səfər bələdçisi (`/guide/`)
+
+VR məşqindən sonra gənc real metroya öz telefonu ilə gedir, VR box lazım deyil. Bələdçini açmaq üçün
+paneldə QR koda klik edib ikinci kodu (**Real trip guide**) skan edir. Telefonda "Ana ekrana əlavə et"
+etsə, tətbiq kimi açılır.
+
+- **Addım kartları:** VR-da məşq etdiyi stansiyanın fotosu və 3–5 qısa addım. **Remind me** düyməsi
+  addımları səslə oxuyur və oxunan addımı nanə rəngi ilə işıqlandırır. Bu internetsiz də işləyir.
+- **Vaqonda:** stansiyalar metro xətti kimi görünür. Qatar hər dayananda gənc **The train stopped**
+  düyməsinə basır. Növbəti dayanacaq onunkudursa, xəbərdarlıq çıxır.
+- **Ask Buddy:** toxunub danışır, eyni Buddy cavab verir. Bu rejimdə Buddy real metroda olduğunu
+  bilir və təhlükəsizlik qaydalarını deyir. İnternet lazımdır.
+- **Show Buddy:** terminalın və ya lövhənin şəklini çəkir, Gemini iki sakit cümlə ilə nə etmək
+  lazım olduğunu deyir. Şəkil saxlanılmır. İnternet lazımdır.
+- **Help:** nəfəs məşqi; "my person"a bir toxunuşla zəng (nömrə yalnız telefonda saxlanır); metro
+  işçisinə göstərmək üçün azərbaycanca kart.
+- **Sonda:** "I did it alone" və ya "I needed some help" seçilir. Hər addım və hər kömək müəllimə
+  gedir: paneldə canlı görünür (**Real trip** etiketi), **Progress** pəncərəsində "Real trips"
+  siyahısı çıxır, Gemini hesabatı da bunları yazır.
+
 ## Panel
 
 - **Yuxarıda:**
   - **Learner** sahəsində məşq edən gənc seçilir. **Add learner** düyməsi ilə yeni profil əlavə olunur;
     real adlar yalnız laptopda saxlanır və GitHub-a getmir.
-  - **Progress and report** proqres qrafikini və müəllim hesabatını açır.
-  - QR koda klik edəndə o böyüyür.
-- **Sağ sütunda səfər metro xətti kimi göstərilir:** hər addım bir stansiyadır. Bitən addım yaşıl
-  olur, yanında vaxt və alınan kömək yazılır; indiki addım yanıb-sönür.
+  - **Progress** proqres qrafikini, real səfərləri və müəllim hesabatını açır.
+  - QR koda klik edəndə iki kod açılır: VR məşqi və real səfər bələdçisi.
+- **Sol tərəfdə canlı görüntü:** gəncin VR-da gördüyü səhnə və altında böyük yazı ilə indiki addım.
+- **Sağ sütunda səfər metro xətti kimi göstərilir:** hər addım bir stansiyadır. Bitən addım bənövşəyi
+  olur, yanında vaxt və alınan kömək yazılır; indiki addım nanə rəngindədir.
 - **Challenges for the judge:** 4 çətinlik. Birinci klik çətinliyi açır, ikinci klik bağlayır. Aktiv
-  çətinlik narıncı rənglə görünür.
-- **Trainer:**
+  çətinlik bənövşəyi olur və yanında "On" yazılır.
+- **Buddy:**
   - **Give a hint:** növbəti pillə ipucunu verir.
-  - **Calm the learner** və **Buddy says hello:** AI yoldaşı danışdırır.
-  - **Recenter view:** görüntünü yenidən mərkəzə gətirir.
-  - **Restart trip:** səfəri əvvəldən başladır.
-  - **Reload phone:** telefondakı səhifəni yeniləyir.
-  - **Short ride:** səhnə demosu üçün qatar gedişini təxminən 25 saniyəyə qısaldır.
-- **Progress and report:** gəncin hər seansda neçə addımı köməksiz etdiyini göstərir və onu NÜMUNƏ
+  - **Breathe** və **Say hello:** AI yoldaşı danışdırır.
+- **Phone** (ikonlar): görüntünü mərkəzə gətirmək, səfəri əvvəldən başlatmaq, telefondakı səhifəni
+  yeniləmək. **Short ride** açarı səhnə demosu üçün qatar gedişini təxminən 25 saniyəyə qısaldır.
+- **Progress:** gəncin hər seansda neçə addımı köməksiz etdiyini göstərir və onu NÜMUNƏ
   ortalaması ilə müqayisə edir (qırıq xətt, "invented sample" yazısı ilə). Altında hazırlıq qaydası,
   növbəti məşq ediləcək addım və **Write trainer report** düyməsi var. Hesabatı Gemini yazır; internet
   olmasa, şablon hesabat çıxır.

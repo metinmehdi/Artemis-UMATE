@@ -813,14 +813,61 @@ dialog.wide {
   margin-top: 8px;
 }
 
-/* QR dialog */
-#qr-big {
-  width: 300px;
-  height: 300px;
-  display: block;
-  margin: 8px auto 16px;
+/* QR dialog: VR practice + real-trip guide */
+#qr-dialog {
+  max-width: 720px;
+}
+.qr-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 8px 0 16px;
+}
+.qr-pair figure {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+}
+.qr-pair img {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 1;
   border-radius: var(--r-m);
   border: 1px solid var(--line);
+}
+.qr-pair figcaption {
+  display: grid;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.qr-pair figcaption b {
+  color: var(--ink);
+  font: 700 18px/1.3 var(--font-display);
+}
+/* real trips in the progress dialog */
+.real-trips {
+  margin: 4px 0 14px;
+}
+.real-trips h3 {
+  margin: 6px 0 8px;
+  font: 700 18px/1.2 var(--font-display);
+  color: var(--ink);
+}
+.real-trips ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.real-trips li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
 }
 .urls {
   font-size: 14px;
@@ -887,5 +934,19 @@ dialog.wide {
 @media (min-width: 1600px) and (min-height: 900px) {
   html {
     zoom: 1.25;
+  }
+}
+
+/* keep the header on one line on a 1280 projector, also when the real-trip pill shows up */
+.top button,
+.top .pill {
+  white-space: nowrap;
+}
+@media (max-width: 1400px) {
+  .team {
+    display: none;
+  }
+  .learner {
+    margin-left: 0;
   }
 }

@@ -267,6 +267,18 @@ async function handleApi(req, res, url) {
   return sendJson(res, 404, { error: 'not found' });
 }
 
+// where an access link (/k/<key>?to=...) lands: the VR app, the panel, or the real-trip guide
+function accessTarget(url) {
+  const to = url.searchParams.get('to');
+  if (to === 'panel') return '/panel/';
+  if (to === 'guide') {
+    const q = new URLSearchParams();
+    for (const k of ['learner', 'name']) if (url.searchParams.get(k)) q.set(k, url.searchParams.get(k).slice(0, 64));
+    return '/guide/' + (q.size ? `?${q}` : '');
+  }
+  return '/vr/';
+}
+
 async function handleRequest(req, res) {
   const url = new URL(req.url, 'https://localhost');
   try {
@@ -275,7 +287,7 @@ async function handleRequest(req, res) {
       if (!ok) return sendDenied(res);
       res.writeHead(302, {
         'Set-Cookie': `umate_k=${ACCESS_KEY}; Path=/; Max-Age=86400; Secure; HttpOnly; SameSite=Lax`,
-        Location: url.searchParams.get('to') === 'panel' ? '/panel/' : '/vr/',
+        Location: accessTarget(url),
       });
       return res.end();
     }
