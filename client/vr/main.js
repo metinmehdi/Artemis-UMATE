@@ -10,7 +10,7 @@ import { Engine } from '/shared/engine.js';
 import { Gyro, DragLook } from './gyro.js';
 import { Gaze } from './gaze.js';
 import { loadRuntime, makeNet, useKey } from '/shared/runtime.js';
-import { Companion } from './companion.js';
+import { Companion } from '/shared/companion.js';
 import { OfflineVoice } from './voice.js';
 
 const $ = (s) => document.querySelector(s);

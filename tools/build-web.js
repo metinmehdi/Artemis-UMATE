@@ -20,7 +20,7 @@ const copy = (from, to) => {
 };
 
 fs.rmSync(OUT, { recursive: true, force: true });
-for (const d of ['vr', 'panel', 'assets']) copy(`client/${d}`, d);
+for (const d of ['vr', 'panel', 'guide', 'assets']) copy(`client/${d}`, d);
 copy('shared', 'shared');
 copy('data/city/baku/network.json', 'data/city/baku/network.json');
 copy('data/city/baku/rules.json', 'data/city/baku/rules.json');

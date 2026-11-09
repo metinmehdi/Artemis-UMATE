@@ -1,0 +1,16 @@
+{
+  "name": "UMATE Guide",
+  "short_name": "UMATE",
+  "description": "Your helper for the real Baku Metro trip",
+  "start_url": "/guide/",
+  "scope": "/guide/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf6e9",
+  "theme_color": "#faf6e9",
+  "icons": [
+    { "src": "/assets/brand/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/brand/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

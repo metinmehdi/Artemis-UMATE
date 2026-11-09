@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#faf6e9" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="UMATE Guide" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>UMATE guide</title>
+    <link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials" />
+    <link rel="icon" href="/assets/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/assets/brand.css" />
+    <link rel="stylesheet" href="guide.css" />
+  </head>
+  <body>
+    <!-- icon sprite (Lucide, ISC licence) -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z" /><path d="M16 9a5 5 0 0 1 0 6" /><path d="M19.364 18.364a9 9 0 0 0 0-12.728" /></symbol>
+      <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><path d="M12 19v3" /></symbol>
+      <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></symbol>
+      <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="m4.93 4.93 4.24 4.24" /><path d="m14.83 9.17 4.24-4.24" /><path d="m14.83 14.83 4.24 4.24" /><path d="m9.17 14.83-4.24 4.24" /><circle cx="12" cy="12" r="4" /></symbol>
+      <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></symbol>
+      <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></symbol>
+      <symbol id="i-card" viewBox="0 0 24 24"><path d="M16 10h2" /><path d="M16 14h2" /><path d="M6.17 15a3 3 0 0 1 5.66 0" /><circle cx="9" cy="11" r="2" /><rect x="2" y="5" width="20" height="14" rx="2" /></symbol>
+      <symbol id="i-wind" viewBox="0 0 24 24"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2" /><path d="M9.6 4.6A2 2 0 1 1 11 8H2" /><path d="M12.6 19.4A2 2 0 1 0 14 16H2" /></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></symbol>
+      <symbol id="i-train" viewBox="0 0 24 24"><path d="M8 3.1V7a4 4 0 0 0 8 0V3.1" /><path d="m9 15-1-1" /><path d="m15 15 1-1" /><path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z" /><path d="m8 19-2 3" /><path d="m16 19 2 3" /></symbol>
+      <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5" /><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" /></symbol>
+      <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M12 20h.01" /><path d="M8.5 16.43a5 5 0 0 1 7 0" /><path d="M2 8.82a15 15 0 0 1 4.17-2.65" /><path d="M10.66 5c4.01-.36 8.14.9 11.34 3.76" /><path d="M16.85 11.25a10 10 0 0 1 2.22 1.68" /><path d="M5 13a10 10 0 0 1 5.24-2.76" /><path d="m2 2 20 20" /></symbol>
+    </svg>
+
+    <header class="top">
+      <img class="logo" src="/assets/brand/umate-logo.svg" alt="UMATE" width="141" height="32" />
+      <span class="net" id="net" hidden><svg class="i"><use href="#i-wifi-off" /></svg>Offline</span>
+      <button class="icon-btn" id="open-settings" aria-label="Settings: my person" title="Settings"><svg class="i"><use href="#i-settings" /></svg></button>
+    </header>
+
+    <!-- start -->
+    <main id="home" class="screen">
+      <h1 class="hello">Your trip today</h1>
+      <p class="route" id="home-route">Koroğlu to 28 May</p>
+      <p class="facts" id="home-facts"></p>
+      <figure class="photo"><img src="/assets/guide/topup.jpg" alt="The station entrance with the top-up machine" /></figure>
+      <div class="field" id="learner-field">
+        <label for="learner-select">Who is travelling?</label>
+        <select id="learner-select"></select>
+      </div>
+      <p class="note" id="home-note" hidden></p>
+      <button class="primary big" id="start-trip">Start my trip</button>
+      <p class="small">You can stop and ask for help at any time.</p>
+    </main>
+
+    <!-- one step of the trip -->
+    <main id="trip" class="screen" hidden>
+      <div class="trip-head">
+        <p class="route" id="trip-route">Koroğlu to 28 May</p>
+        <ol class="dots" id="dots" aria-hidden="true"><li></li><li></li><li></li><li></li></ol>
+        <p class="kicker" id="kicker">Step 1 of 4</p>
+      </div>
+      <figure class="photo" id="step-figure"><img id="step-photo" alt="" /></figure>
+      <h1 class="step-title" id="step-title"></h1>
+      <section class="ride" id="ride" hidden aria-labelledby="ride-title">
+        <h2 id="ride-title" class="visually-hidden">Stations</h2>
+        <p class="banner" id="ride-banner" hidden></p>
+        <ol class="stations" id="stations"></ol>
+      </section>
+      <ol class="how" id="how"></ol>
+
+
+      <div class="step-actions">
+        <button class="primary big" id="next-btn">I did it</button>
+        <button class="quiet" id="undo-btn" hidden><svg class="i"><use href="#i-undo" /></svg>Undo last stop</button>
+      </div>
+    </main>
+
+    <!-- arrived -->
+    <main id="done" class="screen" hidden>
+      <div class="done-mark"><svg class="i"><use href="#i-check" /></svg></div>
+      <h1 class="step-title" id="done-title">You arrived!</h1>
+      <p class="lead">You travelled on your own. Well done.</p>
+      <p class="question" id="self-q">How did it go?</p>
+      <div class="choice" id="self-choice">
+        <button class="big" data-self="alone">I did it alone</button>
+        <button class="big" data-self="help">I needed some help</button>
+      </div>
+      <p class="thanks" id="thanks" hidden>Thank you. Your trainer will see how it went.</p>
+      <button class="quiet" id="again">Start a new trip</button>
+    </main>
+
+    <!-- help bar -->
+    <nav class="bar" id="bar" aria-label="Help" hidden>
+      <button id="btn-remind"><svg class="i"><use href="#i-volume" /></svg><span>Remind me</span></button>
+      <button id="btn-ask"><svg class="i"><use href="#i-mic" /></svg><span>Ask Buddy</span></button>
+      <button id="btn-photo"><svg class="i"><use href="#i-camera" /></svg><span>Show Buddy</span></button>
+      <button id="btn-help"><svg class="i"><use href="#i-help" /></svg><span>Help</span></button>
+    </nav>
+    <input type="file" id="photo-input" accept="image/*" capture="environment" hidden />
+
+    <!-- help sheet -->
+    <dialog id="help-sheet" class="sheet" aria-labelledby="help-title">
+      <div class="sheet-head">
+        <h2 id="help-title">Help</h2>
+        <form method="dialog"><button class="icon-btn" aria-label="Close"><svg class="i"><use href="#i-x" /></svg></button></form>
+      </div>
+      <button class="row-btn" id="help-breathe"><svg class="i"><use href="#i-wind" /></svg><span><b>I feel stressed</b>Breathe slowly with Buddy</span></button>
+      <a class="row-btn" id="help-call" href="#"><svg class="i"><use href="#i-phone" /></svg><span><b id="call-label">Call my person</b><span id="call-sub">Add a phone number in Settings</span></span></a>
+      <button class="row-btn" id="help-staff"><svg class="i"><use href="#i-card" /></svg><span><b>Show to a metro worker</b>A card that asks for help in Azerbaijani</span></button>
+      <p class="safety">Stay behind the yellow line. If you are lost, stay where you are and ask a metro worker in uniform.</p>
+    </dialog>
+
+    <!-- talk with Buddy -->
+    <dialog id="talk-sheet" class="sheet on-ink dark" aria-labelledby="talk-title">
+      <div class="sheet-head">
+        <h2 id="talk-title">Buddy is listening</h2>
+      </div>
+      <div class="orb" id="orb" aria-hidden="true"></div>
+      <p class="talk-status" id="talk-status">Connecting to Buddy…</p>
+      <div class="talk-log" id="talk-log" aria-live="polite"></div>
+      <button class="big mint" id="talk-stop">Stop talking</button>
+    </dialog>
+
+    <!-- photo answer -->
+    <dialog id="photo-sheet" class="sheet" aria-labelledby="photo-title">
+      <div class="sheet-head">
+        <h2 id="photo-title">Buddy looked at your photo</h2>
+        <form method="dialog"><button class="icon-btn" aria-label="Close"><svg class="i"><use href="#i-x" /></svg></button></form>
+      </div>
+      <img id="photo-preview" alt="Your photo" />
+      <p class="answer" id="photo-answer" aria-live="polite">Looking at the photo…</p>
+      <p class="small">The photo is only used to answer. It is not saved.</p>
+      <form method="dialog"><button class="primary big">OK</button></form>
+    </dialog>
+
+    <!-- breathe -->
+    <dialog id="breathe" class="full on-ink dark" aria-labelledby="breathe-word">
+      <div class="breath" aria-hidden="true"><span></span></div>
+      <p class="breath-word" id="breathe-word">Breathe in</p>
+      <p class="breath-sub">Slowly. You are safe. We will go on when you are ready.</p>
+      <form method="dialog"><button class="big outline">I feel better</button></form>
+    </dialog>
+
+    <!-- card for a metro worker -->
+    <dialog id="staff" class="full" aria-labelledby="staff-az">
+      <p class="staff-az" id="staff-az" lang="az"></p>
+      <p class="staff-en" id="staff-en"></p>
+      <form method="dialog"><button class="primary big">Close</button></form>
+    </dialog>
+
+    <!-- settings -->
+    <dialog id="settings" class="sheet" aria-labelledby="settings-title">
+      <form id="settings-form" method="dialog">
+        <div class="sheet-head">
+          <h2 id="settings-title">My person</h2>
+        </div>
+        <p class="small">Someone you trust, for the Call button. Saved only on this phone.</p>
+        <div class="field">
+          <label for="person-name">Name</label>
+          <input id="person-name" maxlength="30" autocomplete="off" placeholder="Mum" />
+        </div>
+        <div class="field">
+          <label for="person-phone">Phone number</label>
+          <input id="person-phone" type="tel" maxlength="20" autocomplete="off" placeholder="+994 50 000 00 00" />
+        </div>
+        <button class="primary big" type="submit">Save</button>
+      </form>
+    </dialog>
+
+    <script type="module" src="guide.js"></script>
+  </body>
+</html>
