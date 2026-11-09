@@ -5,7 +5,11 @@
   "line": "1",
   "from": "koroglu",
   "to": "28-may",
-  "hint_delays_s": [8, 15, 25],
+  "hint_delays_s": [
+    8,
+    15,
+    25
+  ],
   "steps": [
     {
       "id": "topup",
@@ -16,7 +20,17 @@
         "First we put money on the card. The top-up machine is on your left.",
         "Look for the glowing machine on your left.",
         "Turn left. Look at the glowing machine and hold your look for a moment."
-      ]
+      ],
+      "guide": {
+        "photo": "/assets/guide/topup.jpg",
+        "how": [
+          "Find the top-up machine near the entrance. It looks like the photo.",
+          "Hold your BakıKart on the card reader.",
+          "Choose an amount. {fare} AZN pays for one ride.",
+          "Put the money in and wait.",
+          "Take your card when the screen says it is done."
+        ]
+      }
     },
     {
       "id": "gate",
@@ -27,7 +41,16 @@
         "Now we go through the turnstile. Touch the card to the green reader.",
         "Look for the glowing turnstile in front of you.",
         "Look straight ahead at the glowing reader and hold your look for a moment."
-      ]
+      ],
+      "guide": {
+        "photo": "/assets/guide/gate.jpg",
+        "how": [
+          "Go to a turnstile with a green arrow.",
+          "Hold your card on the reader on top.",
+          "Wait for the green light.",
+          "Push the bar and walk through."
+        ]
+      }
     },
     {
       "id": "platform",
@@ -38,7 +61,16 @@
         "Read the station names on each sign. Which sign shows {to}?",
         "{to} is on the sign towards {terminus}.",
         "Look at the glowing sign towards {terminus}."
-      ]
+      ],
+      "guide": {
+        "photo": "/assets/guide/platform.jpg",
+        "how": [
+          "Walk down to the platform.",
+          "Read the signs above the platform.",
+          "Find the sign towards {terminus}. It lists {to}.",
+          "Wait for the train on that side, behind the yellow line."
+        ]
+      }
     },
     {
       "id": "ride",
@@ -51,13 +83,37 @@
         "This is {to}. This is our station!",
         "Look at the glowing doors to get off.",
         "The doors are open. Look at the doors and hold your look for a moment to get off here."
-      ]
+      ],
+      "guide": {
+        "photo": "/assets/guide/ride.jpg",
+        "how": [
+          "Get on when the doors open. Hold a pole.",
+          "Each time the train stops, tap the button below.",
+          "Look at the screen above the doors and listen.",
+          "When the train stops at {to}, get off."
+        ]
+      }
     }
   ],
   "faults": {
-    "insufficient_balance": { "label": "Not enough balance", "set_balance": 0.2 },
-    "card_unreadable": { "label": "Card not read", "failures": 1 },
-    "train_delay": { "label": "Train delayed", "minutes": 3 },
-    "crowd_noise": { "label": "Crowd and noise" }
+    "insufficient_balance": {
+      "label": "Not enough balance",
+      "set_balance": 0.2
+    },
+    "card_unreadable": {
+      "label": "Card not read",
+      "failures": 1
+    },
+    "train_delay": {
+      "label": "Train delayed",
+      "minutes": 3
+    },
+    "crowd_noise": {
+      "label": "Crowd and noise"
+    }
+  },
+  "staff_card": {
+    "az": "Mən metrodan təkbaşına istifadə etməyi öyrənirəm. Zəhmət olmasa, {to} stansiyasına getməyimə kömək edin.",
+    "en": "I am learning to use the metro on my own. Please help me get to {to} station."
   }
 }

@@ -17,6 +17,7 @@ import { createRealtimeSecret } from './realtime.js';
 import { EventLog } from './events.js';
 import { startTunnel } from './tunnel.js';
 import { reportFacts, writeReport } from './report.js';
+import { askPhoto, checkPhoto } from './ask-photo.js';
 import { buildStar, progressReport } from '../shared/analytics.js';
 import { readLogs } from '../tools/build-gold.js';
 
@@ -218,7 +219,7 @@ async function handleApi(req, res, url) {
   if (url.pathname === '/api/report' && req.method === 'POST') {
     const body = await readBody(req);
     const p = progressPayload(body.learner || currentLearner.id);
-    const facts = reportFacts(p.progress, p.learner.nickname || p.learner.id);
+    const facts = reportFacts(p.progress, p.learner.nickname || p.learner.id, p.real_trips);
     const report = await writeReport(facts);
     if (report.fallback) console.warn('[report] template used:', report.fallback);
     return sendJson(res, 200, { ...report, facts });
@@ -240,11 +241,28 @@ async function handleApi(req, res, url) {
   }
   if (url.pathname === '/api/realtime-token' && req.method === 'POST') {
     try {
-      return sendJson(res, 200, await createRealtimeSecret());
+      const body = await readBody(req).catch(() => ({}));
+      return sendJson(res, 200, await createRealtimeSecret({ mode: body.mode === 'guide' ? 'guide' : 'vr' }));
     } catch (e) {
       console.error('[realtime] token failed:', e.message);
       return sendJson(res, e.status || 500, { error: e.message });
     }
+  }
+  // real-trip guide: photo help, and its session log (same shape as the cloud's /api/events)
+  if (url.pathname === '/api/ask-photo' && req.method === 'POST') {
+    const body = await readBody(req, 1_500_000).catch(() => null);
+    const bad = body ? checkPhoto(body) : 'body too large';
+    if (bad) return sendJson(res, 400, { error: bad });
+    return sendJson(res, 200, await askPhoto(body));
+  }
+  if (url.pathname === '/api/events' && req.method === 'POST') {
+    const body = await readBody(req, 300_000).catch(() => ({}));
+    const events = (Array.isArray(body.events) ? body.events.slice(0, 200) : []).filter((e) => e && /^[\w-]{4,64}$/.test(e.sessionId || '') && (e.type === 'event' || e.type === 'transcript'));
+    for (const e of events) {
+      log.append(e.sessionId, e);
+      broadcast((c) => c.role === 'panel', e);
+    }
+    return sendJson(res, 200, { saved: events.length });
   }
   return sendJson(res, 404, { error: 'not found' });
 }
@@ -319,7 +337,7 @@ wss.on('connection', (ws) => {
     const info = clients.get(ws);
     switch (msg.type) {
       case 'hello':
-        info.role = msg.role === 'panel' ? 'panel' : 'phone';
+        info.role = msg.role === 'panel' ? 'panel' : msg.role === 'guide' ? 'guide' : 'phone';
         info.id = String(msg.id || '').slice(0, 64);
         info.device = String(msg.device || '').slice(0, 120);
         broadcast((c) => c.role === 'panel', { type: 'roster', clients: roster() });
@@ -329,7 +347,7 @@ wss.on('connection', (ws) => {
         break;
       case 'event':
       case 'transcript':
-        log.append(msg.sessionId, { ...msg, learner: currentLearner });
+        log.append(msg.sessionId, { ...msg, learner: msg.learner || currentLearner });
         broadcast((c) => c.role === 'panel', { ...msg, from: info.id });
         break;
       case 'status':

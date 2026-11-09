@@ -22,7 +22,29 @@ If the learner seems stressed (says they are scared, overwhelmed, wants to stop)
 - Slow down. Suggest one slow breath together: "Breathe in... and out." Then offer to continue.
 `.trim();
 
-export async function createRealtimeSecret() {
+// Real-trip guide: the same buddy, but the young person is in the real metro now (no VR).
+export const GUIDE_INSTRUCTIONS = `
+You are "Buddy", a calm, friendly travel helper in a phone app. The young person is in the REAL
+Baku Metro right now, travelling on their own after practising in VR. They may have autism, an
+intellectual disability or other cognitive differences.
+
+How you speak:
+- English only. Very short, calm sentences (max 12 words each, max 2 sentences per turn).
+- One instruction at a time. Concrete words. No idioms.
+- Warm and patient. Never say "wrong" or "bad". Asking for help is always a good thing.
+
+What you know:
+- Only the trip facts the app tells you ([APP CONTEXT]): the station, the step, the next stop.
+- Never invent station names, prices, platforms or times. If unsure, say so.
+
+Safety comes first:
+- Stay behind the yellow line. Never go near the tracks.
+- If they are lost or worried: stay where you are, then ask a metro worker in uniform,
+  or tap "Help" in the app to call their person.
+- If they feel stressed: one slow breath together, then one small next step.
+`.trim();
+
+export async function createRealtimeSecret({ mode = 'vr' } = {}) {
   const key = process.env.OPENAI_API_KEY;
   if (!key) {
     const e = new Error('OPENAI_API_KEY is not set in .env');
@@ -39,7 +61,7 @@ export async function createRealtimeSecret() {
     session: {
       type: 'realtime',
       model,
-      instructions: COMPANION_INSTRUCTIONS,
+      instructions: mode === 'guide' ? GUIDE_INSTRUCTIONS : COMPANION_INSTRUCTIONS,
       audio: {
         input,
         output: { voice: process.env.OPENAI_VOICE || 'marin' },
@@ -62,5 +84,5 @@ export async function createRealtimeSecret() {
     e.status = res.status;
     throw e;
   }
-  return { value: json.value, expires_at: json.expires_at, model };
+  return { value: json.value, expires_at: json.expires_at, model, mode: mode === 'guide' ? 'guide' : 'vr' };
 }

@@ -3,11 +3,9 @@
 // people beyond the nickname, or audio). If Gemini is not available (no key, no internet, busy),
 // a template report is built from the same facts, so the panel always has something to show.
 import { STEP_NAMES } from '../shared/analytics.js';
+import { geminiGenerate } from './gemini.js';
 
-// read at call time: the server loads .env after its imports
-const models = () => [process.env.GEMINI_MODEL, 'gemini-3.5-flash', 'gemini-2.5-flash', 'gemini-flash-latest'].filter(Boolean);
-
-export function reportFacts(progress, nickname) {
+export function reportFacts(progress, nickname, realTrips = []) {
   const s = progress.sessions;
   const last = s.at(-1);
   const first = s[0];
@@ -26,6 +24,14 @@ export function reportFacts(progress, nickname) {
     step_needing_most_help_recently: progress.focus_step ? STEP_NAMES[progress.focus_step] : null,
     readiness_rule_met: progress.ready,
     readiness_rule: 'last 3 completed sessions each had at least 3 of 4 steps done without hints or mistakes',
+    // real trips made with the phone guide (no VR): what help was used, at which step
+    real_trips: realTrips.map((r) => ({
+      date: r.date,
+      completed: r.completed,
+      help_used: r.help_count,
+      help_by_step: Object.fromEntries(Object.entries(r.help_by_step || {}).map(([k, v]) => [STEP_NAMES[k] || k, v])),
+      learner_said: r.self_report === 'alone' ? 'done alone' : r.self_report === 'help' ? 'needed help' : null,
+    })),
   };
 }
 
@@ -41,6 +47,10 @@ export function templateReport(f) {
       ? 'The readiness rule is met. The trainer can plan a first real trip with a companion nearby.'
       : 'The readiness rule is not met yet. Keep practising in VR before a real trip.',
   );
+  if (f.real_trips?.length) {
+    const r = f.real_trips.at(-1);
+    lines.push(`Real trips with the phone guide: ${f.real_trips.length}. The last one (${r.date}) was ${r.completed ? 'completed' : 'not finished'} with ${r.help_used} help request${r.help_used === 1 ? '' : 's'}.`);
+  }
   if (f.sample_data) lines.push('NOTE: this is NÜMUNƏ (sample) data, invented for the demo.');
   return lines.join(' ');
 }
@@ -51,40 +61,19 @@ const SYSTEM = [
   'Write in plain, warm, respectful English, 4 to 6 short sentences, no headings, no lists.',
   'Mention progress first, then the step to practise next, then one concrete idea for the next session.',
   'About readiness: say whether the readiness rule is met and that the trainer makes the final decision.',
+  'If real_trips is not empty, add one sentence about the real trips made with the phone guide: completed or not, and at which step help was used.',
   'If sample_data is true, end with: "NOTE: this is NÜMUNƏ (sample) data, invented for the demo."',
 ].join(' ');
 
 export async function writeReport(facts) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return { text: templateReport(facts), model: null, fallback: 'no Gemini key' };
-  let lastError = null;
-  for (const model of models()) {
-    try {
-      const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-        method: 'POST',
-        headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM }] },
-          contents: [{ role: 'user', parts: [{ text: `Facts (JSON):\n${JSON.stringify(facts, null, 1)}\n\nWrite the progress note now.` }] }],
-          generationConfig: {
-            temperature: 0.4,
-            // thinking tokens count against the output limit; a short note needs little thinking
-            maxOutputTokens: 2048,
-            thinkingConfig: /^gemini-2\./.test(model) ? { thinkingBudget: 0 } : { thinkingLevel: 'low' },
-          },
-        }),
-        signal: AbortSignal.timeout(20000),
-      });
-      const j = await r.json();
-      if (!r.ok) throw new Error(j.error?.message || `HTTP ${r.status}`);
-      const cand = j.candidates?.[0];
-      if (cand?.finishReason && cand.finishReason !== 'STOP') throw new Error(`stopped: ${cand.finishReason}`);
-      const text = cand?.content?.parts?.filter((p) => !p.thought).map((p) => p.text || '').join('').trim();
-      if (!text) throw new Error('empty answer');
-      return { text, model: j.modelVersion || model, fallback: null };
-    } catch (e) {
-      lastError = `${model}: ${e.message}`;
-    }
+  if (!process.env.GEMINI_API_KEY) return { text: templateReport(facts), model: null, fallback: 'no Gemini key' };
+  try {
+    const { text, model } = await geminiGenerate({
+      system: SYSTEM,
+      parts: [{ text: `Facts (JSON):\n${JSON.stringify(facts, null, 1)}\n\nWrite the progress note now.` }],
+    });
+    return { text, model, fallback: null };
+  } catch (e) {
+    return { text: templateReport(facts), model: null, fallback: e.message };
   }
-  return { text: templateReport(facts), model: null, fallback: lastError };
 }
