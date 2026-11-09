@@ -53,7 +53,9 @@ async function loadLearners() {
     const r = await apiFetch('/api/learners');
     if (!r.ok) throw new Error(r.status);
     const { learners } = await r.json();
-    if (learner && !learners.some((l) => l.id === learner.id)) learners.unshift(learner);
+    const known = learner && learners.find((l) => l.id === learner.id);
+    if (known) learner = { id: known.id, nickname: known.nickname }; // the trainer's nickname, not the id from the link
+    else if (learner) learners.unshift(learner);
     learner ||= learners[0] || null;
     $('#learner-select').innerHTML = learners.map((l) => `<option value="${esc(l.id)}"${l.id === learner?.id ? ' selected' : ''}>${esc(l.nickname)}</option>`).join('');
     $('#learner-select').onchange = (e) => {
