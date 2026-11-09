@@ -6,6 +6,8 @@
 //   fact_session        one row per session
 //   fact_step_attempt   one row per session x step that was entered
 //   fact_fault          one row per trainer challenge injected in a session
+//   fact_real_trip      one row per REAL trip made with the phone guide (no VR); guide events are
+//                       named guide_* and never count as VR sessions
 
 export const STEP_ORDER = ['topup', 'gate', 'platform', 'ride'];
 export const STEP_NAMES = { topup: 'Top up the card', gate: 'Turnstile', platform: 'Platform direction', ride: 'Ride and get off' };
@@ -61,10 +63,33 @@ export function buildStar(lines) {
   const fact_session = [];
   const fact_step_attempt = [];
   const fact_fault = [];
+  const fact_real_trip = [];
   let skipped = 0;
+
+  const addDate = (t) => {
+    const dk = dateKey(t);
+    if (!dates.has(dk)) {
+      const d = new Date(t);
+      dates.set(dk, { date_key: dk, date: d.toISOString().slice(0, 10), week: isoWeek(t), weekday: d.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' }) });
+    }
+    return dk;
+  };
+  const addLearner = (learner, isSample = false) => {
+    if (!learners.has(learner.id)) learners.set(learner.id, { learner_key: learner.id, nickname: learner.nickname || learner.id, is_sample: isSample });
+  };
 
   for (const [sessionId, evs] of bySession) {
     evs.sort((a, b) => (a.data?.t ?? 0) - (b.data?.t ?? 0) || a.t - b.t);
+    if (evs.some((e) => String(e.name).startsWith('guide_'))) {
+      const row = realTripRow(sessionId, evs);
+      if (!row) {
+        skipped += 1;
+        continue;
+      }
+      addLearner(row.learner);
+      fact_real_trip.push({ ...row.fact, learner_key: row.learner.id, date_key: addDate(row.fact.t0) });
+      continue;
+    }
     const start = evs.find((e) => e.name === 'session_start');
     if (!start) {
       skipped += 1; // a page that was opened but never started a trip
@@ -136,6 +161,8 @@ export function buildStar(lines) {
   }
 
   fact_session.sort((a, b) => a.started_at.localeCompare(b.started_at));
+  fact_real_trip.sort((a, b) => a.started_at.localeCompare(b.started_at));
+  for (const r of fact_real_trip) delete r.t0;
   return {
     dims: {
       dim_learner: [...learners.values()].sort((a, b) => a.learner_key.localeCompare(b.learner_key)),
@@ -143,8 +170,41 @@ export function buildStar(lines) {
       dim_fault: Object.entries(FAULT_LABELS).map(([k, label]) => ({ fault_key: k, label })),
       dim_date: [...dates.values()].sort((a, b) => a.date_key - b.date_key),
     },
-    facts: { fact_session, fact_step_attempt, fact_fault },
+    facts: { fact_session, fact_step_attempt, fact_fault, fact_real_trip },
     quality: { sessions_without_start: skipped },
+  };
+}
+
+// One real trip from the guide's events: guide_start, guide_step {id, ms}, guide_help {kind, step},
+// guide_stop {station}, guide_end {completed, self_report}.
+export const HELP_KINDS = ['remind', 'voice', 'photo', 'calm', 'call', 'staff'];
+function realTripRow(sessionId, evs) {
+  const start = evs.find((e) => e.name === 'guide_start');
+  if (!start) return null;
+  const learner = evs.find((e) => e.learner)?.learner || UNKNOWN_LEARNER;
+  const end = evs.find((e) => e.name === 'guide_end');
+  const t0 = start.data?.t ?? start.t;
+  const lastT = evs[evs.length - 1].data?.t ?? evs[evs.length - 1].t ?? t0;
+  const help = evs.filter((e) => e.name === 'guide_help');
+  const help_by_step = {};
+  for (const h of help) {
+    const step = STEP_ORDER.includes(h.data?.step) ? h.data.step : 'other';
+    const kind = HELP_KINDS.includes(h.data?.kind) ? h.data.kind : 'other';
+    (help_by_step[step] ||= {})[kind] = (help_by_step[step][kind] || 0) + 1;
+  }
+  return {
+    learner,
+    fact: {
+      session_key: sessionId,
+      t0,
+      started_at: new Date(t0).toISOString(),
+      completed: !!end?.data?.completed,
+      steps_done: new Set(evs.filter((e) => e.name === 'guide_step').map((e) => e.data?.id)).size,
+      help_count: help.length,
+      help_by_step,
+      self_report: end?.data?.self_report || null,
+      total_ms: (end?.data?.t ?? lastT) - t0,
+    },
   };
 }
 
@@ -168,6 +228,11 @@ export function checkKeys(star) {
     const pk = a.session_key + '|' + a.step_key;
     if (seen.has(pk)) problems.push(`fact_step_attempt: duplicate key ${pk}`);
     seen.add(pk);
+  }
+  for (const r of star.facts.fact_real_trip || []) {
+    if (!learners.has(r.learner_key)) problems.push(`fact_real_trip ${r.session_key}: unknown learner ${r.learner_key}`);
+    if (!datesK.has(r.date_key)) problems.push(`fact_real_trip ${r.session_key}: unknown date ${r.date_key}`);
+    if (sessions.has(r.session_key)) problems.push(`fact_real_trip ${r.session_key}: also counted as a VR session`);
   }
   for (const f of star.facts.fact_fault) {
     if (!sessions.has(f.session_key)) problems.push(`fact_fault: unknown session ${f.session_key}`);
@@ -193,7 +258,10 @@ export function progressReport(star, learnerId) {
     const p = learnerProgress(star, l.learner_key);
     return { id: l.learner_key, nickname: l.nickname, is_sample: l.is_sample, sessions: p.sessions.length, ready: p.ready, last: p.sessions.at(-1)?.date ?? null };
   });
-  return { learner: dim ? { id: dim.learner_key, nickname: dim.nickname } : { id: learnerId }, progress, cohort, learners };
+  const real_trips = (star.facts.fact_real_trip || [])
+    .filter((r) => r.learner_key === learnerId)
+    .map((r) => ({ date: r.started_at.slice(0, 10), completed: r.completed, steps_done: r.steps_done, help_count: r.help_count, help_by_step: r.help_by_step, self_report: r.self_report, minutes: +(r.total_ms / 60000).toFixed(1) }));
+  return { learner: dim ? { id: dim.learner_key, nickname: dim.nickname } : { id: learnerId }, progress, cohort, learners, real_trips };
 }
 
 /**

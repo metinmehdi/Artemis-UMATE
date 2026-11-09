@@ -210,7 +210,8 @@ const net = await makeNet(runtime, {
         addTranscript(m.who, m.text);
         break;
       case 'event':
-        onEvent(m);
+        if (String(m.name).startsWith('guide_')) onGuideEvent(m);
+        else onEvent(m);
         break;
       case 'learner':
         loadLearners();
@@ -271,7 +272,27 @@ const EVENT_TEXT = {
   fault_resolved: (d) => `Challenge over: ${String(d.fault).replace(/_/g, ' ')}`,
   arrive_station: (d) => `Train at ${trip.station(d.station).name_az}`,
   session_end: () => 'Arrived. Trip complete',
+  // real-trip guide (phone in the real metro, no VR)
+  guide_start: () => 'Real trip started with the phone guide',
+  guide_step: (d) => `${STEP_NAMES[d.id] || d.id} done`,
+  guide_help: (d) => `Help used: ${HELP_TEXT[d.kind] || d.kind}${d.step ? ` (${STEP_NAMES[d.step] || d.step})` : ''}`,
+  guide_stop: (d) => `Train stopped at ${trip.station(d.station)?.name_az || d.station}`,
+  guide_end: (d) => `Arrived. ${d.self_report === 'alone' ? 'Learner says: did it alone' : d.self_report === 'help' ? 'Learner says: needed some help' : 'Trip complete'}`,
 };
+const HELP_TEXT = { remind: 'Remind me', voice: 'asked Buddy', photo: 'photo to Buddy', calm: 'breathing', call: 'called their person', staff: 'card for a metro worker' };
+let guideSeen = 0;
+function onGuideEvent(m) {
+  guideSeen = Date.now();
+  $('#guide-pill').hidden = false;
+  $('#guide-pill').classList.add('on');
+  $('#guide-text').textContent = m.learner?.nickname ? `Real trip: ${m.learner.nickname}` : 'Real trip live';
+  if (m.name === 'guide_talk') return addTranscript(m.data?.who, `${m.data?.text || ''} (real trip)`);
+  addEvent(m);
+  if (m.name === 'guide_end' && $('#progress-dialog').open) setTimeout(() => loadProgress(), 1500);
+}
+setInterval(() => {
+  if (guideSeen && Date.now() - guideSeen > 180_000) $('#guide-pill').hidden = true;
+}, 15_000);
 function addEvent(m) {
   const f = EVENT_TEXT[m.name];
   if (!f && ['select', 'ai_log', 'device', 'recenter', 'announcement', 'choice', 'boarded', 'return_trip'].includes(m.name)) return;
@@ -279,7 +300,8 @@ function addEvent(m) {
   const d = document.createElement('div');
   const bad = m.name === 'error' || m.data?.ok === false;
   if (bad) d.className = 'ev-error';
-  d.innerHTML = `<time>${new Date().toLocaleTimeString([], { hour12: false })}</time>${bad ? '<svg class="i"><use href="#i-alert"/></svg>' : ''}<span>${esc(f ? f(m.data || {}) : m.name)}</span>`;
+  const tag = String(m.name).startsWith('guide_') ? '<span class="tag">Real trip</span>' : '';
+  d.innerHTML = `<time>${new Date().toLocaleTimeString([], { hour12: false })}</time>${bad ? '<svg class="i"><use href="#i-alert"/></svg>' : ''}${tag}<span>${esc(f ? f(m.data || {}) : m.name)}</span>`;
   el.prepend(d);
   while (el.childNodes.length > 300) el.lastChild.remove();
 }
@@ -320,6 +342,7 @@ async function loadLearners() {
     .map((l) => `<option value="${esc(l.id)}"${l.id === currentLearner?.id ? ' selected' : ''}>${esc(l.nickname)}</option>`)
     .join('');
   if (CLOUD) announceLearner();
+  refreshInfo(); // the guide QR carries the selected learner
 }
 function announceLearner() {
   if (currentLearner) net.send({ type: 'learner', learner: { id: currentLearner.id, nickname: currentLearner.nickname } });
@@ -361,6 +384,23 @@ async function loadProgress() {
   const opt = (l) => `<option value="${esc(l.id)}"${l.id === id ? ' selected' : ''}>${esc(l.nickname)} (${l.sessions} ${l.sessions === 1 ? 'session' : 'sessions'})</option>`;
   $('#progress-select').innerHTML = `<optgroup label="Learners">${real.map(opt).join('')}</optgroup><optgroup label="NÜMUNƏ: invented sample">${sample.map(opt).join('')}</optgroup>`;
   renderChart(p);
+  renderRealTrips(p.real_trips || [], p.learner.nickname || id);
+}
+function renderRealTrips(list, name) {
+  const el = $('#real-trips');
+  if (!list.length) {
+    el.innerHTML = `<h3>Real trips</h3><p class="empty">No real trips yet. When the trainer plans one, ${esc(name)} opens the guide from the Real trip guide QR code.</p>`;
+    return;
+  }
+  const help = (r) => {
+    const parts = Object.entries(r.help_by_step || {}).map(([step, kinds]) => `${STEP_NAMES[step] || step}: ${Object.entries(kinds).map(([k, n]) => `${HELP_TEXT[k] || k}${n > 1 ? ` ×${n}` : ''}`).join(', ')}`);
+    return parts.length ? parts.join('; ') : 'no help needed';
+  };
+  el.innerHTML = `<h3>Real trips with the phone guide</h3><ul>${list
+    .slice(-5)
+    .reverse()
+    .map((r) => `<li><span class="badge ${r.completed ? 'good' : 'wait'}"><svg class="i"><use href="#i-${r.completed ? 'check' : 'clock'}"/></svg>${esc(r.date)}: ${r.completed ? 'arrived' : 'not finished'}</span><span>${esc(help(r))}${r.self_report ? `. Learner says: ${r.self_report === 'alone' ? 'did it alone' : 'needed some help'}` : ''}</span></li>`)
+    .join('')}</ul>`;
 }
 $('#progress-select').addEventListener('change', (e) => {
   progressFor = e.target.value;
@@ -479,6 +519,7 @@ async function refreshInfo() {
   try {
     if (CLOUD) {
       const url = `${location.origin}/vr/?room=${runtime.room}&k=${encodeURIComponent(runtime.key)}`;
+      setGuideLink(`${location.origin}/guide/?room=${runtime.room}&k=${encodeURIComponent(runtime.key)}&${learnerQuery()}`);
       $('#urls').innerHTML = [
         `<b>Room ${runtime.room}</b>: scan the QR code with the phone (any network).`,
         `Link: ${esc(url)}`,
@@ -492,6 +533,7 @@ async function refreshInfo() {
     }
     const info = await (await fetch('/api/info', { cache: 'no-store' })).json();
     const url = info.public?.vr || info.vr[0];
+    setGuideLink(info.public ? `${info.public.vr}?to=guide&${learnerQuery()}` : `${info.vr[0].replace(/\/vr\/$/, '/guide/')}?${learnerQuery()}`);
     $('#urls').innerHTML = [
       info.public ? `<b>Any network:</b> ${esc(info.public.vr)}` : 'Public link: starting. Wi-Fi links below.',
       ...info.vr.map((u) => `Same Wi-Fi: ${esc(u)}`),
@@ -503,6 +545,15 @@ async function refreshInfo() {
       showQr('/api/qr?text=' + encodeURIComponent(url));
     }
   } catch {}
+}
+// second QR: the real-trip guide for the selected learner (no VR box, used in the real metro)
+const learnerQuery = () => new URLSearchParams({ learner: currentLearner?.id || 'demo', name: currentLearner?.nickname || '' }).toString();
+let guideFor = null;
+function setGuideLink(url) {
+  if (url === guideFor) return;
+  guideFor = url;
+  $('#qr-guide').src = '/api/qr?text=' + encodeURIComponent(url);
+  $('#guide-url').textContent = url;
 }
 // the same code in the header, in the QR dialog and large on the stage while no phone is connected
 function showQr(src) {

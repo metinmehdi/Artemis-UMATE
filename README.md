@@ -36,7 +36,7 @@ everyday digital services, such as contactless payment and transport, independen
 **What it is not.**
 
 - Not a medical device or a therapy, and it does not diagnose anything.
-- Not a navigation app for the real trip (a "guide mode" for the real trip is on the roadmap).
+- Not a map or navigation app: the real-trip guide (section 3.2) shows the practised steps and calls for help; it does not track location.
 - Not a replacement for the trainer: the trainer decides when someone is ready.
 - Sample data labelled **NÜMUNƏ** (sample) is invented for the demo and is never evidence that the method works.
 
@@ -130,6 +130,27 @@ flowchart LR
 `https://<project>.vercel.app/panel/?k=<UMATE_ACCESS_KEY>` once on the trainer's computer.
 `npm run dev:cloud` runs the cloud version locally on port 3000 for testing.
 
+### 3.2 After VR: the real-trip guide (`/guide/`)
+
+When the readiness rule is met, the trainer plans a first real trip. The learner then opens the guide
+on their own phone (the second QR code on the panel) and takes it into the real metro, without a VR box.
+
+| Part | What it does | Internet? |
+|---|---|---|
+| Step cards | The same 4 steps, with a photo of the station they practised in and short numbered micro-steps | no |
+| Remind me | Reads the steps aloud and highlights the one being read | no |
+| On the train | The trip as a metro line; "The train stopped" counts stops; "Next stop is yours" warning | no |
+| Ask Buddy | Tap to talk with the same buddy in guide mode (real-metro safety rules, step facts only) | yes |
+| Show Buddy | A photo of a machine or sign; Gemini answers in two calm sentences; the photo is not stored | yes |
+| Help | Breathe together; call my person (number kept only on the phone); a card in Azerbaijani to show a metro worker | no |
+| Arrival | "I did it alone" or "I needed some help" | no |
+
+Every step and help request is sent to the trainer (`guide_*` events, queued while offline). The gold
+layer keeps them as `fact_real_trip`, separate from VR sessions; the panel shows them live and in
+*Progress*, and the Gemini report mentions them. The guide is an installable web app with a service
+worker, so it works underground once opened. Photos for the cards are taken from the VR panoramas by
+`tools/snap-guide.mjs`.
+
 ## 4. Data sources
 
 | Source | What we take | How | Licence |
@@ -201,6 +222,8 @@ Every engine event is logged with the session id, the step and a timestamp.
 | `fault_injected` / `fault_resolved` | A trainer challenge starts / ends | fault, by |
 | `choice`, `boarded`, `arrive_station`, `announcement`, `return_trip` | Trip progress | station, stopsLeft, ... |
 | `session_end` | The trip is finished | completed |
+| `guide_start` / `guide_step` / `guide_stop` / `guide_end` | Real trip with the phone guide | step id and ms; station; completed, self_report |
+| `guide_help` | Help used on the real trip | kind (`remind`, `voice`, `photo`, `calm`, `call`, `staff`), step |
 
 **Rule:** a refused payment never changes the balance (tested).
 
@@ -269,6 +292,7 @@ erDiagram
 | `fact_session` | one trip attempt | `session_key` |
 | `fact_step_attempt` | one step entered in a session (an unfinished step is kept with `completed = false`) | `session_key, step_key` |
 | `fact_fault` | one trainer challenge in a session | `session_key, fault_key` |
+| `fact_real_trip` | one real trip with the phone guide (help used per step, self report) | `session_key` |
 
 Parquet-free tables do not enforce keys, so `checkKeys()` and the tests check that every foreign key
 points to a dimension row and that no primary key repeats.
@@ -366,7 +390,7 @@ step, with time and help used. "Challenges for the judge" starts or stops each o
 ## 8. Tests
 
 ```bash
-npm test         # 41 unit tests (node:test)
+npm test         # 48 unit tests (node:test)
 npm run check    # syntax check of every JavaScript file
 ```
 
@@ -379,19 +403,22 @@ npm run check    # syntax check of every JavaScript file
   both names and coordinates inside Baku, and broken input is reported;
 - analytics: logs produced by the real engine become the right star rows (mistakes, hints and help per
   step, unfinished steps, challenges), keys are valid, the readiness rule, the NÜMUNƏ sample is
-  deterministic and labelled on every line, and real and sample sessions stay separable.
+  deterministic and labelled on every line, and real and sample sessions stay separable;
+- real-trip guide: guide events become `fact_real_trip` and never VR sessions, the photo request is
+  checked and falls back to a safe answer, guide mode gives the buddy the real-metro safety rules,
+  every step has micro-steps and a photo.
 
 ## 9. Repository layout
 
 ```
-client/   vr/ (phone app), panel/ (trainer panel), setup.html (certificate), assets/ (panoramas, fonts)
-shared/   engine.js (scenario engine), analytics.js (gold layer), world.js (3D scene), ui3d.js, buddy.js, data.js
+client/   vr/ (VR app), guide/ (real-trip guide), panel/ (trainer panel), setup.html, assets/ (brand, fonts, panoramas, guide photos)
+shared/   engine.js (scenario engine), analytics.js (gold layer), world.js (3D scene), ui3d.js, buddy.js, companion.js (AI buddy), brand.js, data.js
 server/   laptop server: HTTPS + WebSocket, tunnel, OpenAI token, Gemini report, JSONL event log, certificates
-api/      cloud functions for Vercel (config, events, learners, progress, report, realtime-token, qr)
+api/      cloud functions for Vercel (config, events, learners, progress, report, realtime-token, ask-photo, qr)
 supabase/ schema.sql for the cloud database
 data/     raw/osm/, city/baku/ (network, rules, names), scenario/, learners.json;
           generated, not committed: sessions/, sample/, gold/
-tools/    ingest-osm.js, build-city.js, gen-sample.js, build-gold.js, gen-voice.js, build-web.js, dev-cloud.js, check-syntax.js
+tools/    ingest-osm.js, build-city.js, gen-sample.js, build-gold.js, gen-voice.js, build-web.js, dev-cloud.js, snap-guide.mjs, brand/make-brand.py, check-syntax.js
 tests/    engine, network, analytics, voice and cloud API tests
 docs/     concept paper (AZ + EN)
 ```
@@ -405,7 +432,9 @@ docs/     concept paper (AZ + EN)
 - [x] Phase 3: trainer panel for the projector (trip as a metro line, challenges, learner profiles)
 - [x] Phase 5: gold star schema, progress chart with the **NÜMUNƏ** sample cohort, Gemini trainer report
 - [x] Phase 4: recorded buddy voice (Gemini text-to-speech) when the live AI voice is not available
-- [ ] Roadmap: real-trip guide mode; readiness prediction model trained on VR sessions + real-trip outcomes
+- [x] Brand: team logo, colours and fonts across the panel, the VR app and the icons
+- [x] Real-trip guide (`/guide/`): step cards, Remind me, Ask Buddy, Show Buddy, help, results to the trainer
+- [ ] Roadmap: readiness prediction model trained on VR sessions + real-trip outcomes (`fact_real_trip`)
 
 ## 11. Credits and licences
 

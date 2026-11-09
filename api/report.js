@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   try {
     const body = await readJson(req);
     const p = await progressFor(String(body.learner || 'demo'));
-    const facts = reportFacts(p.progress, p.learner.nickname || p.learner.id);
+    const facts = reportFacts(p.progress, p.learner.nickname || p.learner.id, p.real_trips);
     const report = await writeReport(facts);
     send(res, 200, { ...report, facts });
   } catch (e) {

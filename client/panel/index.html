@@ -58,7 +58,7 @@
         <span class="pill" id="phone-pill"><i class="dot"></i><span id="phone-text">No phone</span></span>
         <span class="pill" id="ai-pill"><i class="dot"></i><span id="ai-text">Buddy offline</span></span>
         <span class="pill" id="guide-pill" hidden><i class="dot"></i><span id="guide-text">Guide</span></span>
-        <button id="progress-open" class="primary"><svg class="i"><use href="#i-chart" /></svg>Progress and report</button>
+        <button id="progress-open" class="primary"><svg class="i"><use href="#i-chart" /></svg>Progress</button>
         <button id="qr-open" class="qr-thumb" aria-label="Show the QR code for the phone" title="Open on the phone"><img id="qr" alt="" /></button>
       </div>
     </header>
@@ -144,6 +144,7 @@
       <p class="explain">Steps done alone: how many of the 4 steps the learner finished without a hint and without a mistake, session by session.</p>
       <div id="chart" class="chart"></div>
       <div id="verdict" class="verdict"></div>
+      <div id="real-trips" class="real-trips"></div>
       <div class="report">
         <button id="report-btn" class="primary"><svg class="i"><use href="#i-file" /></svg><span>Write trainer report</span></button>
         <p id="report" class="report-text"></p>
@@ -155,8 +156,18 @@
         <h2 id="qr-title">Open UMATE on the phone</h2>
         <form method="dialog" class="close"><button class="icon-btn" aria-label="Close"><svg class="i"><use href="#i-x" /></svg></button></form>
       </div>
-      <img id="qr-big" alt="QR code with the link for the phone" />
+      <div class="qr-pair">
+        <figure>
+          <img id="qr-big" alt="QR code with the link for the VR practice" />
+          <figcaption><b>VR practice</b>Phone in the VR box, paired with this panel</figcaption>
+        </figure>
+        <figure>
+          <img id="qr-guide" alt="QR code with the link for the real-trip guide" />
+          <figcaption><b>Real trip guide</b>For the selected learner, in the real metro (no box)</figcaption>
+        </figure>
+      </div>
       <div id="urls" class="urls"></div>
+      <p class="urls">Guide: <span id="guide-url"></span></p>
     </dialog>
 
     <dialog id="key-dialog" aria-labelledby="key-title">

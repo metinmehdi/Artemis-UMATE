@@ -1,11 +1,13 @@
-// AI travel buddy: OpenAI Realtime voice over WebRTC.
-// The mic track is only enabled while the learner looks at the buddy (gaze-to-talk),
-// so a noisy hall does not trigger it. If anything fails, the buddy goes "offline" and
+// AI travel buddy: OpenAI Realtime voice over WebRTC. Shared by the VR app and the real-trip guide.
+// The mic track is only enabled while the learner looks at the buddy (VR: gaze-to-talk) or after
+// tapping "Ask Buddy" (guide: tap-to-talk), so a noisy hall does not trigger it. If anything fails, the buddy goes "offline" and
 // the app keeps working (pre-recorded lines can be added later).
 import { apiFetch } from '/shared/runtime.js';
 
 export class Companion {
-  constructor({ onTranscript, onMode, onLog } = {}) {
+  constructor({ onTranscript, onMode, onLog, mode = 'vr', greeting } = {}) {
+    this.sessionMode = mode; // 'vr' or 'guide': picks the buddy's instructions on the server
+    this.greeting = greeting ?? 'Greet the learner warmly in one short sentence. Say they can look at you any time to talk.';
     this.onTranscript = onTranscript || (() => {});
     this.onMode = onMode || (() => {});
     this.onLog = onLog || (() => {});
@@ -80,7 +82,7 @@ export class Companion {
     this.mic.enabled = false;
     this.micAnalyser = this._analyse(stream);
 
-    const tokRes = await apiFetch('/api/realtime-token', { method: 'POST' });
+    const tokRes = await apiFetch('/api/realtime-token', { method: 'POST', json: { mode: this.sessionMode } });
     const tok = await tokRes.json();
     if (!tokRes.ok || !tok.value) throw new Error(tok.error || `token HTTP ${tokRes.status}`);
     this.onLog('info', `AI model: ${tok.model}`);
@@ -104,7 +106,7 @@ export class Companion {
     dc.onmessage = (e) => this._handle(JSON.parse(e.data));
     dc.onopen = () => {
       this.setMode('idle');
-      this.say('Greet the learner warmly in one short sentence. Say they can look at you any time to talk.');
+      if (this.greeting) this.say(this.greeting);
     };
 
     const offer = await pc.createOffer();
@@ -172,6 +174,11 @@ export class Companion {
     if (this.mic && this.mic.enabled !== listen) this.mic.enabled = listen;
     if (this.mode === 'idle' && listen) this.setMode('listening');
     else if (this.mode === 'listening' && !listen) this.setMode('idle');
+  }
+
+  // Tap-to-talk (guide): open the mic until listen(false); speech in progress still finishes.
+  listen(on) {
+    this.setGaze(on);
   }
 
   _handle(ev) {

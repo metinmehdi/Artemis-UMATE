@@ -17,12 +17,12 @@ export function checkKey(req, res) {
   return ok;
 }
 
-export async function readJson(req) {
+export async function readJson(req, limit = 200_000) {
   if (req.body && typeof req.body === 'object') return req.body; // Vercel already parsed it
   let s = '';
   for await (const c of req) {
     s += c;
-    if (s.length > 200_000) throw new Error('body too large');
+    if (s.length > limit) throw Object.assign(new Error('body too large'), { status: 413 });
   }
   return s ? JSON.parse(s) : {};
 }
