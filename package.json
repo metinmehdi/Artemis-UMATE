@@ -19,7 +19,7 @@
   "dependencies": {
     "qrcode": "^1.5.4",
     "three": "0.187.0",
-    "ws": "^8.22.1"
+    "ws": "^8.22.2"
   },
   "engines": {
     "node": ">=22"
